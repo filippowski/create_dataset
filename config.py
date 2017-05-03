@@ -27,7 +27,8 @@ create_infogain = False
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/home/filippovski/deep-learning/script_test/cls'
+#main_path = '/home/filippovski/deep-learning/script_test/cls'
+main_path = '/8TB/vitalii/cls'
 mode = 'classification'
 
 assert mode in ['classification', 'landmarks', '3D'], \
