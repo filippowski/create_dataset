@@ -9,6 +9,8 @@ from skimage.io import imsave
 from skimage.transform import rotate
 import multiprocessing as mp
 from  multiprocessing import cpu_count, Pool
+import copy_reg
+import types
 import math
 from util import ensure_dir, copy_nomatched_file
 
@@ -191,6 +193,12 @@ class Rotation:
         print "queue size: ", self.queue.qsize()
 
 
+    def _pickle_method(m):
+        if m.im_self is None:
+            return getattr, (m.im_class, m.im_func.func_name)
+        else:
+            return getattr, (m.im_self, m.im_func.func_name)
+
 
     def wrap(self, rot):
         print "wrap"
@@ -208,6 +216,7 @@ class Rotation:
     def run_multiprocessing_rotations(self):
 
         # Setup a list of processes that we want to run
+        copy_reg.pickle(types.MethodType, self._pickle_method)
         p = Pool(processes=cpu_count(), initializer=self.start_process)
         print "queue size: ", self.queue.qsize()
         for x in range(self.queue.qsize()):
