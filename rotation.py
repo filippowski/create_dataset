@@ -24,17 +24,12 @@ class Rotation:
 
         # Define folders queue
         self.queue = mp.Queue()
-        #m = mp.Manager()
-        #self.queue = m.Queue()
 
         # Put all paths to folders
         for root, subFolders, files in os.walk(self.path_to_superdir):
             if len(subFolders) == 0:
                 self.queue.put(root)
 
-        print "queue size: ", self.queue.qsize()
-        print self.queue
-        print "queue size: ", self.queue.qsize()
 
     def get_dir_dst_rot(self, dir_src, angles):
         dir_dst = []
@@ -89,8 +84,7 @@ class Rotation:
         return transform
 
 
-    def rotate_folder(self, dir_src, angles, initial_csv_file):
-        print "rotate_folder"
+    def create_rotated_images_with_labels(self, dir_src, angles, initial_csv_file):
         dir_dst = self.get_dir_dst_rot(dir_src, angles)
 
         # csv filenames and path-to-files defs
@@ -163,7 +157,7 @@ class Rotation:
             print ' * get_angles is function, angles are: {}'.format(get_angles(dir_src))
             angles = get_angles(dir_src)
 
-        return self.rotate_folder(dir_src, angles, initial_csv_file)
+        return self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
 
 
     def run_multiprocessing_rotations(self):
