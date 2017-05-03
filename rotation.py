@@ -144,27 +144,66 @@ class Rotation:
             rotated_csv_file.close()
         print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
 
+    def recursive_create_rotated_images_with_labels(self, queue, get_angles, initial_csv_file):
+        dir_src = queue.get()
+        angles = []
 
-    def callback(self):
-        print "Working in Process #%d" % (os.getpid())
+        assert callable(get_angles), \
+            'Parameter {} must be a function. Pls check params.'.format(get_angles)
+
+        if callable(get_angles):
+            print ' * get_angles is function, angles are: {}'.format(get_angles(dir_src))
+            angles = get_angles(dir_src)
+
+        return self.create_rotated_labels(dir_src, angles, initial_csv_file)
+
 
     def run_multiprocessing_rotations(self):
 
         # Setup a list of processes that we want to run
-        func = self.create_rotated_labels
-        p = Pool(processes=cpu_count())
-        for x in range(self.queue.qsize()):
-            dir_src = self.queue.get()
-            angles = []
-            assert callable(self.get_angles), \
-                'Parameter {} must be a function. Pls check params.'.format(self.get_angles)
+        func = self.recursive_create_rotated_images_with_labels
+        args = (self.queue, self.get_angles, self.initial_csv_file)
+        processes = [mp.Process(target=func,args=args) for x in range(self.queue.qsize())]
 
-            if callable(self.get_angles):
-                print ' * get_angles is function, angles are: {}'.format(self.get_angles(dir_src))
-                angles = self.get_angles(dir_src)
+        # Run processes
+        for p in processes:
+            p.start()
 
-            p.apply_async(func=func, args=(dir_src, angles, self.initial_csv_file), callback=self.callback)
+        # Exit the completed processes
+        for p in processes:
+            p.join()
 
-        # new section
-        p.close()
-        p.join()
+
+def wrap(rot, dir_src, angles, initial_csv_file):
+    rot.create_rotated_labels(dir_src, angles, initial_csv_file)
+
+
+def start_process():
+    print 'Starting', mp.current_process().name
+
+
+def callback():
+    print "Working in Process #%d" % (os.getpid())
+
+
+def run_multiprocessing_rotations_pool(rot):
+
+    # Setup a list of processes that we want to run
+    func = rot.create_rotated_labels
+    p = Pool(processes=cpu_count(), initializer=start_process)
+    for x in range(rot.queue.qsize()):
+        dir_src = rot.queue.get()
+        angles = []
+        assert callable(rot.get_angles), \
+            'Parameter {} must be a function. Pls check params.'.format(rot.get_angles)
+
+        if callable(rot.get_angles):
+            print ' * get_angles is function, angles are: {}'.format(rot.get_angles(dir_src))
+            angles = rot.get_angles(dir_src)
+
+        #p.apply_async(func=func, args=(dir_src, angles, self.initial_csv_file), callback=self.callback)
+        p.apply_async(wrap, args=(rot, dir_src, angles, rot.initial_csv_file), callback=callback)
+
+    # new section
+    p.close()
+    p.join()

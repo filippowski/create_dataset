@@ -5,7 +5,7 @@
 import os, csv
 import multiprocessing as mp
 import shutil
-from rotation import Rotation
+from rotation import Rotation, run_multiprocessing_rotations_pool
 from mirror import Mirror
 from util import ensure_dir, remove, clean_csv
 from load import load_cls_labels, load_cls_landmarks, load_cls_microclasses
@@ -97,7 +97,8 @@ class Augmentation:
 
             print '\nSTAGE 1: Creating and saving rotated images and csv-files with its labels:\n'
 
-            rot.run_multiprocessing_rotations()
+            #rot.run_multiprocessing_rotations()
+            run_multiprocessing_rotations_pool(rot)
 
             print '\n/************************************************************************/'
             print 'Done: created and saved rotated images and csv-files with its labels.\n\n'
@@ -134,7 +135,8 @@ class Augmentation:
 
             print '\nSTAGE 1: Creating and saving rotated images and csv-files with its labels:\n'
 
-            rot.run_multiprocessing_rotations()
+            #rot.run_multiprocessing_rotations()
+            run_multiprocessing_rotations_pool(rot)
 
             print '\n/************************************************************************/'
             print 'Done: created and saved rotated images and csv-files with its labels.\n\n'
@@ -154,6 +156,9 @@ class Augmentation:
 
 
     def divide_dataset_to_microclass_folders(self):
+
+        print 'Spliting the dataset into microclasses folders...'
+
         # read initial csv with labels
         dataset = load_cls_labels(self.path_to_labels, self.labels_sep, self.labels_names, self.labels_types)
 

@@ -11,14 +11,14 @@ from newOrder import get_new_order_119
 # augmentation dataset
 augmentation = True
 # merge all csv in one
-merge = True
+merge = False
 # create and save labels
-create_labels = True
+create_labels = False
 # create file with images filenames
-create_imgfile = True
+create_imgfile = False
 
 # create mean image
-create_mean = True
+create_mean = False
 # create infogain matrices
 create_infogain = False
 
