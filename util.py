@@ -6,6 +6,8 @@ import time
 import numpy as np
 import shutil
 import sys
+from os import stat
+from pwd import getpwuid
 
 
 def ensure_dir(f):
@@ -80,3 +82,9 @@ def create_file_with_paths_to_images(source_dir, path_to_file, path_to_labels):
     for i in range(img_cnt):
         text_file.write("%s\n" % (os.path.join(source_dir, str(i).zfill(8) + '.jpg')))
     text_file.close()
+
+def get_value(names, tasks_names, task):
+    return names[tasks_names.index(task)]
+
+def get_uid(dirpath):
+    return int(getpwuid(stat(dirpath).st_uid).pw_uid)

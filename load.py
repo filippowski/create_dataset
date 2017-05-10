@@ -31,6 +31,7 @@ def load_landmarks(filepath, sep, names=None, types=None):
 
 def load_cls_labels(filepath, sep, names=None, types=None):
     labels = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
+    #labels['glasses'] = labels['glasses'].replace('200200', '200100')
     labels = labels.dropna()
     # print ' * labels shape is: {}'.format(labels.shape)
     return labels
@@ -47,7 +48,7 @@ def load_cls_landmarks(filepath, sep, names=None, types=None):
     # print ' * landmarks shape is: {}'.format(landmarks.shape)
     return landmarks
 
-def load_cls_microclasses(filepath, sep, names, types):
-    microclasses = pd.read_csv(filepath, sep=sep, header=0, names=names,dtype=types)
+def load_cls_microclasses(filepath, sep, names=None, types=None):
+    microclasses = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
     # print ' * microclasses shape is: {}'.format(microclasses.shape)
     return microclasses

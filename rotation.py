@@ -154,8 +154,8 @@ class Rotation:
             'Parameter {} must be a function. Pls check params.'.format(get_angles)
 
         if callable(get_angles):
-            print ' * get_angles is function, angles are: {}'.format(get_angles(dir_src))
             angles = get_angles(dir_src)
+            print ' * get_angles is function, angles are: {}'.format(angles)
 
         return self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
 

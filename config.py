@@ -3,7 +3,9 @@
 
 import numpy as np
 import os
+import random
 from newOrder import get_new_order_119
+from util import get_value, get_uid
 
 ################################################
 #  TODO set flags
@@ -11,14 +13,14 @@ from newOrder import get_new_order_119
 # augmentation dataset
 augmentation = True
 # merge all csv in one
-merge = False
+merge = True
 # create and save labels
-create_labels = False
+create_labels = True
 # create file with images filenames
-create_imgfile = False
+create_imgfile = True
 
 # create mean image
-create_mean = False
+create_mean = True
 # create infogain matrices
 create_infogain = False
 
@@ -27,8 +29,8 @@ create_infogain = False
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-#main_path = '/home/filippovski/deep-learning/script_test/cls'
 main_path = '/8TB/vitalii/cls'
+#main_path = '/home/filippovski/deep-learning/script_test/cls'
 mode = 'classification'
 
 assert mode in ['classification', 'landmarks', '3D'], \
@@ -58,6 +60,10 @@ testSize = 20   # percentage of test examples from whole dataset
 ################################################
 #  TODO set params
 ################################################
+# images count per microclass for which will be decided run augmentation or not:
+# run augmentation,     if count > threshold
+# not run,              if count <= threshold
+threshold = 3
 # углы поворотов для rotation
 angles = [3, 6]
 #angles = [3, 6, 9, 12, 15, 18, 21]
@@ -191,8 +197,8 @@ microclasses2_types = {
 ################################################
 
 # choose params for reading microclasses file (type 1 or 2)
-microclasses_names = microclasses2_names
-microclasses_types = microclasses2_types
+microclasses_names = microclasses1_names
+microclasses_types = microclasses1_types
 
 ################################################
 
@@ -202,7 +208,8 @@ def get_tasks():
         'skin': {
             'white':        np.array([0], dtype='int32'),
             'dark':         np.array([1], dtype='int32'),
-            'asian':        np.array([2], dtype='int32')
+            'asian':        np.array([2], dtype='int32'),
+            'tawny':        np.array([3], dtype='int32')
         },
 
         'gender': {
@@ -266,7 +273,8 @@ def get_tasks():
             '200100':       np.array([2], dtype='int32'),
             '300100':       np.array([3], dtype='int32'),
             '400100':       np.array([4], dtype='int32'),
-            '500100':       np.array([5], dtype='int32')
+            '500100':       np.array([5], dtype='int32'),
+            '200200':       np.array([6], dtype='int32')
         },
 
         'face': {
@@ -310,20 +318,20 @@ def get_tasks():
 # TODO fill true tasks names in the order that they was presented in previous function
 def get_tasks_names():
     tasks_names = [
-        # 'skin',
-        # 'gender',
-        # 'hair_cover',
-        # 'hair_color',
-        # 'hair_len',
-        # 'hair_type',
-        # 'hair_fringe',
-        # 'beard',
-        # 'glasses',
-        'face',
-        'mouth',
-        'nose',
-        'face_exp',
-        'brows'
+        'skin',
+        'gender',
+        'hair_cover',
+        'hair_color',
+        'hair_len',
+        'hair_type',
+        'hair_fringe',
+        'beard',
+        'glasses',
+        #'face',
+        #'mouth',
+        #'nose',
+        #'face_exp',
+        #'brows'
     ]
     return tasks_names
 
@@ -446,12 +454,45 @@ def get_angles_landmarks(dirpath):
 
 def get_angles_classification(dirpath):
     import fnmatch
-
     cnt = len(fnmatch.filter(os.listdir(dirpath), '*.jpg'))
-    if cnt > 200:
-        return [3]
+    if cnt > threshold:
+        return []
     else:
-        return [6]
+        cnt_before, cnt_after = cnt, threshold
+        tasks_names = get_tasks_names()
+        random.seed(get_uid(dirpath))
+        __, dirname = os.path.split(dirpath)
+        names = dirname.split('_')
+        idx, names = names[0], names[1:]
+
+        # main IF-scheme of data augmentation
+        # **************************************************************
+        if       get_value(names, tasks_names, 'hair_fringe'  ) == 'close':
+
+                    cnt_after = 2*threshold
+
+        elif     get_value(names, tasks_names, 'hair_color')  == 'black' \
+          and (get_value(names, tasks_names, 'hair_len'  )    == '5'
+            or get_value(names, tasks_names, 'hair_len'  )    == '6'):
+
+                    cnt_after = 1.5*threshold
+
+        elif     get_value(names, tasks_names, 'hair_type' )  == 'curly' \
+            or get_value(names, tasks_names, 'hair_color')    == 'carroty':
+
+                    cnt_after = 1.5*threshold
+
+        elif     get_value(names, tasks_names, 'hair_fringe') == 'open' \
+            or get_value(names, tasks_names, 'hair_color' )   == 'black' \
+            or get_value(names, tasks_names, 'hair_type'  )   == 'undefined':
+
+                    cnt_after = 0.5*threshold
+        # **************************************************************
+
+        cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)
+        angles = np.random.choice(45, size=cnt_angls, replace=False)
+        print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
+        return angles
 
 # TO DO: define
 def get_angles_3D(dirpath):

@@ -85,10 +85,10 @@ class Mirror:
 
     def recursive_create_mirror_images_with_labels(self, queue, new_order, initial_csv_file):
         dir_src = queue.get()
-        return self.create_mirror_images_with_labels(dir_src, initial_csv_file, new_order)
+        return self.create_mirror_images_with_labels(dir_src, new_order, initial_csv_file)
 
 
-    def run_multiprocessing_rotations(self):
+    def run_multiprocessing_mirrors(self):
 
         # Setup a list of processes that we want to run
         func = self.recursive_create_mirror_images_with_labels

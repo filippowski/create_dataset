@@ -7,8 +7,10 @@ import multiprocessing as mp
 import shutil
 from rotation import Rotation #, run_multiprocessing_rotations_pool
 from mirror import Mirror
+from microclasses import Microclasses
 from util import ensure_dir, remove, clean_csv
 from load import load_cls_labels, load_cls_landmarks, load_cls_microclasses
+from config import get_tasks_names, get_tasks
 
 # AUGMENTATION DATASET
 class Augmentation:
@@ -16,6 +18,7 @@ class Augmentation:
     def __init__(self, path_to_superdir, file_params, augmentation_params, mode):
 
         self.mode = mode
+        self.file_params = file_params
         self.path_to_superdir = path_to_superdir
 
         assert os.path.exists(self.path_to_superdir), \
@@ -50,10 +53,11 @@ class Augmentation:
                 self.path_to_microclasses   = os.path.join(self.path_to_superdir, self.microclasses_filename)
                 self.path_to_landmarks      = os.path.join(self.path_to_superdir, self.landmarks_filename)
 
+                self.tasks_names            = get_tasks_names()
+                self.tasks                  = get_tasks()
+
                 assert os.path.exists(self.path_to_labels), \
                     'Path to labels {} does not exist. Pls check path.'.format(self.path_to_labels)
-                assert os.path.exists(self.path_to_microclasses), \
-                    'Path to microclasses {} does not exist. Pls check path.'.format(self.path_to_microclasses)
                 assert os.path.exists(self.path_to_landmarks), \
                     'Path to landmarks {} does not exist. Pls check path.'.format(self.path_to_landmarks)
 
@@ -118,12 +122,19 @@ class Augmentation:
 
     def run_augmentation_classification(self):
 
+        if not os.path.exists(self.path_to_microclasses):
+        #if True:
+            # create a table with microclasses
+            print " * create a table with microclasses.. \n" \
+                  "(ATTENTION! This calculation can take more that 20 minutes)"
+            mc = Microclasses(self.path_to_superdir, self.file_params, self.tasks_names, self.tasks)
+            mc.create_microclasses_csv()
+
         # divide the dataset into microclasses folders
         self.divide_dataset_to_microclass_folders()
 
         if self.distortion:
             print '\n * distortion\n'
-
             # run distortion
             # TO DO..
 

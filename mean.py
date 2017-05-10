@@ -1,7 +1,7 @@
 import os
 import time
 import numpy as np
-#from caffe.io import array_to_blobproto
+from caffe.io import array_to_blobproto
 from skimage import io
 
 # CREATE MEAN IMAGE
@@ -73,9 +73,9 @@ class MeanImage:
 
         # print meanImg.shape
 
-        # blob = array_to_blobproto(meanImg)
-        # with open("{}.binaryproto".format(flname), 'wb') as f:
-        #     f.write(blob.SerializeToString())
+        blob = array_to_blobproto(meanImg)
+        with open("{}.binaryproto".format(flname), 'wb') as f:
+            f.write(blob.SerializeToString())
 
         print '\n/************************************************************************/'
         print '\nDone: mean image created.'
