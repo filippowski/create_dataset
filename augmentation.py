@@ -180,7 +180,10 @@ class Augmentation:
         landmarks = load_cls_landmarks(self.path_to_landmarks, self.landmarks_sep, self.landmarks_names, self.landmarks_types)
 
         # skip NA
+        print 'dataset.shape: {}, microclasses.shape: {}, landmarks.shape: {}'.format(dataset.shape, microclasses.shape, landmarks.shape)
         dataset, microclasses, landmarks = dataset.dropna(), microclasses.dropna(), landmarks.dropna()
+        print 'dataset.shape: {}, microclasses.shape: {}, landmarks.shape: {}'.format(dataset.shape, microclasses.shape,
+                                                                                      landmarks.shape)
 
         # run across rows in microclasses table and divide superdir into classes
         for micro_idx, micro_row in microclasses.iterrows():

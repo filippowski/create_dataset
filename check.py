@@ -3,6 +3,7 @@
 
 import pandas as pd
 import os
+from util import is_empty_file
 
 # CREATE MIRRORS
 class Check:
@@ -45,6 +46,8 @@ class Check:
                                         self.res = False
                                 else:
                                     self.cnt += 1
+                                if is_empty_file(path_to_img):
+                                    print " * empty file: {}".format(path_to_img)
                         else:
                             print " * empty file: {}".format(path_to_csv_file)
                     except OSError:
@@ -77,6 +80,8 @@ class Check:
                                         self.res = False
                                 else:
                                     self.cnt += 1
+                                if not is_empty_file(path_to_img):
+                                    print " * empty file: {}".format(path_to_img)
                         else:
                             print " * empty file: {}".format(path_to_csv_file)
                     except OSError:

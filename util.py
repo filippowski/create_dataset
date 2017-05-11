@@ -88,3 +88,6 @@ def get_value(names, tasks_names, task):
 
 def get_uid(dirpath):
     return int(getpwuid(stat(dirpath).st_uid).pw_uid)
+
+def is_empty_file(path_to_file):
+    return os.stat(path_to_file).st_size == 0
