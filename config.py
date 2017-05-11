@@ -29,7 +29,7 @@ create_infogain = False
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/8TB/vitalii/cls'
+main_path = '/8TB/vitalii/multitask1_new'
 #main_path = '/home/filippovski/deep-learning/script_test/cls'
 mode = 'classification'
 
@@ -63,7 +63,7 @@ testSize = 20   # percentage of test examples from whole dataset
 # images count per microclass for which will be decided run augmentation or not:
 # run augmentation,     if count > threshold
 # not run,              if count <= threshold
-threshold = 3
+threshold = 100
 # углы поворотов для rotation
 angles = [3, 6]
 #angles = [3, 6, 9, 12, 15, 18, 21]

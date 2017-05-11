@@ -74,7 +74,7 @@ class Microclasses:
                 for cls in range(len(keys)):
                     df1[(i * num_iter_local) + cls * num_iter:(i * num_iter_local) + (cls + 1) * num_iter] = keys[cls]
             df = pd.concat([df, df1], axis=1)
-        df.to_csv(path_to_microclasses, sep=microclasses_sep, mode='w', header=False)
+        df.to_csv(path_to_microclasses, sep=microclasses_sep, mode='w+', header=False)
         print "Done: initial table was filled and saved."
 
     def isnan(self, value):
@@ -86,8 +86,9 @@ class Microclasses:
 
     def create_microclasses_csv(self):
         # read initial csv with labels
-        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.labels_names, self.labels_types)
+        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names, self.labels_names, self.labels_types)
         dataset = dataset_full.iloc[:, 1:]
+        print 'dataset.shape: ', dataset.shape
 
         # create new table with counts of microclasses elements
         self.write__microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names, self.tasks, dataset, self.num_microclasses)
@@ -100,10 +101,11 @@ class Microclasses:
         all_microclasses = pd.read_csv(self.path_to_microclasses, sep=self.microclasses_sep, header=None, names=microclasses_names, dtype=microclasses_types)
 
         # add new columns to table
-        count = pd.DataFrame(index=range(0, self.num_microclasses), columns = ['count'])
+        count_ = pd.DataFrame(index=range(0, self.num_microclasses), columns = ['count'])
         filenames_list = pd.DataFrame(index=range(0, self.num_microclasses), columns = ['filenames_list'])
         # extended table
-        all_microclasses = pd.concat([all_microclasses, count, filenames_list], axis = 1).copy()
+        all_microclasses = pd.concat([all_microclasses, count_, filenames_list], axis = 1).copy()
+        print all_microclasses.shape
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
@@ -117,7 +119,7 @@ class Microclasses:
                     index = df[df[key] == row[key]].index.tolist()[0]
                     df = df[df[key] == row[key]]
 
-            print 'before: ', all_microclasses.iloc[index]
+            #print 'before: ', all_microclasses.iloc[index]
 
             # renew or write value in the table
             if self.isnan(all_microclasses.iloc[index]['count']):
@@ -130,7 +132,7 @@ class Microclasses:
             else:
                 all_microclasses.iloc[index]['filenames_list'] = all_microclasses.iloc[index]['filenames_list'] + ' ' + filename
 
-            print 'after: ', all_microclasses.iloc[index]
+            #print 'after: ', all_microclasses.iloc[index]
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]
         self.num_nonempty_microclasses = nonempty_microclasses.shape[0]

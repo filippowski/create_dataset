@@ -29,26 +29,31 @@ def load_landmarks(filepath, sep, names=None, types=None):
     return landmarks
 
 
-def load_cls_labels(filepath, sep, names=None, types=None):
+def load_cls_labels(filepath, sep, tasks_names, names=None, types=None):
+    if names is not None:
+        # samples from microclasses names and microclasses types for only those are in tasks_names
+        names = [x for x in names if x in tasks_names or names.index(x) == 0]
+        types = {key: types[key] for key in types.keys() if key in tasks_names or key == names[0]}
     labels = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
     #labels['glasses'] = labels['glasses'].replace('200200', '200100')
-    labels = labels.dropna()
-    # print ' * labels shape is: {}'.format(labels.shape)
+    assert labels.isnull().sum().sum() == 0, 'In labels.csv there are NA values! Pls check data.'
+    print ' * labels shape is: {}'.format(labels.shape)
     return labels
 
 def load_cls_landmarks(filepath, sep, names=None, types=None):
     assert 'FILENAME_JPG' in names and 'facepoints' in names, \
         'In landmarks file must be {} and {} columns. Pls check colnames.'.format('FILENAME_JPG', 'facepoints')
     landmarks = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names, dtype=types)
+    assert landmarks.isnull().sum().sum() == 0, 'In landmarks.csv there are NA values! Pls check data.'
     fnms = pd.DataFrame(landmarks['FILENAME_JPG'])
     fpts = landmarks['facepoints']
     fpts = fpts.apply(str.replace, args=('[', '')).apply(str.replace, args=(']', '')).apply(str.replace, args=(',', ''))
     fpts = fpts.str.split(pat=' ', expand=True)
     landmarks = pd.concat([fnms, fpts], axis=1)
-    # print ' * landmarks shape is: {}'.format(landmarks.shape)
+    print ' * landmarks shape is: {}'.format(landmarks.shape)
     return landmarks
 
 def load_cls_microclasses(filepath, sep, names=None, types=None):
     microclasses = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
-    # print ' * microclasses shape is: {}'.format(microclasses.shape)
+    print ' * microclasses shape is: {}'.format(microclasses.shape)
     return microclasses
