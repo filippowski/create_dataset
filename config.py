@@ -11,16 +11,16 @@ from util import get_value, get_inode
 #  TODO set flags
 ################################################
 # augmentation dataset
-augmentation    = False #True
+augmentation    = True
 # merge all csv in one
 merge           = True
 # create and save labels
-create_labels   = False
+create_labels   = True
 # create file with images filenames
-create_imgfile  = False
+create_imgfile  = True
 
 # create mean image
-create_mean     = False
+create_mean     = True
 # create infogain matrices
 create_infogain = False
 
@@ -491,7 +491,7 @@ def get_angles_classification(dirpath):
 
         cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)
         max_cnt_angles = int(np.ceil(float(threshold)) - 1)
-        angles = np.random.choice(max_cnt_angles, size=cnt_angls, replace=False)
+        angles = np.random.choice(20, size=cnt_angls, replace=True)
         #print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
         return angles
 
