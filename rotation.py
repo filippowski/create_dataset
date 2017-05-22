@@ -167,13 +167,20 @@ class Rotation:
         args = (self.queue, self.get_angles, self.initial_csv_file)
         processes = [mp.Process(target=func,args=args) for x in range(self.queue.qsize())]
 
-        # Run processes
-        for p in processes:
-            p.start()
+        nprocesses = len(processes)
+        nworkers = int(0.75*mp.cpu_count())
 
-        # Exit the completed processes
-        for p in processes:
-            p.join()
+        for i in range(int(nprocesses/nworkers)+1):
+            proc = processes[:nworkers]
+            processes = processes[nworkers:]
+
+            # Run processes
+            for p in proc:
+                p.start()
+
+            # Exit the completed processes
+            for p in proc:
+                p.join()
 
 
 # class Rotation_:

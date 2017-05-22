@@ -12,7 +12,7 @@ from crop import Crop
 # MERGE ALL CSVs IN ONE CSV
 class Merge:
 
-    def __init__(self, path_to_superdir, target_path, train_images_dir_name, file_params, imgSize, do_shft, mode):
+    def __init__(self, path_to_superdir, target_path, train_images_dir_name, file_params, task_names, imgSize, do_shft, mode):
 
         self.mode = mode
         assert self.mode in ['classification', 'landmarks', '3D'], \
@@ -29,6 +29,7 @@ class Merge:
 
         self.train_images_dir_name = train_images_dir_name
 
+        self.task_names  = task_names
         self.do_shft     = do_shft
         self.imgsize     = imgSize
         self.cnt_mrg_img = 0
@@ -180,6 +181,7 @@ class Merge:
 
             # read image
             img = imread(os.path.join(dir_src, imgname))
+            #print 'shape: ', img.shape
             imgsize = img.shape[0]
 
             # read and upscaling labels
@@ -220,7 +222,7 @@ class Merge:
         landmarks = load_landmarks(path_to_landmarks, sep=' ') # sep 'landmarks_sep' was changed by function 'load_cls_landmarks' from load.py
 
         # read initial csv with labels
-        labels = load_cls_labels(path_to_labels, labels_sep)
+        labels = load_cls_labels(path_to_labels, labels_sep, self.task_names)
 
         # skip NA
         labels, landmarks = labels.dropna(), landmarks.dropna()
@@ -229,10 +231,11 @@ class Merge:
 
         for idx, row in landmarks.iterrows():
             imgname = row[0].split('/')[-1]
-            #print imgname
+            print imgname
 
             # read image
             img = imread(os.path.join(dir_src, imgname))
+            print 'shape: ', img.shape
             imgsize = img.shape[0]
 
             # read and upscaling labels

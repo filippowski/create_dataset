@@ -65,11 +65,12 @@ class Mirror:
             # save labels
             labels = np.array(general_landmarks.loc[idx, 1:], dtype='float32')
             # print len(labels)
-            if not labels.min() < 0.0:
+            if labels.min() >= -1.0 and labels.max() <= 1.0:
+                labels[0::2] = -labels[0::2]  # inverse labels across x-axis
+            else:
                 halfsize = img.shape[0] / 2.
                 labels[0::2] = (- (labels[0::2] - halfsize) + halfsize)
-            else:
-                labels[0::2] = -labels[0::2]  # inverse labels across x-axis
+
             new_labels = np.zeros(labels.shape)
             for i in range(len(new_order)):
                 new_labels[2 * new_order[i]] = labels[2 * i]
@@ -95,13 +96,20 @@ class Mirror:
         args = (self.queue, self.new_order, self.initial_csv_file)
         processes = [mp.Process(target=func,args=args) for x in range(self.queue.qsize())]
 
-        # Run processes
-        for p in processes:
-            p.start()
+        nprocesses = len(processes)
+        nworkers = int(0.75*mp.cpu_count())
 
-        # Exit the completed processes
-        for p in processes:
-            p.join()
+        for i in range(int(nprocesses/nworkers)+1):
+            proc = processes[:nworkers]
+            processes = processes[nworkers:]
+
+            # Run processes
+            for p in proc:
+                p.start()
+
+            # Exit the completed processes
+            for p in proc:
+                p.join()
 
 
     # def callback(self):

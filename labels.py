@@ -83,8 +83,7 @@ class Label:
             mask = get_mask()
             labels_length = labels_length + mask.size
 
-        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.labels_names, self.labels_types)
-        raw_labels['glasses'] = raw_labels['glasses'].replace('200200', '200100') # crooked nail
+        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names, self.labels_names, self.labels_types)
         labels = np.zeros((raw_labels.shape[0], labels_length), dtype='int32')
 
         cnt_lbl = 0

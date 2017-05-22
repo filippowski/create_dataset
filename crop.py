@@ -155,11 +155,14 @@ class Crop:
                 y_high = self.img.shape[0]
             else:
                 y1 = y_diff
+            print 'old bbox: ', x_low, x_high, y_low, y_high
+            print 'new bbox: ', x0, x1, y0, y1
             head_area[y0:y1, x0:x1] = img_cp[y_low:y_high, x_low:x_high]
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 imgSizexSize = resize(head_area, (self.cropsize, self.cropsize, 3))
         else:
+            print 'bbox: ', x_low, x_high, y_low, y_high
             head_area = img_cp[y_low:y_high, x_low:x_high]
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")

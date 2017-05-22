@@ -5,22 +5,22 @@ import numpy as np
 import os
 import random
 from newOrder import get_new_order_119
-from util import get_value, get_uid
+from util import get_value, get_inode
 
 ################################################
 #  TODO set flags
 ################################################
 # augmentation dataset
-augmentation = True
+augmentation    = False #True
 # merge all csv in one
-merge = True
+merge           = True
 # create and save labels
-create_labels = True
+create_labels   = False
 # create file with images filenames
-create_imgfile = True
+create_imgfile  = False
 
 # create mean image
-create_mean = True
+create_mean     = False
 # create infogain matrices
 create_infogain = False
 
@@ -29,8 +29,8 @@ create_infogain = False
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/8TB/vitalii/multitask1_new'
-#main_path = '/home/filippovski/deep-learning/script_test/cls'
+#main_path = '/8TB/vitalii/multitask1_new/62K'
+main_path = '/home/filippovski/deep-learning/MULTITASK/train'
 mode = 'classification'
 
 assert mode in ['classification', 'landmarks', '3D'], \
@@ -63,7 +63,7 @@ testSize = 20   # percentage of test examples from whole dataset
 # images count per microclass for which will be decided run augmentation or not:
 # run augmentation,     if count > threshold
 # not run,              if count <= threshold
-threshold = 100
+threshold = 50
 # углы поворотов для rotation
 angles = [3, 6]
 #angles = [3, 6, 9, 12, 15, 18, 21]
@@ -460,7 +460,7 @@ def get_angles_classification(dirpath):
     else:
         cnt_before, cnt_after = cnt, threshold
         tasks_names = get_tasks_names()
-        random.seed(get_uid(dirpath))
+        np.random.seed(get_inode(dirpath))
         __, dirname = os.path.split(dirpath)
         names = dirname.split('_')
         idx, names = names[0], names[1:]
@@ -490,8 +490,9 @@ def get_angles_classification(dirpath):
         # **************************************************************
 
         cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)
-        angles = np.random.choice(45, size=cnt_angls, replace=False)
-        print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
+        max_cnt_angles = int(np.ceil(float(threshold)) - 1)
+        angles = np.random.choice(max_cnt_angles, size=cnt_angls, replace=False)
+        #print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
         return angles
 
 # TO DO: define

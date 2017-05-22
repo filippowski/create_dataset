@@ -56,10 +56,10 @@ class Augmentation:
                 self.tasks_names            = get_tasks_names()
                 self.tasks                  = get_tasks()
 
-                assert os.path.exists(self.path_to_labels), \
-                    'Path to labels {} does not exist. Pls check path.'.format(self.path_to_labels)
-                assert os.path.exists(self.path_to_landmarks), \
-                    'Path to landmarks {} does not exist. Pls check path.'.format(self.path_to_landmarks)
+                #assert os.path.exists(self.path_to_labels), \
+                #    'Path to labels {} does not exist. Pls check path.'.format(self.path_to_labels)
+                #assert os.path.exists(self.path_to_landmarks), \
+                #    'Path to landmarks {} does not exist. Pls check path.'.format(self.path_to_landmarks)
 
         # TO DO
         #if self.mode == '3D':

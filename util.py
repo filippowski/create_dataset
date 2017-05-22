@@ -86,8 +86,17 @@ def create_file_with_paths_to_images(source_dir, path_to_file, path_to_labels):
 def get_value(names, tasks_names, task):
     return names[tasks_names.index(task)]
 
-def get_uid(dirpath):
-    return int(getpwuid(stat(dirpath).st_uid).pw_uid)
+def get_inode(dirpath):
+    return int(str(os.stat(dirpath).st_ino)[-3:])
 
 def is_empty_file(path_to_file):
     return os.stat(path_to_file).st_size == 0
+
+def get_image_size(x):
+    im = Image.open(x)
+    return im.size[0]
+
+def recompute_row(row):
+    vals = np.array(row[:-1]).astype(float)
+    size = float(row[-1])
+    return np.append(vals/(size/2.) - 1, [size])

@@ -3,7 +3,7 @@
 
 import numpy as np
 import pandas as pd
-from util import labels_str_to_flatten_list
+from util import get_image_size, recompute_row
 
 def loading(csv_file):
     list_processed_img = []
@@ -40,6 +40,7 @@ def load_cls_labels(filepath, sep, tasks_names, names=None, types=None):
     print ' * labels shape is: {}'.format(labels.shape)
     return labels
 
+
 def load_cls_landmarks(filepath, sep, names=None, types=None):
     assert 'FILENAME_JPG' in names and 'facepoints' in names, \
         'In landmarks file must be {} and {} columns. Pls check colnames.'.format('FILENAME_JPG', 'facepoints')
@@ -50,9 +51,14 @@ def load_cls_landmarks(filepath, sep, names=None, types=None):
     fpts = landmarks['facepoints']
     fpts = fpts.apply(str.replace, args=('[', '')).apply(str.replace, args=(']', '')).apply(str.replace, args=(',', ''))
     fpts = fpts.str.split(pat=' ', expand=True)
-    landmarks = pd.concat([fnms, fpts], axis=1)
+    # recompute landmarks to interval from -1.0 to 1.0
+    fnms_size = fnms.applymap(get_image_size)
+    fpts_ext = pd.concat([fpts, fnms_size], axis=1)
+    fpts_new = fpts_ext.apply(lambda row: recompute_row(row), axis=1).iloc[:, :-1]
+    landmarks = pd.concat([fnms, fpts_new], axis=1)
     print ' * landmarks shape is: {}'.format(landmarks.shape)
     return landmarks
+
 
 def load_cls_microclasses(filepath, sep, names=None, types=None):
     microclasses = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
