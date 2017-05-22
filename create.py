@@ -15,11 +15,11 @@ def create_dataset():
 
     # Checking
     print '\n\nChecking...\n\n'
-    #check = Check(cfg.path_to_superdir, cfg.mode)
-    #check.run()
+    check = Check(cfg.path_to_superdir, cfg.mode)
+    check.run()
 
-    #if (check.res):
-    if True:
+    if (check.res):
+    #if True:
 
         print '\n\nBeginning...\n\n'
         with Profiler() as p:
