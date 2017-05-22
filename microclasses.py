@@ -112,30 +112,27 @@ class Microclasses:
             filename = dataset_full.iloc[idx, 0]
             print ' * processing file: {}'.format(filename)
 
-            # process image if only file not empty
-            if not is_empty_file(os.path.join(self.path_to_superdir, filename)):
+            df = all_microclasses
+            index = 0
+            for key in [x for x in row.keys() if x in self.tasks_names]:
+                if key in self.tasks_names:
+                    index = df[df[key] == row[key]].index.tolist()[0]
+                    df = df[df[key] == row[key]]
 
-                df = all_microclasses
-                index = 0
-                for key in [x for x in row.keys() if x in self.tasks_names]:
-                    if key in self.tasks_names:
-                        index = df[df[key] == row[key]].index.tolist()[0]
-                        df = df[df[key] == row[key]]
+            #print 'before: ', all_microclasses.iloc[index]
 
-                #print 'before: ', all_microclasses.iloc[index]
+            # renew or write value in the table
+            if self.isnan(all_microclasses.iloc[index]['count']):
+                all_microclasses.iloc[index]['count'] = 1
+            else:
+                all_microclasses.iloc[index]['count'] = int(all_microclasses.iloc[index]['count']) + 1
 
-                # renew or write value in the table
-                if self.isnan(all_microclasses.iloc[index]['count']):
-                    all_microclasses.iloc[index]['count'] = 1
-                else:
-                    all_microclasses.iloc[index]['count'] = int(all_microclasses.iloc[index]['count']) + 1
+            if self.isnan(all_microclasses.iloc[index]['filenames_list']):
+                all_microclasses.iloc[index]['filenames_list'] = filename
+            else:
+                all_microclasses.iloc[index]['filenames_list'] = all_microclasses.iloc[index]['filenames_list'] + ' ' + filename
 
-                if self.isnan(all_microclasses.iloc[index]['filenames_list']):
-                    all_microclasses.iloc[index]['filenames_list'] = filename
-                else:
-                    all_microclasses.iloc[index]['filenames_list'] = all_microclasses.iloc[index]['filenames_list'] + ' ' + filename
-
-                #print 'after: ', all_microclasses.iloc[index]
+            #print 'after: ', all_microclasses.iloc[index]
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]
         self.num_nonempty_microclasses = nonempty_microclasses.shape[0]
