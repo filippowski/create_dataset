@@ -6,6 +6,7 @@ import time
 import numpy as np
 import shutil
 import sys
+from PIL import Image
 from os import stat
 from pwd import getpwuid
 
