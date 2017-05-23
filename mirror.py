@@ -107,20 +107,3 @@ class Mirror:
             # Exit the completed processes
             for p in proc:
                 p.join()
-
-
-    # def callback(self):
-    #     print "Working in process #%d" % (os.getpid())
-    #
-    # def run_multiprocessing_mirrors(self):
-    #
-    #     # Setup a list of processes that we want to run
-    #     func = self.create_mirror_images_with_labels
-    #     p = Pool(processes=cpu_count())
-    #     for x in range(self.queue.qsize()):
-    #         dir_src = self.queue.get()
-    #         p.apply_async(func=func, args=(dir_src, self.new_order, self.initial_csv_file), callback=self.callback)
-    #
-    #     # new section
-    #     p.close()
-    #     p.join()

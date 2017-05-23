@@ -88,34 +88,6 @@ def create_dataset():
                     lmdb.create_lmdb()
 
 
-            # DEFINITIONS:
-            images    = cfg.path_to_file_with_paths_to_images
-            labels    = cfg.path_to_labels
-            ndim      = cfg.channel 
-            imagesOut = cfg.path_to_lmdb_with_images
-            labelsOut = cfg.path_to_lmdb_with_labels
-            n         = cfg.testSize
-            maxPx     = cfg.imgSize
-            minPx     = cfg.imgSize
-
-            print 'Done.'
-            print '\n\nNow in order to create lmdbs it is needed to run script create_multilabel_lmdb.py with the following options:\n'
-            print 'python create_multilabel_lmdb.py ' + \
-                  '--images ' + images + ' ' + \
-                  '--labels ' + labels + ' ' + \
-                  '--ndim ' + str(ndim) + ' ' + \
-                  '--imagesOut ' + imagesOut + ' ' + \
-                  '--labelsOut ' + labelsOut + ' ' + \
-                  '-n ' + str(n) + ' ' + \
-                  '--maxPx ' + str(maxPx) + ' ' + \
-                  '--minPx ' + str(minPx) + ' ' + \
-                  '--shuffle=true'
-            print '\n\nJust copy it, paste in new line and press enter.\n'
-
-        print '\n\nDone: dataset successfully created.'
-
-
-
 #######################################################################################################################
 if __name__ == '__main__':
     create_dataset()
