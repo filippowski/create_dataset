@@ -3,7 +3,7 @@
 
 import numpy as np
 import pandas as pd
-from util import get_image_size, recompute_row, fullpath
+from util import get_image_size, recompute_row
 
 def loading(csv_file):
     list_processed_img = []

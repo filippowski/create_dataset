@@ -65,11 +65,8 @@ class Mirror:
             # save labels
             labels = np.array(general_landmarks.loc[idx, 1:], dtype='float32')
             # print len(labels)
-            if labels.min() >= -1.0 and labels.max() <= 1.0:
-                labels[0::2] = -labels[0::2]  # inverse labels across x-axis
-            else:
-                halfsize = img.shape[0] / 2.
-                labels[0::2] = (- (labels[0::2] - halfsize) + halfsize)
+
+            labels[0::2] = -labels[0::2]  # inverse labels across x-axis
 
             new_labels = np.zeros(labels.shape)
             for i in range(len(new_order)):

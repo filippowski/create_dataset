@@ -97,8 +97,6 @@ def get_image_size(x):
     im = Image.open(x)
     return im.size[0]
 
-def fullpath(x):
-    return im.size[0]
 
 def recompute_row(row):
     vals = np.array(row[:-1]).astype(float)
