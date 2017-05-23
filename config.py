@@ -23,17 +23,25 @@ create_imgfile  = True
 create_mean     = True
 # create infogain matrices
 create_infogain = False
-
+# create lmdb
 create_lmdb     = True
+
+################################################
+
+# do shift during images cropping
+do_shft = True
+# write to labels their mask in multitask classification
+task_mask = False
+# do shuffle before create lmdb
+shuffle  = True
 
 ################################################
 #  TODO set path_names
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/root/datasets/multitask/new'
-#main_path = '/home/filippovski/deep-learning/MULTITASK/train'
-mode = 'classification'
+main_path = '/8TB/may_dataset/results'
+mode = '3D'
 
 assert mode in ['classification', 'landmarks', '3D'], \
     'Mode {} must be one from list {}. Pls check mode param.'.format(mode, '[classification, landmarks, 3D]')
@@ -54,34 +62,33 @@ path_to_dir_with_images = os.path.join(main_path, directory_with_images)
 path_to_lmdb_with_images = os.path.join(main_path, 'lmdb_images')
 path_to_lmdb_with_labels = os.path.join(main_path, 'lmdb_labels')
 
-imgSize  = 224  # width and height size of image (image must be same width and height size)
-channel  = 3    # channels number of images
-testSize = 20   # percentage of test examples from whole dataset
-shuffle  = True
+bunch_fldname = 'bunch'
+alphas_fldname = 'alphas'
+alphas_ext = '.alpha'
 
-
+path_to_alphas = os.path.join(main_path, alphas_fldname)
 ################################################
 #  TODO set params
 ################################################
+
 # images count per microclass for which will be decided run augmentation or not:
 # run augmentation,     if count > threshold
 # not run,              if count <= threshold
 threshold = 50
+
 # углы поворотов для rotation
-angles = [3, 6]
-#angles = [3, 6, 9, 12, 15, 18, 21]
+#angles = [3, 6]
+angles = [3, 6, 9, 12, 15, 18, 21]
 #angles = range(1, 60, 3)
 #angles = range(1, 40, 2)
 
+imgSize  = 224  # width and height size of image (image must be same width and height size)
+channel  = 3    # channels number of images
+testSize = 20   # percentage of test examples from whole dataset
 
 ################################################
 #  TODO set classes
 ################################################
-
-# do shift during images cropping
-do_shft = True
-# write to labels their mask in multitask classification
-task_mask = False
 
 # разделитель лейблов в landmarks.csv
 landmarks_sep    = ' '
@@ -357,18 +364,18 @@ def get_file_params(mode):
 
     if mode == 'classification':
         file_params = {
-                        'labels': {
+                        'labels':    {
                                         'csv_filename': csv_filename,
                                         'names':        labels_names,
                                         'types':        labels_types,
                                         'sep':          labels_sep
-                                    },
+                                     },
                         'microclasses': {
                                         'csv_filename': microclasses_filename,
                                         'names':        microclasses_names,
                                         'types':        microclasses_types,
                                         'sep':          microclasses_sep
-                                    },
+                                     },
                         'landmarks': {
                                         'csv_filename': 'landmarks.csv',
                                         'names':        landmarks_names,
@@ -379,11 +386,13 @@ def get_file_params(mode):
 
     if mode == '3D':
         file_params = {
-                    'csv_filename': None,
-                    'names':        None,
-                    'types':        None,
-                    'sep':          None
-                   }
+                        '3D':       {
+                                        'csv_filename': None,
+                                        'names':        None,
+                                        'types':        None,
+                                        'sep':          None
+                                    }
+                      }
     return file_params
 
 
@@ -431,11 +440,11 @@ def get_augmentation_params(mode):
                                     'schemes':      None
                                   },
                     'rotation':   {
-                                    'do':           True,
+                                    'do':           False,
                                     'angles':       get_angles
                                   },
                     'mirror':     {
-                                    'do':           True,
+                                    'do':           False,
                                     'new_order':    None
                                   }
                  }
