@@ -3,7 +3,7 @@
 
 import numpy as np
 import pandas as pd
-from util import get_image_size, recompute_row
+from util import get_image_size, recompute_row, fullpath
 
 def loading(csv_file):
     list_processed_img = []
@@ -52,7 +52,9 @@ def load_cls_landmarks(filepath, sep, names=None, types=None):
     fpts = fpts.apply(str.replace, args=('[', '')).apply(str.replace, args=(']', '')).apply(str.replace, args=(',', ''))
     fpts = fpts.str.split(pat=' ', expand=True)
     # recompute landmarks to interval from -1.0 to 1.0
-    fnms_size = fnms.applymap(get_image_size)
+    root = os.path.split(filepath)[0]
+    fnms_fullpath = fnms.applymap(lambda x: os.path.join(root, x))
+    fnms_size = fnms_fullpath.applymap(get_image_size)
     fpts_ext = pd.concat([fpts, fnms_size], axis=1)
     fpts_new = fpts_ext.apply(lambda row: recompute_row(row), axis=1).iloc[:, :-1]
     landmarks = pd.concat([fnms, fpts_new], axis=1)

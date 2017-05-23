@@ -73,6 +73,20 @@ def create_dataset():
                 with Profiler() as p:
                     create_infogain_matrices(cfg.main_path, cfg.path_to_superdir, cfg.csv_filename)
 
+            # create lmdb
+            if cfg.create_lmdb:
+                with Profiler() as p:
+                    from create_lmdb import Lmdb
+                    lmdb = Lmdb(cfg.path_to_file_with_paths_to_images,
+                                cfg.path_to_labels,
+                                cfg.path_to_lmdb_with_images,
+                                cfg.path_to_lmdb_with_labels,
+                                cfg.testSize,
+                                cfg.imgSize,
+                                cfg.channel,
+                                cfg.shuffle)
+                    lmdb.create_lmdb()
+
 
             # DEFINITIONS:
             images    = cfg.path_to_file_with_paths_to_images

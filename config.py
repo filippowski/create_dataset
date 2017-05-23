@@ -24,13 +24,15 @@ create_mean     = True
 # create infogain matrices
 create_infogain = False
 
+create_lmdb     = True
+
 ################################################
 #  TODO set path_names
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-#main_path = '/8TB/vitalii/multitask1_new/62K'
-main_path = '/home/filippovski/deep-learning/MULTITASK/train'
+main_path = '/root/datasets/multitask/new'
+#main_path = '/home/filippovski/deep-learning/MULTITASK/train'
 mode = 'classification'
 
 assert mode in ['classification', 'landmarks', '3D'], \
@@ -55,6 +57,7 @@ path_to_lmdb_with_labels = os.path.join(main_path, 'lmdb_labels')
 imgSize  = 224  # width and height size of image (image must be same width and height size)
 channel  = 3    # channels number of images
 testSize = 20   # percentage of test examples from whole dataset
+shuffle  = True
 
 
 ################################################

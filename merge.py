@@ -244,6 +244,8 @@ class Merge:
 
             # crop image
             crop = Crop(img, pts, imgsize, self.imgsize, self.do_shft)
+            # if it is needed rescale pts
+            crop.rescale_pts()
             # crop
             crop.crop_head()
 
