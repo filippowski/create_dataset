@@ -34,7 +34,7 @@ class Rotation:
     def get_dir_dst_rot(self, dir_src, angles):
         dir_dst = []
         for i in range(len(angles)):
-            dir_dst.append(dir_src + '_rotated_' + str(angles[i]))
+            dir_dst.append('{}_rotated_{}_{}'.format(dir_src, str(angles[i]), str(i)))
             ensure_dir(dir_dst[i])
         return dir_dst
 
