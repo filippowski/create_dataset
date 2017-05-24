@@ -11,20 +11,20 @@ from util import get_value, get_inode
 #  TODO set flags
 ################################################
 # augmentation dataset
-augmentation    = True
+augmentation    = False#True
 # merge all csv in one
-merge           = True
+merge           = False#True
 # create and save labels
-create_labels   = True
+create_labels   = False#True
 # create file with images filenames
-create_imgfile  = True
+create_imgfile  = False#True
 
 # create mean image
-create_mean     = True
+create_mean     = False#True
 # create infogain matrices
 create_infogain = False
 # create lmdb
-create_lmdb     = True
+create_lmdb     = False#True
 
 ################################################
 
@@ -40,7 +40,7 @@ shuffle  = True
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/8TB/may_dataset/results'
+main_path = '/8TB/may_dataset/results.old'
 mode        = '3D'
 lmdb_mode   = 'caffe'
 
