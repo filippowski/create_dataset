@@ -41,11 +41,13 @@ shuffle  = True
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
 main_path = '/8TB/may_dataset/results'
-mode = '3D'
+mode        = '3D'
+lmdb_mode   = 'caffe'
 
 assert mode in ['classification', 'landmarks', '3D'], \
     'Mode {} must be one from list {}. Pls check mode param.'.format(mode, '[classification, landmarks, 3D]')
-
+assert lmdb_mode in ['caffe', 'caffe2'], \
+    'LMDB mode {} must be one from list {}. Pls check mode param.'.format(lmdb_mode, '[caffe, caffe2]')
 
 images_filename = 'images.txt'
 labels_filename = 'labels.npy'
@@ -84,7 +86,7 @@ angles = [3, 6, 9, 12, 15, 18, 21]
 
 imgSize  = 224  # width and height size of image (image must be same width and height size)
 channel  = 3    # channels number of images
-testSize = 20   # percentage of test examples from whole dataset
+testSize = 10   # percentage of test examples from whole dataset
 
 ################################################
 #  TODO set classes

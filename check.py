@@ -94,34 +94,23 @@ class Check:
         print 'Count of images in all csv-files: {}'.format(self.cnt)
 
     def checking_3D(self, superdir, path_to_alphas):
-        import pandas as pd
-        import os
 
-        that_s_right = True
-        cnt = 0
-
-        for root, subFolders, files in os.walk(main_path):
+        for root, subFolders, files in os.walk(superdir):
             for subFolder in subFolders:
-                if subFolder[0:5] == 'bunch':
-                    results_dir = os.path.join(os.path.join(root, subFolder), 'results')
-                    for root_, subFolders_, files_ in os.walk(results_dir):
-                        for subFolder_ in subFolders_:
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas,
-                                                                   subFolder_.split('.obj')[0] + '.alpha')
+                if subFolder[0:5] == cfg.bunch_fldname:
+                    path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder.split('.obj')[0] + '.alpha')
 
-                            if not os.path.exists(path_to_subFolder_alpha):
-                                print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
-                                if that_s_right == True:
-                                    that_s_right = False
+                    if not os.path.exists(path_to_subFolder_alpha):
+                        print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
+                        if self.res == True:
+                            self.res = False
 
-                            file_count = sum((len(f) for _, _, f in os.walk(os.path.join(results_dir, subFolder_))))
-                            if file_count < 12:
-                                print 'In folder {} less than 5 images.'.format(os.path.join(results_dir, subFolder_))
-                                if that_s_right == True:
-                                    that_s_right = False
-                            cnt += 1
+                    file_count = sum((len(f) for _, _, f in os.walk(subFolder)))
+                    if file_count < 12:
+                        print 'In folder {} less than 5 images.'.format(subFolder)
+                        if self.res == True:
+                            self.res = False
+                    self.cnt += 1
         print 'Check DONE.'
-        print 'All right: {}'.format(that_s_right)
-        print 'Count of folders in superdir: {}'.format(cnt)
-
-        return that_s_right
+        print 'All right: {}'.format(self.res)
+        print 'Count of folders in superdir: {}'.format(self.cnt)

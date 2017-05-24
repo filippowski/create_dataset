@@ -85,7 +85,7 @@ def create_dataset():
                                 cfg.imgSize,
                                 cfg.channel,
                                 cfg.shuffle)
-                    lmdb.create_lmdb()
+                    lmdb.create_lmdb(cfg.lmdb_mode)
 
 
 #######################################################################################################################

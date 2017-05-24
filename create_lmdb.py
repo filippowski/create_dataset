@@ -3,6 +3,7 @@ import numpy as np
 import lmdb
 import caffe
 import sys
+import os
 import math
 import random
 
@@ -59,8 +60,8 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
         # print images.shape[0]
-        images_map_size = 2 * self.imgs_cnt * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
-        labels_map_size = 1 * self.imgs_cnt                                             # 5 * 10e3
+        images_map_size = 10 * len(images) * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
+        labels_map_size = 10 * len(images) * self.lbls_cnt                             # 5 * 10e3
 
         images_db = lmdb.open(images_file, map_size=images_map_size, map_async=True, writemap=True)
         labels_db = lmdb.open(labels_file, map_size=labels_map_size)
@@ -104,7 +105,7 @@ class Lmdb:
                 print e
                 print "Skipped image and label with id {0}".format(in_idx)
             if in_idx % 1000 == 0:
-                string_ = str(in_idx + 1) + ' / ' + str(self.imgs_cnt)
+                string_ = str(in_idx + 1) + ' / ' + str(len(images))
                 sys.stdout.write("\r%s" % string_)
                 sys.stdout.flush()
 
@@ -116,13 +117,12 @@ class Lmdb:
         print "\nFilling lmdb completed"
         print "Image mean values for RBG: {0}".format(means / cnt)
 
-
     def fillLmdb_one_lmdb_per_one_label(self, images_file, labels_file, ndim, images, labels):
         means = np.zeros(ndim)
         cnt = 0
         # print images.shape[0]
-        images_map_size = 2 * self.imgs_cnt * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
-        labels_map_size = 1 * self.imgs_cnt                                             # 5 * 10e3
+        images_map_size = 10 * len(images) * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
+        labels_map_size = 50 * len(images)                                             # 5 * 10e3
 
         images_db = lmdb.open(images_file, map_size=images_map_size, map_async=True, writemap=True)
         images_txn = images_db.begin(write=True)
@@ -131,7 +131,9 @@ class Lmdb:
 
         for i in range(self.lbls_cnt):
             labels_db.append(lmdb.open(labels_file + '_' + str(i), map_size=labels_map_size))
-            labels_txn.append(labels_db.begin(write=True))
+            labels_txn.append(labels_db[i].begin(write=True))
+            print i, type(labels_db), type(labels_txn), type(labels_db[i]), type(labels_txn[i])
+        print len(labels_db), len(labels_txn)
 
         examples = zip(images, labels)
         for in_idx, (image, label) in enumerate(examples):
@@ -156,8 +158,8 @@ class Lmdb:
 
                 for i in range(self.lbls_cnt):
                     # write label to lmdb
-                    label = np.array(label[i]).astype(float).reshape(1, 1, label.shape[0])
-                    label_dat = caffe.io.array_to_datum(label)
+                    lbl = np.array(label[i]).astype(float).reshape(1, 1, 1)
+                    label_dat = caffe.io.array_to_datum(lbl)
 
                     # put label in label-LMDB (as new pair <key, value>)
                     labels_txn[i].put('{:0>8d}'.format(in_idx) + '_0', label_dat.SerializeToString())
@@ -170,7 +172,7 @@ class Lmdb:
                 print e
                 print "Skipped image and label with id {0}".format(in_idx)
             if in_idx % 1000 == 0:
-                string_ = str(in_idx + 1) + ' / ' + str(self.imgs_cnt)
+                string_ = str(in_idx + 1) + ' / ' + str(len(images))
                 sys.stdout.write("\r%s" % string_)
                 sys.stdout.flush()
 
@@ -185,14 +187,16 @@ class Lmdb:
         print "Image mean values for RBG: {0}".format(means / cnt)
 
 
-    def create_lmdb(self):
+    def create_lmdb(self, mode='caffe'):
+
+        fillLmdb = self.fillLmdb if mode == 'caffe' else self.fillLmdb_one_lmdb_per_one_label
 
         images = np.loadtxt(self.images, str, delimiter='\t')
         self.imgs_cnt = len(images)
         print "Number of images: {}".format(self.imgs_cnt)
         labels = np.load(self.labels)
         self.lbls_cnt = labels.shape[1]
-        num = self.test_data_persent * self.img_cnt / 100
+        num = self.test_data_persent * self.imgs_cnt / 100
 
         if self.shuffle:
             print "Shuffling the data"
@@ -209,9 +213,7 @@ class Lmdb:
                 labels_file=self.labelsOut + "_test",
                 ndim=self.ndim,
                 images=images[:num],
-                labels=labels[:num],
-                minPx=self.minPx,
-                maxPx=self.maxPx)
+                labels=labels[:num])
 
         print "Creating training set"
         fillLmdb(
@@ -219,8 +221,6 @@ class Lmdb:
             labels_file=self.labelsOut,
             ndim=self.ndim,
             images=images[num:],
-            labels=labels[num:],
-            minPx=self.minPx,
-            maxPx=self.maxPx)
+            labels=labels[num:])
 
         print '\n\nDone: dataset successfully created.'
