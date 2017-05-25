@@ -34,6 +34,8 @@ do_shft = True
 task_mask = False
 # do shuffle before create lmdb
 shuffle  = True
+# run augmentation main scheme
+run_main_IF-SCHEME-AUG = False
 
 ################################################
 #  TODO set path_names
@@ -142,14 +144,14 @@ labels_types = {
                 }
 
 
-# названия лейблов в labels.csv
+# названия лейблов в landmarks.csv for cls task
 landmarks_names = [
                 'FILENAME_JPG',
                 'bbox',
                 'facepoints'
                 ]
 
-# типы лейблов в labels.csv
+# типы лейблов в landmarks.csv for cls task
 landmarks_types = {
                  'FILENAME_JPG': str,
                  'bbox':         str,
@@ -509,26 +511,27 @@ def get_angles_classification(dirpath):
 
         # main IF-scheme of data augmentation
         # **************************************************************
-        if       get_value(names, tasks_names, 'hair_fringe'  ) == 'close':
+         if run_main_IF-SCHEME-AUG:
+            if       get_value(names, tasks_names[1], 'hair_fringe'  ) == 'close':
 
-                    cnt_after = 2*threshold
+                        cnt_after = 2*threshold
 
-        elif     get_value(names, tasks_names, 'hair_color')  == 'black' \
-          and (get_value(names, tasks_names, 'hair_len'  )    == '5'
-            or get_value(names, tasks_names, 'hair_len'  )    == '6'):
+            elif     get_value(names, tasks_names[1], 'hair_color')  == 'black' \
+              and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
+                or get_value(names, tasks_names[1], 'hair_len'  )    == '6'):
 
-                    cnt_after = 1.5*threshold
+                        cnt_after = 1.5*threshold
 
-        elif     get_value(names, tasks_names, 'hair_type' )  == 'curly' \
-            or get_value(names, tasks_names, 'hair_color')    == 'carroty':
+            elif     get_value(names, tasks_names[1], 'hair_type' )  == 'curly' \
+                or get_value(names, tasks_names[1], 'hair_color')    == 'carroty':
 
-                    cnt_after = 1.5*threshold
+                        cnt_after = 1.5*threshold
 
-        elif     get_value(names, tasks_names, 'hair_fringe') == 'open' \
-            or get_value(names, tasks_names, 'hair_color' )   == 'black' \
-            or get_value(names, tasks_names, 'hair_type'  )   == 'undefined':
+            elif     get_value(names, tasks_names[1], 'hair_fringe') == 'open' \
+                or get_value(names, tasks_names[1], 'hair_color' )   == 'black' \
+                or get_value(names, tasks_names[1], 'hair_type'  )   == 'undefined':
 
-                    cnt_after = 0.5*threshold
+                        cnt_after = 0.5*threshold
         # **************************************************************
 
         cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)

@@ -193,7 +193,7 @@ class Augmentation:
         # run across rows in microclasses table and divide superdir into classes
         for micro_idx, micro_row in microclasses.iterrows():
             # new folder
-            new_folder_name = self.get_folder_name(micro_idx, micro_row, self.microclasses_names)
+            new_folder_name = self.get_folder_name(micro_idx, micro_row, microclasses_names)
             path_to_new_folder = os.path.join(self.path_to_superdir, new_folder_name)
             ensure_dir(path_to_new_folder)
 

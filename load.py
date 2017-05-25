@@ -3,6 +3,7 @@
 
 import numpy as np
 import pandas as pd
+import os
 from util import get_image_size, recompute_row
 
 def loading(csv_file):
@@ -49,6 +50,7 @@ def load_cls_landmarks(filepath, sep, names=None, types=None):
     landmarks = landmarks.iloc[:, :3]
     print landmarks.shape
     print landmarks.iloc[0]
+    print landmarks.isnull()
     assert landmarks.isnull().sum().sum() == 0, 'In landmarks.csv there are NA values! Pls check data.'
     fnms = pd.DataFrame(landmarks['FILENAME_JPG'])
     fpts = landmarks['facepoints']
