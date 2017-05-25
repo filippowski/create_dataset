@@ -90,9 +90,9 @@ class Microclasses:
         dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
         dataset = dataset_full.iloc[:, 1:]
         print ' * dataset_full shape is: ',     dataset_full.shape
-        print ' * dataset_full zero row is: ',  dataset_full.iloc[:, 0]
+        print ' * dataset_full zero row is: ',  dataset_full.iloc[0]
         print ' * dataset shape is: ',          dataset.shape
-        print ' * dataset_zero row is: ',       dataset.iloc[:, 0]
+        print ' * dataset_zero row is: ',       dataset.iloc[0]
 
         # create new table with counts of microclasses elements
         self.write_microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names[1], self.tasks, dataset, self.num_microclasses)
