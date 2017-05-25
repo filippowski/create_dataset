@@ -77,13 +77,19 @@ class Label:
                          1, 1, 1, 1, 1, 1, 0], dtype='int32')
 
     def create_labels_classification(self):
-        labels_length = self.get_labels_length(self.tasks_names)
+        labels_length = self.get_labels_length(self.tasks_names[1])
         # add if it is needed size of mask to labels length
         if self.task_mask:
             mask = get_mask()
             labels_length = labels_length + mask.size
 
         raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names, self.labels_names, self.labels_types)
+        print raw_labels.iloc[0]
+        # get only needed labels
+        columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]
+        raw_labels = raw_labels[columns]
+        print raw_labels.iloc[0]
+
         labels = np.zeros((raw_labels.shape[0], labels_length), dtype='int32')
 
         cnt_lbl = 0
