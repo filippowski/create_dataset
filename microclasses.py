@@ -114,6 +114,11 @@ class Microclasses:
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
+            if idx == 0:
+                print row.keys()
+                print self.tasks_names[1]
+                print [x for x in row.keys() if x in self.tasks_names[1]]
+
             filename = dataset_full.iloc[idx, 0]
             #print ' * processing file: {}'.format(filename)
 
