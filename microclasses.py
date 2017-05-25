@@ -110,11 +110,12 @@ class Microclasses:
         # extended table
         all_microclasses = pd.concat([all_microclasses, count_, filenames_list], axis = 1).copy()
         print ' * microclasses.shape: ', all_microclasses.shape
+        print all_microclasses
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
             filename = dataset_full.iloc[idx, 0]
-            print ' * processing file: {}'.format(filename)
+            #print ' * processing file: {}'.format(filename)
 
             df = all_microclasses
             index = 0
