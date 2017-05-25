@@ -40,8 +40,9 @@ shuffle  = True
 ################################################
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
-main_path = '/8TB/may_dataset/results.old'
-mode        = '3D'
+#main_path   = '/8TB/may_dataset/results.old'
+main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose'
+mode        = 'classification'
 lmdb_mode   = 'caffe'
 
 assert mode in ['classification', 'landmarks', '3D'], \
@@ -64,9 +65,9 @@ path_to_dir_with_images = os.path.join(main_path, directory_with_images)
 path_to_lmdb_with_images = os.path.join(main_path, 'lmdb_images')
 path_to_lmdb_with_labels = os.path.join(main_path, 'lmdb_labels')
 
-bunch_fldname = 'bunch'
-alphas_fldname = 'alphas'
-alphas_ext = '.alpha'
+bunch_fldname   = 'bunch'
+alphas_fldname  = 'alphas'
+alphas_ext      = '.alpha'
 
 path_to_alphas = os.path.join(main_path, alphas_fldname)
 ################################################
@@ -190,6 +191,7 @@ microclasses2_names = [
                       'nose',
                       'face_exp',
                       'brows',
+                      'nose_type',
                       'count',
                       'filenames_list'
                      ]
@@ -200,6 +202,7 @@ microclasses2_types = {
                         'nose':             str,
                         'face_exp':         str,
                         'brows':            str,
+                        'nose_type':        str,
                         'count':            int,
                         'filenames_list':   str
                      }
@@ -209,8 +212,8 @@ microclasses2_types = {
 ################################################
 
 # choose params for reading microclasses file (type 1 or 2)
-microclasses_names = microclasses1_names
-microclasses_types = microclasses1_types
+microclasses_names = microclasses2_names
+microclasses_types = microclasses2_types
 
 ################################################
 
@@ -324,26 +327,33 @@ def get_tasks():
             'normal':       np.array([2], dtype="int32"),
             'black':        np.array([3], dtype="int32")
         }
+
+        'nose_type': {
+            'MANUAL_down':   np.array([0], dtype="int32"),
+            'MANUAL_up':     np.array([1], dtype="int32"),
+            'MANUAL_normal': np.array([2], dtype="int32")
+        }
     }
     return tasks
 
 # TODO fill true tasks names in the order that they was presented in previous function
 def get_tasks_names():
     tasks_names = [
-        'skin',
-        'gender',
-        'hair_cover',
-        'hair_color',
-        'hair_len',
-        'hair_type',
-        'hair_fringe',
-        'beard',
-        'glasses',
+        #'skin',
+        #'gender',
+        #'hair_cover',
+        #'hair_color',
+        #'hair_len',
+        #'hair_type',
+        #'hair_fringe',
+        #'beard',
+        #'glasses',
         #'face',
         #'mouth',
         #'nose',
         #'face_exp',
         #'brows'
+        'nose_type'
     ]
     return tasks_names
 
