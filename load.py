@@ -34,7 +34,7 @@ def load_cls_labels(filepath, sep, tasks_names, names=None, types=None):
         # samples from microclasses names and microclasses types for only those are in tasks_names
         names = [x for x in names if x in tasks_names or names.index(x) == 0]
         types = {key: types[key] for key in types.keys() if key in tasks_names or key == names[0]}
-    labels = pd.read_csv(filepath, sep=sep, header=None, names=names,dtype=types)
+    labels = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names,dtype=types)
     #labels['glasses'] = labels['glasses'].replace('200200', '200100')
     assert labels.isnull().sum().sum() == 0, 'In labels.csv there are NA values! Pls check data.'
     print ' * labels shape is: {}'.format(labels.shape)
