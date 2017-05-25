@@ -11,7 +11,7 @@ from util import get_value, get_inode
 #  TODO set flags
 ################################################
 # augmentation dataset
-augmentation    = False#True
+augmentation    = True
 # merge all csv in one
 merge           = False#True
 # create and save labels
@@ -326,7 +326,7 @@ def get_tasks():
             'up':           np.array([1], dtype="int32"),
             'normal':       np.array([2], dtype="int32"),
             'black':        np.array([3], dtype="int32")
-        }
+        },
 
         'nose_type': {
             'MANUAL_down':   np.array([0], dtype="int32"),

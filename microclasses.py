@@ -21,7 +21,7 @@ class Microclasses:
         self.tasks_names = tasks_names
         self.tasks       = tasks
 
-        self.num_microclasses           = self.get_num_microclasses(self.tasks, self.tasks_names)
+        self.num_microclasses           = self.get_num_microclasses(self.tasks, self.tasks_names[1])
         self.num_nonempty_microclasses  = None
 
         self.labels_filename        = file_params['labels']['csv_filename']
@@ -42,12 +42,13 @@ class Microclasses:
 
     def get_num_microclasses(self, tasks, tasks_names):
         cnt = 1
-        for el in tasks_names[1]:
+        for el in tasks_names:
             cnt *= len(tasks[el].keys())
         return cnt
 
     # Create new table with counts of microclasses elements
     def write_microclasses_csv(self, path_to_microclasses, microclasses_sep, tasks_names, tasks, dataset, num_microclasses):
+        print tasks_names
         # first task
         task = tasks_names[0]
         print "{}. Fill table for task \"{}\"".format(1, task)
@@ -88,7 +89,10 @@ class Microclasses:
         # read initial csv with labels
         dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
         dataset = dataset_full.iloc[:, 1:]
-        print 'dataset.shape: ', dataset.shape
+        print ' * dataset_full shape is: ',     dataset_full.shape
+        print ' * dataset_full zero row is: ',  dataset_full.iloc[:, 0]
+        print ' * dataset shape is: ',          dataset.shape
+        print ' * dataset_zero row is: ',       dataset.iloc[:, 0]
 
         # create new table with counts of microclasses elements
         self.write_microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names[1], self.tasks, dataset, self.num_microclasses)
@@ -105,7 +109,7 @@ class Microclasses:
         filenames_list = pd.DataFrame(index=range(0, self.num_microclasses), columns = ['filenames_list'])
         # extended table
         all_microclasses = pd.concat([all_microclasses, count_, filenames_list], axis = 1).copy()
-        print all_microclasses.shape
+        print ' * microclasses.shape: ', all_microclasses.shape
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
