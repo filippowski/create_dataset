@@ -45,7 +45,10 @@ def load_cls_landmarks(filepath, sep, names=None, types=None):
     assert 'FILENAME_JPG' in names and 'facepoints' in names, \
         'In landmarks file must be {} and {} columns. Pls check colnames.'.format('FILENAME_JPG', 'facepoints')
     landmarks = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names, dtype=types)
+    print landmarks.shape
     landmarks = landmarks.iloc[:, :3]
+    print landmarks.shape
+    print landmarks.iloc[0]
     assert landmarks.isnull().sum().sum() == 0, 'In landmarks.csv there are NA values! Pls check data.'
     fnms = pd.DataFrame(landmarks['FILENAME_JPG'])
     fpts = landmarks['facepoints']
