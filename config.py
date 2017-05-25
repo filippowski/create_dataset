@@ -338,7 +338,24 @@ def get_tasks():
 
 # TODO fill true tasks names in the order that they was presented in previous function
 def get_tasks_names():
-    tasks_names = [
+    tasks_names_full = [
+        'skin',
+        'gender',
+        'hair_cover',
+        'hair_color',
+        'hair_len',
+        'hair_type',
+        'hair_fringe',
+        'beard',
+        'glasses',
+        #'face',
+        #'mouth',
+        #'nose',
+        #'face_exp',
+        #'brows'
+        'nose_type'
+    ]
+    tasks_names_work = [
         #'skin',
         #'gender',
         #'hair_cover',
@@ -355,8 +372,7 @@ def get_tasks_names():
         #'brows'
         'nose_type'
     ]
-    return tasks_names
-
+    return (tasks_names_full, tasks_names_work)
 
 def get_file_params(mode):
     assert mode in ['classification', 'landmarks','3D'], \

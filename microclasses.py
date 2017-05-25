@@ -42,12 +42,12 @@ class Microclasses:
 
     def get_num_microclasses(self, tasks, tasks_names):
         cnt = 1
-        for el in tasks_names:
+        for el in tasks_names[1]:
             cnt *= len(tasks[el].keys())
         return cnt
 
     # Create new table with counts of microclasses elements
-    def write__microclasses_csv(self, path_to_microclasses, microclasses_sep, tasks_names, tasks, dataset, num_microclasses):
+    def write_microclasses_csv(self, path_to_microclasses, microclasses_sep, tasks_names, tasks, dataset, num_microclasses):
         # first task
         task = tasks_names[0]
         print "{}. Fill table for task \"{}\"".format(1, task)
@@ -86,16 +86,16 @@ class Microclasses:
 
     def create_microclasses_csv(self):
         # read initial csv with labels
-        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names, self.labels_names, self.labels_types)
+        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
         dataset = dataset_full.iloc[:, 1:]
         print 'dataset.shape: ', dataset.shape
 
         # create new table with counts of microclasses elements
-        self.write__microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names, self.tasks, dataset, self.num_microclasses)
+        self.write_microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names[1], self.tasks, dataset, self.num_microclasses)
 
         # samples from microclasses names and microclasses types for only those are in tasks_names
-        microclasses_names = [x for x in self.microclasses_names if x in self.tasks_names]
-        microclasses_types = {key: self.microclasses_types[key] for key in self.tasks_names}
+        microclasses_names = [x for x in self.microclasses_names if x in self.tasks_names[1]]
+        microclasses_types = {key: self.microclasses_types[key] for key in self.tasks_names[1]}
 
         # read initial csv with microclasses
         all_microclasses = pd.read_csv(self.path_to_microclasses, sep=self.microclasses_sep, header=None, names=microclasses_names, dtype=microclasses_types)
@@ -114,8 +114,8 @@ class Microclasses:
 
             df = all_microclasses
             index = 0
-            for key in [x for x in row.keys() if x in self.tasks_names]:
-                if key in self.tasks_names:
+            for key in [x for x in row.keys() if x in self.tasks_names[1]]:
+                if key in self.tasks_names[1]:
                     index = df[df[key] == row[key]].index.tolist()[0]
                     df = df[df[key] == row[key]]
 
