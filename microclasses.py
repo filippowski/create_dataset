@@ -138,6 +138,8 @@ class Microclasses:
                 all_microclasses.iloc[index]['filenames_list'] = all_microclasses.iloc[index]['filenames_list'] + ' ' + filename
 
             #print 'after: ', all_microclasses.iloc[index]
+        print ' * microclasses.shape: ', all_microclasses.shape
+        print all_microclasses
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]
         self.num_nonempty_microclasses = nonempty_microclasses.shape[0]
