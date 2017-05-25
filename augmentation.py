@@ -173,8 +173,12 @@ class Augmentation:
         # read initial csv with labels
         dataset = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
 
+        # samples from microclasses names and microclasses types for only those are in tasks_names
+        microclasses_names = [x for x in self.microclasses_names if x in self.tasks_names[1] or self.microclasses_names.index(x) in [len(self.microclasses_names)-1, len(self.microclasses_names)-2]]
+        microclasses_types = {key: self.microclasses_types[key] for key in self.tasks_names[1] or key in [microclasses_names[len(microclasses_names)-1], microclasses_names[len(microclasses_names)-2]]}
+
         # read initial csv with microclasses
-        microclasses = load_cls_microclasses(self.path_to_microclasses, self.microclasses_sep, self.microclasses_names, self.microclasses_types)
+        microclasses = load_cls_microclasses(self.path_to_microclasses, self.microclasses_sep, microclasses_names, microclasses_types)
 
         # read initial csv with landmarks
         landmarks = load_cls_landmarks(self.path_to_landmarks, self.landmarks_sep, self.landmarks_names, self.landmarks_types)
