@@ -90,9 +90,9 @@ class Microclasses:
         dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
         dataset = dataset_full.iloc[:, 1:]
         print ' * dataset_full shape is: ',     dataset_full.shape
-        print ' * dataset_full zero row is: ',  dataset_full.iloc[0]
+        #print ' * dataset_full zero row is: ',  dataset_full.iloc[0]
         print ' * dataset shape is: ',          dataset.shape
-        print ' * dataset_zero row is: ',       dataset.iloc[0]
+        #print ' * dataset_zero row is: ',       dataset.iloc[0]
 
         # create new table with counts of microclasses elements
         self.write_microclasses_csv(self.path_to_microclasses, self.microclasses_sep, self.tasks_names[1], self.tasks, dataset, self.num_microclasses)
@@ -110,7 +110,7 @@ class Microclasses:
         # extended table
         all_microclasses = pd.concat([all_microclasses, count_, filenames_list], axis = 1).copy()
         print ' * microclasses.shape: ', all_microclasses.shape
-        print all_microclasses
+        #print all_microclasses
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
@@ -144,7 +144,7 @@ class Microclasses:
 
             #print 'after: ', all_microclasses.iloc[index]
         print ' * microclasses.shape: ', all_microclasses.shape
-        print all_microclasses
+        #print all_microclasses
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]
         self.num_nonempty_microclasses = nonempty_microclasses.shape[0]

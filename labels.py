@@ -48,8 +48,7 @@ class Label:
         self.start = time.time()
 
     def create_labels(self):
-        print '\n/************************************************************************/'
-        print '\nCreating and saving rotated LABELS file.\n'
+        print '\n * creating and saving rotated LABELS file\n'
 
         if self.mode == 'classification':
             self.create_labels_classification()
@@ -61,8 +60,6 @@ class Label:
 
         print '\n/************************************************************************/'
         print 'Done: created and saved LABELS file.\n\n'
-
-        print 'Merged dataset contains {0} images with {1} labels.'.format(self.img_cnt, self.lbl_cnt)
 
 
     def get_labels_length(self, tasks_names):
@@ -93,11 +90,11 @@ class Label:
             labels_length = labels_length + mask.size
 
         raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], names=self.labels_names, types=self.labels_types)
-        print ' * raw labels: ', raw_labels.iloc[0]
+        #print ' * raw labels: ', raw_labels.iloc[0]
         # get only needed labels
         columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]
         cut_labels = raw_labels[columns]
-        print ' * cut labels: ', cut_labels.iloc[0]
+        #print ' * cut labels: ', cut_labels.iloc[0]
 
         labels = np.zeros((cut_labels.shape[0], labels_length), dtype='int32')
 

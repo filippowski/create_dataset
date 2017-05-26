@@ -20,6 +20,8 @@ class MeanImage:
 
     def create_mean_image(self):
 
+        print '\n\n * creating meanimage\n'
+
         flname = os.path.join(self.main_path, self.meanPrefix)
         imageDir = os.path.join(self.main_path, self.directory_with_images)
 
@@ -78,7 +80,7 @@ class MeanImage:
             f.write(blob.SerializeToString())
 
         print '\n/************************************************************************/'
-        print '\nDone: mean image created.'
+        print 'Done: mean image created.'
 
     # TO DO refactoring
     def create_mean_image_by_task(self, main_path, path_to_superdir, csv_filename, directory_with_images, imgSize, channel):

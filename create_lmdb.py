@@ -198,6 +198,8 @@ class Lmdb:
 
     def create_lmdb(self, mode='caffe'):
 
+        print '\n\n * creating LMDBs\n'
+
         fillLmdb = self.fillLmdb if mode == 'caffe' else self.fillLmdb_one_lmdb_per_one_label
 
         # images
@@ -243,4 +245,6 @@ class Lmdb:
             images=images[num:],
             labels=labels[num:])
 
-        print '\n\nDone: dataset successfully created.'
+
+        print '\n/************************************************************************/'
+        print 'Done: dataset successfully created.\n\n'

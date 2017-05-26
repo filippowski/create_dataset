@@ -179,7 +179,6 @@ class Augmentation:
 
         # read initial csv with microclasses
         microclasses = load_cls_microclasses(self.path_to_microclasses, self.microclasses_sep, microclasses_names, microclasses_types)
-        print microclasses
 
         # read initial csv with landmarks
         landmarks = load_cls_landmarks(self.path_to_landmarks, self.landmarks_sep, self.landmarks_names, self.landmarks_types)

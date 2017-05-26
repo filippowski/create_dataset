@@ -62,6 +62,8 @@ class Merge:
 
 
     def merge(self):
+        print '\n\n * merging dataset\n'
+
         if self.mode == 'classification':
             print ' * merge classification'
             self.merge_classification(self.path_to_superdir, self.target_path, self.train_images_dir_name, self.landmarks_filename, self.landmarks_sep, self.labels_filename, self.labels_sep)
@@ -71,6 +73,9 @@ class Merge:
         if self.mode == '3D':
             print ' * merge 3D'
             #self.merge_func(self.path_to_superdir, self.target_path, self.train_images_dir_name)
+
+        print '\n/************************************************************************/'
+        print 'Done: merged dataset contains {0} images.'.format(self.cnt_mrg_img)
 
     def merge_landmarks(self, path_to_superdir, target_path, train_images_dir_name, csv_filename, sep):
         '''
