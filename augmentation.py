@@ -125,10 +125,13 @@ class Augmentation:
         if not os.path.exists(self.path_to_microclasses):
         #if True:
             # create a table with microclasses
-            print " * create a table with microclasses.. \n" \
-                  "(ATTENTION! This calculation can take more that 20 minutes)"
+            print "\n * create a table with microclasses\n"
+
             mc = Microclasses(self.path_to_superdir, self.file_params, self.tasks_names, self.tasks)
             mc.create_microclasses_csv()
+
+            print '\n/************************************************************************/'
+            print "Done: table with microclasses was filled and saved."
 
         # divide the dataset into microclasses folders
         self.divide_dataset_to_microclass_folders()

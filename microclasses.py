@@ -48,7 +48,6 @@ class Microclasses:
 
     # Create new table with counts of microclasses elements
     def write_microclasses_csv(self, path_to_microclasses, microclasses_sep, tasks_names, tasks, dataset, num_microclasses):
-        print tasks_names
         # first task
         task = tasks_names[0]
         print "{}. Fill table for task \"{}\"".format(1, task)
@@ -110,14 +109,9 @@ class Microclasses:
         # extended table
         all_microclasses = pd.concat([all_microclasses, count_, filenames_list], axis = 1).copy()
         print ' * microclasses.shape: ', all_microclasses.shape
-        #print all_microclasses
 
         # fill new cols with values
         for idx, row in dataset.iterrows():
-            if idx == 0:
-                print row.keys()
-                print self.tasks_names[1]
-                print [x for x in row.keys() if x in self.tasks_names[1]]
 
             filename = dataset_full.iloc[idx, 0]
             #print ' * processing file: {}'.format(filename)
@@ -144,7 +138,6 @@ class Microclasses:
 
             #print 'after: ', all_microclasses.iloc[index]
         print ' * microclasses.shape: ', all_microclasses.shape
-        #print all_microclasses
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]
         self.num_nonempty_microclasses = nonempty_microclasses.shape[0]

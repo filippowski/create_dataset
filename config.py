@@ -471,7 +471,7 @@ def get_augmentation_params(mode):
                                     'angles':       get_angles
                                   },
                     'mirror':     {
-                                    'do':           False,
+                                    'do':           True,
                                     'new_order':    get_new_order_119()
                                   }
                  }
