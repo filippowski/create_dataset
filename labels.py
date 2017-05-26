@@ -83,7 +83,7 @@ class Label:
             mask = get_mask()
             labels_length = labels_length + mask.size
 
-        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names, self.labels_names, self.labels_types)
+        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
         print raw_labels.iloc[0]
         # get only needed labels
         columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]
@@ -96,7 +96,7 @@ class Label:
         for idx, row in raw_labels.iterrows():
             print_cnt(cnt_lbl, raw_labels.shape[0], 1000, self.start)
             lbls = np.array([], dtype='int32')
-            for i in self.tasks_names:
+            for i in self.tasks_names[1]:
                 # print i, row[i]
                 lbls = np.append(lbls, self.tasks[i][row[i]])
             if self.task_mask:

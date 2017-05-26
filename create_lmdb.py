@@ -30,6 +30,8 @@ class Lmdb:
         self.shuffle    = shuffle
         self.imgs_cnt   = None
         self.lbls_cnt   = None
+        self.size_one_img = None
+        self.size_one_lbl = None
 
         assert os.path.exists(self.images), \
             'Path to images txt file {} does not exist. Pls check path.'.format(self.images)
@@ -59,12 +61,17 @@ class Lmdb:
     def fillLmdb(self, images_file, labels_file, ndim, images, labels):
         means = np.zeros(ndim)
         cnt = 0
-        # print images.shape[0]
-        images_map_size = 10 * len(images) * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
-        labels_map_size = 10 * len(images) * self.lbls_cnt                             # 5 * 10e3
+
+        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
+        print 'Images map size: ', images_map_size
+        print 'Labels map size: ', labels_map_size
 
         images_db = lmdb.open(images_file, map_size=images_map_size, map_async=True, writemap=True)
-        labels_db = lmdb.open(labels_file, map_size=labels_map_size)
+        labels_db = lmdb.open(labels_file, map_size=labels_map_size, map_async=True, writemap=True)
+
+        #print 'size imgdb: ', os.stat(os.path.join(images_file,'data.mdb')).st_size
+        #print 'size lbldb: ', os.stat(os.path.join(labels_file,'data.mdb')).st_size
 
         images_txn = images_db.begin(write=True)
         labels_txn = labels_db.begin(write=True)
@@ -120,9 +127,11 @@ class Lmdb:
     def fillLmdb_one_lmdb_per_one_label(self, images_file, labels_file, ndim, images, labels):
         means = np.zeros(ndim)
         cnt = 0
-        # print images.shape[0]
-        images_map_size = 10 * len(images) * self.maxPx * self.minPx * self.ndim       # 5 * 10e4 * self.img_cnt
-        labels_map_size = 50 * len(images)                                             # 5 * 10e3
+
+        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
+        print 'Images map size: ', images_map_size
+        print 'Labels map size: ', labels_map_size
 
         images_db = lmdb.open(images_file, map_size=images_map_size, map_async=True, writemap=True)
         images_txn = images_db.begin(write=True)
@@ -191,11 +200,22 @@ class Lmdb:
 
         fillLmdb = self.fillLmdb if mode == 'caffe' else self.fillLmdb_one_lmdb_per_one_label
 
+        # images
         images = np.loadtxt(self.images, str, delimiter='\t')
         self.imgs_cnt = len(images)
+        im = np.array(Image.open(images[0]))
+        self.size_one_img = sys.getsizeof(im)
         print "Number of images: {}".format(self.imgs_cnt)
+        print "Size of one image: {}".format(self.size_one_img)
+        # labels
         labels = np.load(self.labels)
         self.lbls_cnt = labels.shape[1]
+        lbl = np.array(labels[0]).astype(float).reshape(1, 1, labels[0].shape[0])
+        self.size_one_lbl = sys.getsizeof(lbl)
+        print "Number of labels: {}".format(self.lbls_cnt)
+        print "Size of one label: {}".format(self.size_one_lbl)
+
+
         num = self.test_data_persent * self.imgs_cnt / 100
 
         if self.shuffle:

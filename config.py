@@ -13,18 +13,18 @@ from util import get_value, get_inode
 # augmentation dataset
 augmentation    = True
 # merge all csv in one
-merge           = False#True
+merge           = True
 # create and save labels
-create_labels   = False#True
+create_labels   = True
 # create file with images filenames
-create_imgfile  = False#True
+create_imgfile  = True
 
 # create mean image
-create_mean     = False#True
+create_mean     = True
 # create infogain matrices
 create_infogain = False
 # create lmdb
-create_lmdb     = False#True
+create_lmdb     = True
 
 ################################################
 
@@ -35,7 +35,7 @@ task_mask = False
 # do shuffle before create lmdb
 shuffle  = True
 # run augmentation main scheme
-run_main_IF-SCHEME-AUG = False
+run_main_IF_SCHEME_AUG = False
 
 ################################################
 #  TODO set path_names
@@ -43,7 +43,7 @@ run_main_IF-SCHEME-AUG = False
 # Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
 
 #main_path   = '/8TB/may_dataset/results.old'
-main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose'
+main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
 mode        = 'classification'
 lmdb_mode   = 'caffe'
 
@@ -79,7 +79,7 @@ path_to_alphas = os.path.join(main_path, alphas_fldname)
 # images count per microclass for which will be decided run augmentation or not:
 # run augmentation,     if count > threshold
 # not run,              if count <= threshold
-threshold = 50
+threshold = 50 #35000 #50
 
 # углы поворотов для rotation
 #angles = [3, 6]
@@ -196,6 +196,7 @@ microclasses2_names = [
                       'face_exp',
                       'brows',
                       'nose_type',
+                      'nose_tip',
                       'count',
                       'filenames_list'
                      ]
@@ -207,6 +208,7 @@ microclasses2_types = {
                         'face_exp':         str,
                         'brows':            str,
                         'nose_type':        str,
+                        'nose_tip':         str,
                         'count':            int,
                         'filenames_list':   str
                      }
@@ -336,6 +338,11 @@ def get_tasks():
             'MANUAL_down':   np.array([0], dtype="int32"),
             'MANUAL_up':     np.array([1], dtype="int32"),
             'MANUAL_normal': np.array([2], dtype="int32")
+        },
+
+        'nose_tip': {
+            'MANUAL_blunt':  np.array([0], dtype="int32"),
+            'MANUAL_sharp':  np.array([1], dtype="int32")
         }
     }
     return tasks
@@ -356,8 +363,9 @@ def get_tasks_names():
         #'mouth',
         #'nose',
         #'face_exp',
-        #'brows'
-        'nose_type'
+        #'brows',
+        #'nose_type',
+        'nose_tip'
     ]
     tasks_names_work = [
         #'skin',
@@ -373,8 +381,9 @@ def get_tasks_names():
         #'mouth',
         #'nose',
         #'face_exp',
-        #'brows'
-        'nose_type'
+        #'brows',
+        #'nose_type',
+        'nose_tip'
     ]
     return (tasks_names_full, tasks_names_work)
 
@@ -460,7 +469,7 @@ def get_augmentation_params(mode):
                                     'angles':       get_angles
                                   },
                     'mirror':     {
-                                    'do':           True,
+                                    'do':           False,
                                     'new_order':    get_new_order_119()
                                   }
                  }
@@ -511,7 +520,7 @@ def get_angles_classification(dirpath):
 
         # main IF-scheme of data augmentation
         # **************************************************************
-         if run_main_IF-SCHEME-AUG:
+        if run_main_IF_SCHEME_AUG:
             if       get_value(names, tasks_names[1], 'hair_fringe'  ) == 'close':
 
                         cnt_after = 2*threshold
