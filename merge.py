@@ -231,7 +231,7 @@ class Merge:
 
         for idx, row in landmarks.iterrows():
             imgname = row[0].split('/')[-1]
-            print imgname
+            #print imgname
 
             # read image
             img = imread(os.path.join(dir_src, imgname))

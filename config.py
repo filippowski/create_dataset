@@ -11,9 +11,9 @@ from util import get_value, get_inode
 #  TODO set flags
 ################################################
 # augmentation dataset
-augmentation    = True
+augmentation    = False#True
 # merge all csv in one
-merge           = True
+merge           = False#True
 # create and save labels
 create_labels   = True
 # create file with images filenames

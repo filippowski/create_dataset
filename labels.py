@@ -48,6 +48,8 @@ class Label:
         self.start = time.time()
 
     def create_labels(self):
+        print '\nCreating and saving rotated LABELS file.\n'
+
         if self.mode == 'classification':
             self.create_labels_classification()
         if self.mode == 'landmarks':
@@ -55,6 +57,10 @@ class Label:
         if self.mode == '3D':
             print "to be .. TO DO"
             #    self.run_augmentation_3D()
+
+        print '\n/************************************************************************/'
+        print 'Done: created and saved LABELS file.\n\n'
+
         print 'Merged dataset contains {0} images with {1} labels.'.format(self.img_cnt, self.lbl_cnt)
 
 
@@ -84,11 +90,11 @@ class Label:
             labels_length = labels_length + mask.size
 
         raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
-        print raw_labels.iloc[0]
+        print ' * raw labels: ', raw_labels.iloc[0]
         # get only needed labels
         columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]
         raw_labels = raw_labels[columns]
-        print raw_labels.iloc[0]
+        print ' * raw labels: ', raw_labels.iloc[0]
 
         labels = np.zeros((raw_labels.shape[0], labels_length), dtype='int32')
 
