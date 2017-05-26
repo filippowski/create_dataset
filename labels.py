@@ -48,6 +48,7 @@ class Label:
         self.start = time.time()
 
     def create_labels(self):
+        print '\n/************************************************************************/'
         print '\nCreating and saving rotated LABELS file.\n'
 
         if self.mode == 'classification':
@@ -68,8 +69,9 @@ class Label:
         cnt = 0
         for el in tasks_names:
             cnt += 1
-        print cnt, len(tasks_names)
+        print cnt, len(tasks_names), tasks_names
         return cnt
+
 
     def get_mask(self):
         return np.array([1, 1, 1, 0, 0, 0, 0,
@@ -81,6 +83,7 @@ class Label:
                          1, 1, 1, 1, 0, 0, 0,
                          1, 1, 1, 1, 1, 1, 1,
                          1, 1, 1, 1, 1, 1, 0], dtype='int32')
+
 
     def create_labels_classification(self):
         labels_length = self.get_labels_length(self.tasks_names[1])
@@ -113,6 +116,7 @@ class Label:
 
         np.save(self.path_to_labels, labels)
         self.img_cnt, self.lbl_cnt = labels.shape
+
 
     def create_labels_landmarks(self):
         raw_landmarks = load_landmarks(self.path_to_raw_landmarks, self.landmarks_sep, self.landmarks_names, self.landmarks_types)

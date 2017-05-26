@@ -235,7 +235,7 @@ class Merge:
 
             # read image
             img = imread(os.path.join(dir_src, imgname))
-            print 'shape: ', img.shape
+            #print 'shape: ', img.shape
             imgsize = img.shape[0]
 
             # read and upscaling labels
