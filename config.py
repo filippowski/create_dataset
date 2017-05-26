@@ -115,7 +115,7 @@ labels_names = [
                 'hair_fringe',
                 'beard',
                 'glasses',
-                'nose_type',
+                #'nose_type',
                 'nose_tip',
                 'face',
                 'mouth',
@@ -136,13 +136,13 @@ labels_types = {
                  'hair_fringe':  str,
                  'beard':        str,
                  'glasses':      str,
-                 'nose_type':    str,
+                 #'nose_type':    str,
                  'nose_tip':     str,
-                 'face':         str,
-                 'mouth':        str,
-                 'nose':         str,
-                 'face_exp':     str,
-                 'brows':        str
+                 #'face':         str,
+                 #'mouth':        str,
+                 #'nose':         str,
+                 #'face_exp':     str,
+                 #'brows':        str
                 }
 
 
