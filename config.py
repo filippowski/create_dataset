@@ -507,27 +507,6 @@ microclasses_sep = ' '
 labels_names = ['FILENAME_JPG']
 labels_names.extend(get_tasks_names()[0])
 
-# columns types in labels.csv for cls task
-# labels_types = {
-#     'FILENAME_JPG': str,
-#     'skin': str,
-#     'gender': str,
-#     'hair_cover': str,
-#     'hair_color': str,
-#     'hair_len': str,
-#     'hair_type': str,
-#     'hair_fringe': str,
-#     'beard': str,
-#     'glasses': str,
-#     'face': str,
-#     'mouth': str,
-#     'nose': str,
-#     'face_exp': str,
-#     'brows': str,
-#     'nose_type': str,
-#     'nose_tip': str,
-#     'nose_width': str
-# }
 labels_types = dict()
 [labels_types.update({x: str}) for x in labels_names]
 
@@ -553,72 +532,11 @@ landmarks_types = {
 # 9.2.3 Names and types for MICROCLASSES.CSV (CLS)
 ################################################
 
-# # columns names in microclasses.csv for cls task
-# microclasses1_names = [
-#     'skin',
-#     'gender',
-#     'hair_cover',
-#     'hair_color',
-#     'hair_len',
-#     'hair_type',
-#     'hair_fringe',
-#     'beard',
-#     'glasses',
-#     'count',
-#     'filenames_list'
-# ]
-# # columns types in microclasses.csv for cls task
-# microclasses1_types = {
-#     'skin': str,
-#     'gender': str,
-#     'hair_cover': str,
-#     'hair_color': str,
-#     'hair_len': str,
-#     'hair_type': str,
-#     'hair_fringe': str,
-#     'beard': str,
-#     'glasses': str,
-#     'count': int,
-#     'filenames_list': str
-# }
-#
-# # columns names in microclasses.csv for cls task
-# microclasses2_names = [
-#     'face',
-#     'mouth',
-#     'nose',
-#     'face_exp',
-#     'brows',
-#     'nose_type',
-#     'nose_tip',
-#     'count',
-#     'filenames_list'
-# ]
-# # columns types in microclasses.csv for cls task
-# microclasses2_types = {
-#     'face': str,
-#     'mouth': str,
-#     'nose': str,
-#     'face_exp': str,
-#     'brows': str,
-#     'nose_type': str,
-#     'nose_tip': str,
-#     'count': int,
-#     'filenames_list': str
-# }
-
 microclasses_names = get_tasks_names()[0]
 microclasses_names.extend(['count','filenames_list'])
 
 microclasses_types = {'count' : int}
 [microclasses_types.update({x: str}) for x in microclasses_names if x != 'count']
-########################################################################
-# 9.3 Microclasses_names and types choice
-########################################################################
-
-# choose params for reading microclasses.csv file (type 1 or 2)
-#microclasses_names = microclasses2_names
-#microclasses_types = microclasses2_types
 
 ################################################################################################
 #                                           THE END
