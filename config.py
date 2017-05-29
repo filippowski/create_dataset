@@ -299,159 +299,58 @@ def get_angles_classification(dirpath):
 def get_angles_3D(dirpath):
     return []
 
-
 ################################################################################################
-# 8. Names and types
-# TODO set names and types
-################################################################################################
-# 8.1 Separators
-########################################################################
-
-# разделитель лейблов в landmarks.csv
-landmarks_sep    = ' '
-# разделитель лейблов в labels.csv
-labels_sep       = ';'
-# разделитель лейблов в microclasses.csv
-microclasses_sep = ' '
-
-########################################################################
-# 8.2 Names and types dictionaries
-########################################################################
-# 8.2.1 Names and types for LABELS.CSV (CLS)
-################################################
-
-# columns names in labels.csv for cls task
-labels_names = [
-                'FILENAME_JPG',
-                'skin',
-                'gender',
-                'hair_cover',
-                'hair_color',
-                'hair_len',
-                'hair_type',
-                'hair_fringe',
-                'beard',
-                'glasses',
-                #'nose_type',
-                'nose_tip',
-                'face',
-                'mouth',
-                'nose',
-                'face_exp',
-                'brows'
-                ]
-
-# columns types in labels.csv for cls task
-labels_types = {
-                 'FILENAME_JPG': str,
-                 'skin':         str,
-                 'gender':       str,
-                 'hair_cover':   str,
-                 'hair_color':   str,
-                 'hair_len':     str,
-                 'hair_type':    str,
-                 'hair_fringe':  str,
-                 'beard':        str,
-                 'glasses':      str,
-                 #'nose_type':    str,
-                 'nose_tip':     str,
-                 #'face':         str,
-                 #'mouth':        str,
-                 #'nose':         str,
-                 #'face_exp':     str,
-                 #'brows':        str
-                }
-
-################################################
-# 8.2.2 Names and types for LANDMARKS.CSV (CLS)
-################################################
-
-# columns names in landmarks.csv for cls task
-landmarks_names = [
-                'FILENAME_JPG',
-                'bbox',
-                'facepoints'
-                ]
-
-# columns types in landmarks.csv for cls task
-landmarks_types = {
-                 'FILENAME_JPG': str,
-                 'bbox':         str,
-                 'facepoints':   str
-                }
-
-################################################
-# 8.2.3 Names and types for MICROCLASSES.CSV (CLS)
-################################################
-
-# columns names in microclasses.csv for cls task
-microclasses1_names = [
-                      'skin',
-                      'gender',
-                      'hair_cover',
-                      'hair_color',
-                      'hair_len',
-                      'hair_type',
-                      'hair_fringe',
-                      'beard',
-                      'glasses',
-                      'count',
-                      'filenames_list'
-                     ]
-# columns types in microclasses.csv for cls task
-microclasses1_types = {
-                      'skin':           str,
-                      'gender':         str,
-                      'hair_cover':     str,
-                      'hair_color':     str,
-                      'hair_len':       str,
-                      'hair_type':      str,
-                      'hair_fringe':    str,
-                      'beard':          str,
-                      'glasses':        str,
-                      'count':          int,
-                      'filenames_list': str
-                     }
-
-
-# columns names in microclasses.csv for cls task
-microclasses2_names = [
-                      'face',
-                      'mouth',
-                      'nose',
-                      'face_exp',
-                      'brows',
-                      'nose_type',
-                      'nose_tip',
-                      'count',
-                      'filenames_list'
-                     ]
-# columns types in microclasses.csv for cls task
-microclasses2_types = {
-                        'face':             str,
-                        'mouth':            str,
-                        'nose':             str,
-                        'face_exp':         str,
-                        'brows':            str,
-                        'nose_type':        str,
-                        'nose_tip':         str,
-                        'count':            int,
-                        'filenames_list':   str
-                     }
-
-########################################################################
-# 8.3 Microclasses_names and types choice
-########################################################################
-
-# choose params for reading microclasses.csv file (type 1 or 2)
-microclasses_names = microclasses2_names
-microclasses_types = microclasses2_types
-
-################################################################################################
-# 9. Tasks and tasks names
+# 8. Tasks and tasks names
 # TODO set tasks and tasks names
 ################################################################################################
-# 9.1 Tasks dictionary
+# 8.1 Tasks names list
+# TODO fill true tasks names in the order that they was presented in LABELS.CSV
+################################################
+
+def get_tasks_names():
+    tasks_names_in_labels_file = [
+        'skin',
+        'gender',
+        'hair_cover',
+        'hair_color',
+        'hair_len',
+        'hair_type',
+        'hair_fringe',
+        'beard',
+        'glasses',
+        #'face',
+        #'mouth',
+        #'nose',
+        #'face_exp',
+        #'brows',
+        #'nose_type',
+        #'nose_tip',
+        'nose_width'
+    ]
+    tasks_names_to_work = [
+        #'skin',
+        #'gender',
+        #'hair_cover',
+        #'hair_color',
+        #'hair_len',
+        #'hair_type',
+        #'hair_fringe',
+        #'beard',
+        #'glasses',
+        #'face',
+        #'mouth',
+        #'nose',
+        #'face_exp',
+        #'brows',
+        #'nose_type',
+        #'nose_tip',
+        'nose_width'
+    ]
+    return (tasks_names_in_labels_file, tasks_names_to_work)
+
+
+################################################
+# 8.2 Tasks dictionary
 # TODO fill true tasks <key, value> pairs
 ################################################
 
@@ -574,53 +473,153 @@ def get_tasks():
         'nose_tip': {
             'MANUAL_blunt':  np.array([0], dtype="int32"),
             'MANUAL_sharp':  np.array([1], dtype="int32")
+        },
+
+        'nose_width': {
+            'MANUAL_average':  np.array([0], dtype="int32"),
+            'MANUAL_wide':     np.array([1], dtype="int32")
         }
     }
     return tasks
 
-################################################
-# 9.2 Tasks names list
-# TODO fill true tasks names in the order that they was presented in LABELS.CSV
+
+################################################################################################
+# 9. Names and types
+# TODO set names and types
+################################################################################################
+# 9.1 Separators
+########################################################################
+
+# разделитель лейблов в landmarks.csv
+landmarks_sep = ' '
+# разделитель лейблов в labels.csv
+labels_sep = ';'
+# разделитель лейблов в microclasses.csv
+microclasses_sep = ' '
+
+########################################################################
+# 9.2 Names and types dictionaries
+########################################################################
+# 9.2.1 Names and types for LABELS.CSV (CLS)
 ################################################
 
-def get_tasks_names():
-    tasks_names_full = [
-        'skin',
-        'gender',
-        'hair_cover',
-        'hair_color',
-        'hair_len',
-        'hair_type',
-        'hair_fringe',
-        'beard',
-        'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        'nose_tip'
-    ]
-    tasks_names_work = [
-        #'skin',
-        #'gender',
-        #'hair_cover',
-        #'hair_color',
-        #'hair_len',
-        #'hair_type',
-        #'hair_fringe',
-        #'beard',
-        #'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        'nose_tip'
-    ]
-    return (tasks_names_full, tasks_names_work)
+# columns names in labels.csv for cls task
+labels_names = ['FILENAME_JPG']
+labels_names.extend(get_tasks_names()[0])
+
+# columns types in labels.csv for cls task
+# labels_types = {
+#     'FILENAME_JPG': str,
+#     'skin': str,
+#     'gender': str,
+#     'hair_cover': str,
+#     'hair_color': str,
+#     'hair_len': str,
+#     'hair_type': str,
+#     'hair_fringe': str,
+#     'beard': str,
+#     'glasses': str,
+#     'face': str,
+#     'mouth': str,
+#     'nose': str,
+#     'face_exp': str,
+#     'brows': str,
+#     'nose_type': str,
+#     'nose_tip': str,
+#     'nose_width': str
+# }
+labels_types = dict()
+[labels_types.update({x: str}) for x in labels_names]
+
+################################################
+# 9.2.2 Names and types for LANDMARKS.CSV (CLS)
+################################################
+
+# columns names in landmarks.csv for cls task
+landmarks_names = [
+    'FILENAME_JPG',
+    'bbox',
+    'facepoints'
+]
+
+# columns types in landmarks.csv for cls task
+landmarks_types = {
+    'FILENAME_JPG': str,
+    'bbox': str,
+    'facepoints': str
+}
+
+################################################
+# 9.2.3 Names and types for MICROCLASSES.CSV (CLS)
+################################################
+
+# # columns names in microclasses.csv for cls task
+# microclasses1_names = [
+#     'skin',
+#     'gender',
+#     'hair_cover',
+#     'hair_color',
+#     'hair_len',
+#     'hair_type',
+#     'hair_fringe',
+#     'beard',
+#     'glasses',
+#     'count',
+#     'filenames_list'
+# ]
+# # columns types in microclasses.csv for cls task
+# microclasses1_types = {
+#     'skin': str,
+#     'gender': str,
+#     'hair_cover': str,
+#     'hair_color': str,
+#     'hair_len': str,
+#     'hair_type': str,
+#     'hair_fringe': str,
+#     'beard': str,
+#     'glasses': str,
+#     'count': int,
+#     'filenames_list': str
+# }
+#
+# # columns names in microclasses.csv for cls task
+# microclasses2_names = [
+#     'face',
+#     'mouth',
+#     'nose',
+#     'face_exp',
+#     'brows',
+#     'nose_type',
+#     'nose_tip',
+#     'count',
+#     'filenames_list'
+# ]
+# # columns types in microclasses.csv for cls task
+# microclasses2_types = {
+#     'face': str,
+#     'mouth': str,
+#     'nose': str,
+#     'face_exp': str,
+#     'brows': str,
+#     'nose_type': str,
+#     'nose_tip': str,
+#     'count': int,
+#     'filenames_list': str
+# }
+
+microclasses_names = get_tasks_names()[0]
+microclasses_names.extend(['count','filenames_list'])
+
+microclasses_types = {'count' : int}
+[microclasses_types.update({x: str}) for x in microclasses_names if x != 'count']
+########################################################################
+# 9.3 Microclasses_names and types choice
+########################################################################
+
+# choose params for reading microclasses.csv file (type 1 or 2)
+#microclasses_names = microclasses2_names
+#microclasses_types = microclasses2_types
 
 ################################################################################################
 #                                           THE END
+################################################################################################
