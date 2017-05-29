@@ -7,43 +7,11 @@ import random
 from newOrder import get_new_order_119
 from util import get_value, get_inode
 
-################################################
-#  TODO set flags
-################################################
-# augmentation dataset
-augmentation    = True
-# merge all csv in one
-merge           = True
-# create and save labels
-create_labels   = True
-# create file with images filenames
-create_imgfile  = True
 
-# create mean image
-create_mean     = True
-# create infogain matrices
-create_infogain = False
-# create lmdb
-create_lmdb     = True
-
-################################################
-
-# do shift during images cropping
-do_shft = True
-# write to labels their mask in multitask classification
-task_mask = False
-# do shuffle before create lmdb
-shuffle  = True
-# run augmentation main scheme
-run_main_IF_SCHEME_AUG = False
-
-################################################
-#  TODO set path_names
-################################################
-# Full path to directory 'superdir' that contain some count of folders with images and 'landmarks.csv' files
-
-#main_path   = '/8TB/may_dataset/results.old'
-main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
+################################################################################################
+# 1. Main parameters
+# TODO set main params
+################################################################################################
 mode        = 'classification'
 lmdb_mode   = 'caffe'
 
@@ -52,48 +20,292 @@ assert mode in ['classification', 'landmarks', '3D'], \
 assert lmdb_mode in ['caffe', 'caffe2'], \
     'LMDB mode {} must be one from list {}. Pls check mode param.'.format(lmdb_mode, '[caffe, caffe2]')
 
-images_filename = 'images.txt'
-labels_filename = 'labels.npy'
-directory_with_images = 'train'
-meanPrefix = 'mean'
+################################################################################################
+# 2. Key paths and names
+# TODO set path and names
+################################################################################################
 
-csv_filename = 'labels.csv' if mode == 'classification' else 'landmarks.csv'
-microclasses_filename = 'microclasses.csv'
+# Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
+main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
 
-path_to_superdir = os.path.join(main_path, 'superdir')
+images_filename         = 'images.txt'
+labels_filename         = 'labels.npy'
+directory_with_images   = 'train'
+meanPrefix              = 'mean'
+lmdb_images_name        = 'lmdb_images'
+lmdb_labels_name        = 'lmdb_labels'
+
+csv_filename            = 'labels.csv' if mode == 'classification' else 'landmarks.csv'
+superdir_name           = 'results' if mode == '3D' else 'superdir'
+
+# classification task
+microclasses_filename   = 'microclasses.csv'
+
+# 3D task
+bunch_fldname           = 'bunch'
+alphas_fldname          = 'alphas'
+alphas_ext              = '.alpha'
+
+path_to_superdir = os.path.join(main_path, superdir_name)
 path_to_labels = os.path.join(main_path, labels_filename)
 path_to_file_with_paths_to_images = os.path.join(main_path, images_filename)
 path_to_dir_with_images = os.path.join(main_path, directory_with_images)
-path_to_lmdb_with_images = os.path.join(main_path, 'lmdb_images')
-path_to_lmdb_with_labels = os.path.join(main_path, 'lmdb_labels')
-
-bunch_fldname   = 'bunch'
-alphas_fldname  = 'alphas'
-alphas_ext      = '.alpha'
-
+path_to_lmdb_with_images = os.path.join(main_path, lmdb_images_name)
+path_to_lmdb_with_labels = os.path.join(main_path, lmdb_labels_name)
 path_to_alphas = os.path.join(main_path, alphas_fldname)
-################################################
-#  TODO set params
+
+################################################################################################
+# 3. Flags
+# TODO set flags
+################################################################################################
+# 3.1 Flags for dataset creation
 ################################################
 
-# images count per microclass for which will be decided run augmentation or not:
-# run augmentation,     if count > threshold
-# not run,              if count <= threshold
-threshold = 50 #35000 #50
+# augmentation dataset
+augmentation    = True
+# merge all csv in one
+merge           = True
+# create and save labels
+create_labels   = True
+# create file with images filenames
+create_imgfile  = True
+# create mean image
+create_mean     = True
+# create lmdb
+create_lmdb     = True
+# create infogain matrices
+create_infogain = False
 
-# углы поворотов для rotation
-#angles = [3, 6]
+################################################
+# 3.2 Other flags
+################################################
+
+# do shift during images cropping
+do_shft                 = True
+# write to labels their mask in multitask classification
+task_mask               = False
+# do shuffle before create lmdb
+shuffle                 = True
+# run augmentation main scheme
+run_main_IF_SCHEME_AUG  = False
+
+################################################################################################
+# 4. Digits parameters
+# TODO set digits params
+################################################################################################
+
+# channels number of images
+channel  = 3
+# width and height size of image (image must be same width and height size)
+imgSize  = 224
+# percentage of test examples from whole dataset
+testSize = 10
+
+################################################################################################
+# 5. Files parameters
+# TODO fill true files params <key, value> pairs
+################################################################################################
+
+def get_file_params(mode):
+
+    file_params = None
+
+    if mode == 'landmarks':
+        file_params = {
+                        'landmarks': {
+                                        'csv_filename': csv_filename,
+                                        'names':        None,
+                                        'types':        None,
+                                        'sep':          landmarks_sep
+                                    }
+                      }
+
+    if mode == 'classification':
+        file_params = {
+                        'labels':    {
+                                        'csv_filename': csv_filename,
+                                        'names':        labels_names,
+                                        'types':        labels_types,
+                                        'sep':          labels_sep
+                                     },
+                        'microclasses': {
+                                        'csv_filename': microclasses_filename,
+                                        'names':        microclasses_names,
+                                        'types':        microclasses_types,
+                                        'sep':          microclasses_sep
+                                     },
+                        'landmarks': {
+                                        'csv_filename': 'landmarks.csv',
+                                        'names':        landmarks_names,
+                                        'types':        landmarks_types,
+                                        'sep':          labels_sep
+                                     }
+                   }
+
+    if mode == '3D':
+        file_params = {
+                        '3D':       {
+                                        'csv_filename': None,
+                                        'names':        None,
+                                        'types':        None,
+                                        'sep':          None
+                                    }
+                      }
+    return file_params
+
+
+################################################################################################
+# 6. Augmentation parameters
+# TODO fill true augmentation params <key, value> pairs
+################################################################################################
+
+def get_augmentation_params(mode):
+
+    aug_params = None
+
+    if mode == 'landmarks':
+        aug_params = {
+                    'distortion': {
+                                    'do':           False,
+                                    'schemes':      None
+                                  },
+                    'rotation':   {
+                                    'do':           True,
+                                    'angles':       get_angles
+                                  },
+                    'mirror':     {
+                                    'do':           True,
+                                    'new_order':    get_new_order_119()
+                                  }
+                 }
+
+    if mode == 'classification':
+        aug_params = {
+                    'distortion': {
+                                    'do':           False,
+                                    'schemes':      None
+                                  },
+                    'rotation':   {
+                                    'do':           True,
+                                    'angles':       get_angles
+                                  },
+                    'mirror':     {
+                                    'do':           True,
+                                    'new_order':    get_new_order_119()
+                                  }
+                 }
+
+    if mode == '3D':
+        aug_params = {
+                    'distortion': {
+                                    'do':           False,
+                                    'schemes':      None
+                                  },
+                    'rotation':   {
+                                    'do':           False,
+                                    'angles':       get_angles
+                                  },
+                    'mirror':     {
+                                    'do':           False,
+                                    'new_order':    None
+                                  }
+                 }
+    return aug_params
+
+
+################################################################################################
+# 7. Angles for rotation
+# TODO set tasks and tasks names
+################################################################################################
+# 7.1 Angles defaults
+# TODO fill true default values for parameters
+################################################
+
+# angles for rotation
 angles = [3, 6, 9, 12, 15, 18, 21]
 #angles = range(1, 60, 3)
-#angles = range(1, 40, 2)
 
-imgSize  = 224  # width and height size of image (image must be same width and height size)
-channel  = 3    # channels number of images
-testSize = 10   # percentage of test examples from whole dataset
+# count of images per microclass for which will be decided run augmentation or not:
+# run augmentation,     if count > threshold
+# not run,              if count <= threshold
+threshold = 50 #35000
+
+max_angle  = 20
+#max_angle  = int(np.ceil(float(threshold)) - 1)
+
+# rotate more than one time by one angle
+replace = True
 
 ################################################
-#  TODO set classes
+# 7.2 Functions for defining angles
+# TODO define functions to get right angles for rotations
 ################################################
+
+def get_angles(mode):
+
+    if mode == 'landmarks':
+        return get_angles_landmarks
+    if mode == 'classification':
+        return get_angles_classification
+    if mode == '3D':
+        return get_angles_3D
+
+def get_angles_landmarks(dirpath):
+    return angles
+
+def get_angles_classification(dirpath):
+    import fnmatch
+    cnt = len(fnmatch.filter(os.listdir(dirpath), '*.jpg'))
+    if cnt > threshold:
+        return []
+    else:
+        cnt_before, cnt_after = cnt, threshold
+        tasks_names = get_tasks_names()
+        np.random.seed(get_inode(dirpath))
+        __, dirname = os.path.split(dirpath)
+        names = dirname.split('_')
+        idx, names = names[0], names[1:]
+
+        # main IF-scheme of data augmentation
+        # **************************************************************
+        if run_main_IF_SCHEME_AUG:
+            if       get_value(names, tasks_names[1], 'hair_fringe'  ) == 'close':
+
+                        cnt_after = 2*threshold
+
+            elif     get_value(names, tasks_names[1], 'hair_color')  == 'black' \
+              and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
+                or get_value(names, tasks_names[1], 'hair_len'  )    == '6'):
+
+                        cnt_after = 1.5*threshold
+
+            elif     get_value(names, tasks_names[1], 'hair_type' )  == 'curly' \
+                or get_value(names, tasks_names[1], 'hair_color')    == 'carroty':
+
+                        cnt_after = 1.5*threshold
+
+            elif     get_value(names, tasks_names[1], 'hair_fringe') == 'open' \
+                or get_value(names, tasks_names[1], 'hair_color' )   == 'black' \
+                or get_value(names, tasks_names[1], 'hair_type'  )   == 'undefined':
+
+                        cnt_after = 0.5*threshold
+        # **************************************************************
+
+        cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)
+        angles = np.random.choice(max_angle, size=cnt_angls, replace=replace)
+        #print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
+        return angles
+
+def get_angles_3D(dirpath):
+    return []
+
+
+################################################################################################
+# 8. Names and types
+# TODO set names and types
+################################################################################################
+# 8.1 Separators
+########################################################################
 
 # разделитель лейблов в landmarks.csv
 landmarks_sep    = ' '
@@ -102,8 +314,13 @@ labels_sep       = ';'
 # разделитель лейблов в microclasses.csv
 microclasses_sep = ' '
 
+########################################################################
+# 8.2 Names and types dictionaries
+########################################################################
+# 8.2.1 Names and types for LABELS.CSV (CLS)
+################################################
 
-# названия лейблов в labels.csv
+# columns names in labels.csv for cls task
 labels_names = [
                 'FILENAME_JPG',
                 'skin',
@@ -124,7 +341,7 @@ labels_names = [
                 'brows'
                 ]
 
-# типы лейблов в labels.csv
+# columns types in labels.csv for cls task
 labels_types = {
                  'FILENAME_JPG': str,
                  'skin':         str,
@@ -145,22 +362,29 @@ labels_types = {
                  #'brows':        str
                 }
 
+################################################
+# 8.2.2 Names and types for LANDMARKS.CSV (CLS)
+################################################
 
-# названия лейблов в landmarks.csv for cls task
+# columns names in landmarks.csv for cls task
 landmarks_names = [
                 'FILENAME_JPG',
                 'bbox',
                 'facepoints'
                 ]
 
-# типы лейблов в landmarks.csv for cls task
+# columns types in landmarks.csv for cls task
 landmarks_types = {
                  'FILENAME_JPG': str,
                  'bbox':         str,
                  'facepoints':   str
                 }
 
-# названия лейблов в microclasses.csv
+################################################
+# 8.2.3 Names and types for MICROCLASSES.CSV (CLS)
+################################################
+
+# columns names in microclasses.csv for cls task
 microclasses1_names = [
                       'skin',
                       'gender',
@@ -174,7 +398,7 @@ microclasses1_names = [
                       'count',
                       'filenames_list'
                      ]
-# названия лейблов в microclasses.csv
+# columns types in microclasses.csv for cls task
 microclasses1_types = {
                       'skin':           str,
                       'gender':         str,
@@ -190,7 +414,7 @@ microclasses1_types = {
                      }
 
 
-# названия лейблов в microclasses.csv
+# columns names in microclasses.csv for cls task
 microclasses2_names = [
                       'face',
                       'mouth',
@@ -202,7 +426,7 @@ microclasses2_names = [
                       'count',
                       'filenames_list'
                      ]
-# названия лейблов в microclasses.csv
+# columns types in microclasses.csv for cls task
 microclasses2_types = {
                         'face':             str,
                         'mouth':            str,
@@ -215,17 +439,22 @@ microclasses2_types = {
                         'filenames_list':   str
                      }
 
-################################################
-#  TODO set params
-################################################
+########################################################################
+# 8.3 Microclasses_names and types choice
+########################################################################
 
-# choose params for reading microclasses file (type 1 or 2)
+# choose params for reading microclasses.csv file (type 1 or 2)
 microclasses_names = microclasses2_names
 microclasses_types = microclasses2_types
 
+################################################################################################
+# 9. Tasks and tasks names
+# TODO set tasks and tasks names
+################################################################################################
+# 9.1 Tasks dictionary
+# TODO fill true tasks <key, value> pairs
 ################################################
 
-# TODO fill true tasks digits labels
 def get_tasks():
     tasks = {
         'skin': {
@@ -349,7 +578,11 @@ def get_tasks():
     }
     return tasks
 
-# TODO fill true tasks names in the order that they was presented in previous function
+################################################
+# 9.2 Tasks names list
+# TODO fill true tasks names in the order that they was presented in LABELS.CSV
+################################################
+
 def get_tasks_names():
     tasks_names_full = [
         'skin',
@@ -389,168 +622,5 @@ def get_tasks_names():
     ]
     return (tasks_names_full, tasks_names_work)
 
-def get_file_params(mode):
-    assert mode in ['classification', 'landmarks','3D'], \
-        'Mode {} must be one from list {}. Pls check mode param.'.format(mode, '[classification, landmarks, 3D]')
-
-    file_params = None
-
-    if mode == 'landmarks':
-        file_params = {
-                        'landmarks': {
-                                        'csv_filename': csv_filename,
-                                        'names':        None,
-                                        'types':        None,
-                                        'sep':          landmarks_sep
-                                    }
-                      }
-
-    if mode == 'classification':
-        file_params = {
-                        'labels':    {
-                                        'csv_filename': csv_filename,
-                                        'names':        labels_names,
-                                        'types':        labels_types,
-                                        'sep':          labels_sep
-                                     },
-                        'microclasses': {
-                                        'csv_filename': microclasses_filename,
-                                        'names':        microclasses_names,
-                                        'types':        microclasses_types,
-                                        'sep':          microclasses_sep
-                                     },
-                        'landmarks': {
-                                        'csv_filename': 'landmarks.csv',
-                                        'names':        landmarks_names,
-                                        'types':        landmarks_types,
-                                        'sep':          labels_sep
-                                     }
-                   }
-
-    if mode == '3D':
-        file_params = {
-                        '3D':       {
-                                        'csv_filename': None,
-                                        'names':        None,
-                                        'types':        None,
-                                        'sep':          None
-                                    }
-                      }
-    return file_params
-
-
-def get_augmentation_params(mode):
-    assert mode in ['classification', 'landmarks', '3D'], 'Mode {} must be one from list {}. Pls check mode param.'.format(mode,'[classification, landmarks, 3D]')
-
-    params = None
-
-    if mode == 'landmarks':
-        params = {
-                    'distortion': {
-                                    'do':           False,
-                                    'schemes':      None
-                                  },
-                    'rotation':   {
-                                    'do':           True,
-                                    'angles':       get_angles
-                                  },
-                    'mirror':     {
-                                    'do':           True,
-                                    'new_order':    get_new_order_119()
-                                  }
-                 }
-
-    if mode == 'classification':
-        params = {
-                    'distortion': {
-                                    'do':           False,
-                                    'schemes':      None
-                                  },
-                    'rotation':   {
-                                    'do':           True,
-                                    'angles':       get_angles
-                                  },
-                    'mirror':     {
-                                    'do':           True,
-                                    'new_order':    get_new_order_119()
-                                  }
-                 }
-
-    if mode == '3D':
-        params = {
-                    'distortion': {
-                                    'do':           False,
-                                    'schemes':      None
-                                  },
-                    'rotation':   {
-                                    'do':           False,
-                                    'angles':       get_angles
-                                  },
-                    'mirror':     {
-                                    'do':           False,
-                                    'new_order':    None
-                                  }
-                 }
-    return params
-
-
-def get_angles(mode):
-    assert mode in ['classification', 'landmarks', '3D'], 'Mode {} must be one from list {}. Pls check mode param.'.format(mode,'[classification, landmarks, 3D]')
-
-    if mode == 'landmarks':
-        return get_angles_landmarks
-    if mode == 'classification':
-        return get_angles_classification
-    if mode == '3D':
-        return get_angles_3D
-
-def get_angles_landmarks(dirpath):
-    return angles
-
-def get_angles_classification(dirpath):
-    import fnmatch
-    cnt = len(fnmatch.filter(os.listdir(dirpath), '*.jpg'))
-    if cnt > threshold:
-        return []
-    else:
-        cnt_before, cnt_after = cnt, threshold
-        tasks_names = get_tasks_names()
-        np.random.seed(get_inode(dirpath))
-        __, dirname = os.path.split(dirpath)
-        names = dirname.split('_')
-        idx, names = names[0], names[1:]
-
-        # main IF-scheme of data augmentation
-        # **************************************************************
-        if run_main_IF_SCHEME_AUG:
-            if       get_value(names, tasks_names[1], 'hair_fringe'  ) == 'close':
-
-                        cnt_after = 2*threshold
-
-            elif     get_value(names, tasks_names[1], 'hair_color')  == 'black' \
-              and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
-                or get_value(names, tasks_names[1], 'hair_len'  )    == '6'):
-
-                        cnt_after = 1.5*threshold
-
-            elif     get_value(names, tasks_names[1], 'hair_type' )  == 'curly' \
-                or get_value(names, tasks_names[1], 'hair_color')    == 'carroty':
-
-                        cnt_after = 1.5*threshold
-
-            elif     get_value(names, tasks_names[1], 'hair_fringe') == 'open' \
-                or get_value(names, tasks_names[1], 'hair_color' )   == 'black' \
-                or get_value(names, tasks_names[1], 'hair_type'  )   == 'undefined':
-
-                        cnt_after = 0.5*threshold
-        # **************************************************************
-
-        cnt_angls = int(np.ceil(0.5 * (float(cnt_after) / cnt_before)) - 1)
-        max_cnt_angles = int(np.ceil(float(threshold)) - 1)
-        angles = np.random.choice(20, size=cnt_angls, replace=True)
-        #print ' * dirname: {}, cnt_before: {}, cnt_after: {}, cnt_angls: {}, angles: {}'.format(dirname, cnt_before, cnt_after, cnt_angls, angles)
-        return angles
-
-# TO DO: define
-def get_angles_3D(dirpath):
-    return angles
+################################################################################################
+#                                           THE END
