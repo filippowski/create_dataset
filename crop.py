@@ -277,8 +277,8 @@ class CropDLIB:
     def crop_images_w_dlib_points(self, detector, predictor, queue):
         folder_path = queue.get()
         print folder_path
-        print len(glob.glob(os.path.join(folder_path, self.imgs_ext)))
-        for f in glob.glob(os.path.join(folder_path, self.imgs_ext)):
+        print len(glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)))
+        for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
                 # print("Processing file: {}, ends crop: {}".format(f, f.endswith("_crop.jpg")))
                 img = io.imread(os.path.join(folder_path, f))
