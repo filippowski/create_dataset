@@ -69,14 +69,14 @@ class Merge:
                 self.crop_endswith          = file_params['in']['dlib_model']['crop_endswith']
                 self.imgs_ext               = file_params['in']['dlib_model']['imgs_ext']
 
-        self.labels_filename        =  file_params['out']['labels_filename']
+        self.labels_filename_out    =  file_params['out']['labels_filename']
         self.images_filename        =  file_params['out']['images_filename']
         self.directory_with_images  =  file_params['out']['directory_with_images']
         self.meanPrefix             =  file_params['out']['meanPrefix']
 
         self.path_to_dir_with_train_images      =  os.path.join(self.main_path, self.directory_with_images)
         self.path_to_file_with_paths_to_images  =  os.path.join(self.main_path, self.images_filename)
-        self.path_to_labels                     =  os.path.join(self.main_path, self.labels_filename)
+        self.path_to_labels                     =  os.path.join(self.main_path, self.labels_filename_out)
 
         self.cnt_mrg_img = 0
 
