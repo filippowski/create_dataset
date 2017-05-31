@@ -3,6 +3,7 @@
 
 import pandas as pd
 import os
+import fnmatch
 from util import is_empty_file
 from load import load_landmarks
 
@@ -160,6 +161,8 @@ class Check:
 
                             #file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
                             file_count = len(fnmatch.filter(os.listdir(os.path.join(root_, subFolder_)), self.imgs_ext))
+                            print 'images: '
+                            fnmatch.filter(os.listdir(os.path.join(root_, subFolder_)), self.imgs_ext)
                             print 'In dir {} {} images'.format(os.path.join(root_, subFolder_), file_count)
                             if file_count < self.imgs_cnt:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
