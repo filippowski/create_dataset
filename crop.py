@@ -250,18 +250,29 @@ class CropDLIB:
         detector = dlib.get_frontal_face_detector()
         predictor = dlib.shape_predictor(self.path_to_dlib_model)
 
-        nproc = int(0.75*cpu_count())
-        pool=Pool(processes = nproc)
-        for x in range(self.queue.qsize()):
-            folder = self.queue.get()
-            pool.apply_async(self.crop_images_w_dlib_points, args=(detector, predictor, folder))
+        # Setup a list of processes that we want to run
+        func = self.crop_images_w_dlib_points
+        args = (detector, predictor, self.queue)
+        processes = [mp.Process(target=func, args=args) for x in range(self.queue.qsize())]
 
-        # new section
-        pool.close()
-        pool.join()
+        nprocesses = len(processes)
+        nworkers = int(0.75 * mp.cpu_count())
+
+        for i in range(int(nprocesses / nworkers) + 1):
+            proc = processes[:nworkers]
+            processes = processes[nworkers:]
+
+            # Run processes
+            for p in proc:
+                p.start()
+
+            # Exit the completed processes
+            for p in proc:
+                p.join()
 
 
-    def crop_images_w_dlib_points(self, detector, predictor, folder_path):
+    def crop_images_w_dlib_points(self, detector, predictor, queue):
+        folder_path = queue.get()
         for f in glob.glob(os.path.join(folder_path, self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
                 # print("Processing file: {}, ends crop: {}".format(f, f.endswith("_crop.jpg")))
