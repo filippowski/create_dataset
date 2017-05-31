@@ -35,7 +35,7 @@ def create_dataset():
             if cfg.augmentation:
                 with Profiler() as p:
                     from augmentation import Augmentation
-                    aug = Augmentation(cfg.path_to_superdir, file_params, augm_params, cfg.mode)
+                    aug = Augmentation(cfg.path_to_superdir, file_params, augm_params, task_params, cfg.mode)
                     aug.run_augmentation()
 
             # merge dataset

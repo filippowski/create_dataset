@@ -10,12 +10,11 @@ from mirror import Mirror
 from microclasses import Microclasses
 from util import ensure_dir, remove, clean_csv
 from load import load_cls_labels, load_cls_landmarks, load_cls_microclasses
-from config import get_tasks_names, get_tasks
 
 # AUGMENTATION DATASET
 class Augmentation:
 
-    def __init__(self, path_to_superdir, file_params, augmentation_params, mode):
+    def __init__(self, path_to_superdir, file_params, augm_params, task_params, mode):
 
         self.mode = mode
         self.file_params = file_params
@@ -53,8 +52,8 @@ class Augmentation:
                 self.path_to_microclasses   = os.path.join(self.path_to_superdir, self.microclasses_filename)
                 self.path_to_landmarks      = os.path.join(self.path_to_superdir, self.landmarks_filename)
 
-                self.tasks_names            = get_tasks_names()
-                self.tasks                  = get_tasks()
+                self.tasks_names            = task_params['tasks_names']
+                self.tasks                  = task_params['tasks']
 
                 #assert os.path.exists(self.path_to_labels), \
                 #    'Path to labels {} does not exist. Pls check path.'.format(self.path_to_labels)
@@ -64,12 +63,12 @@ class Augmentation:
         # TO DO
         #if self.mode == '3D':
 
-        self.distortion = augmentation_params['distortion']['do']
-        self.schemes    = augmentation_params['distortion']['schemes']
-        self.rotation   = augmentation_params['rotation']['do']
-        self.angles     = augmentation_params['rotation']['angles']
-        self.mirror     = augmentation_params['mirror']['do']
-        self.new_order  = augmentation_params['mirror']['new_order']
+        self.distortion = augm_params['distortion']['do']
+        self.schemes    = augm_params['distortion']['schemes']
+        self.rotation   = augm_params['rotation']['do']
+        self.angles     = augm_params['rotation']['angles']
+        self.mirror     = augm_params['mirror']['do']
+        self.new_order  = augm_params['mirror']['new_order']
 
         # get right function to get angles for rotation
         self.angles = self.angles(self.mode)

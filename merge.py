@@ -91,7 +91,7 @@ class Merge:
 
                 if self.mode == 'classification':
                     print ' * merge classification'
-                    self.merge_classification(self.path_to_superdir, self.main_path, self.path_to_dir_with_train_images, self.landmarks_filename, self.landmarks_sep, self.labels_filename, self.labels_sep, self.crop_params)
+                    self.merge_classification(self.path_to_superdir, self.main_path, self.path_to_dir_with_train_images, self.landmarks_filename, self.landmarks_sep, self.labels_filename, self.labels_sep, self.task_params, self.crop_params)
                 if self.mode == 'landmarks':
                     print ' * merge landmarks'
                     self.merge_landmarks(self.path_to_superdir, self.main_path, self.path_to_dir_with_train_images, self.landmarks_filename, self.landmarks_sep, self.crop_params)
@@ -170,7 +170,7 @@ class Merge:
         print 'Total: {} images.\n'.format(self.cnt_mrg_img)
 
 
-    def merge_classification(self, path_to_superdir, main_path, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, crop_params):
+    def merge_classification(self, path_to_superdir, main_path, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, task_params, crop_params):
         '''
         path_to_superdir      - directory where are folders with images and csv-files
         main_path           - directory where will be saved general csv file and folder with resized images
@@ -196,7 +196,7 @@ class Merge:
                 print os.path.join(curr_root, landmarks_filename), 'exists: ', os.path.exists(os.path.join(curr_root, landmarks_filename))
                 print os.path.join(curr_root, labels_filename), 'exists: ', os.path.exists(os.path.join(curr_root, labels_filename))
             if os.path.exists(os.path.join(curr_root, landmarks_filename)) and os.path.exists(os.path.join(curr_root, labels_filename)):
-                self.add_one_folder_classification(root, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, merged_csv_file, merge_writer, crop_params)
+                self.add_one_folder_classification(root, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, merged_csv_file, merge_writer, task_params, crop_params)
 
         merged_csv_file.close()
 
@@ -311,7 +311,9 @@ class Merge:
         print 'Done: cropped images and csv-files with its labels are created for directory: {}.'.format(dir_src)
 
 
-    def add_one_folder_classification(self, dir_src, dir_target, landmarks_filename, landmarks_sep, labels_filename, labels_sep, csv_file, writer, crop_params):
+    def add_one_folder_classification(self, dir_src, dir_target, landmarks_filename, landmarks_sep, labels_filename, labels_sep, csv_file, writer, task_params, crop_params):
+
+        task_names = task_params['task_names']
 
         path_to_landmarks = os.path.join(dir_src, landmarks_filename)
         path_to_labels = os.path.join(dir_src, labels_filename)
@@ -320,7 +322,7 @@ class Merge:
         landmarks = load_landmarks(path_to_landmarks, sep=' ') # sep 'landmarks_sep' was changed by function 'load_cls_landmarks' from load.py
 
         # read initial csv with labels
-        labels = load_cls_labels(path_to_labels, labels_sep, self.task_names)
+        labels = load_cls_labels(path_to_labels, labels_sep, task_names)
 
         # skip NA
         labels, landmarks = labels.dropna(), landmarks.dropna()
