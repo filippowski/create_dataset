@@ -192,7 +192,8 @@ class Merge:
         for root, subFolders, files in os.walk(path_to_superdir):
             if root != curr_root:
                 curr_root = root
-                #print 'Cropping images from dir: ' + curr_root
+                print 'Cropping images from dir: ' + curr_root
+                print os.path.exists(os.path.join(curr_root, landmarks_filename)), os.path.exists(os.path.join(curr_root, labels_filename)
             if os.path.exists(os.path.join(curr_root, landmarks_filename)) and os.path.exists(os.path.join(curr_root, labels_filename)):
                 self.add_one_folder_classification(root, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, merged_csv_file, merge_writer, crop_params)
 
