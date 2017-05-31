@@ -26,7 +26,9 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
+#main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
+main_path   = '/8TB/DATASETS/test'
+
 
 images_filename         = 'images.txt'
 labels_filename         = 'labels.npy'
@@ -479,7 +481,9 @@ def get_tasks_names():
         #'brows',
         #'nose_type',
         #'nose_tip',
-        'nose_width'
+        #'nose_width',
+        'nose_wings'
+
     ]
     tasks_names_to_work = [
         #'skin',
@@ -631,7 +635,13 @@ def get_tasks():
         'nose_width': {
             'MANUAL_average':  np.array([0], dtype="int32"),
             'MANUAL_wide':     np.array([1], dtype="int32")
+        },
+
+        'nose_wings': {
+            'MANUAL_invisible':  np.array([0], dtype="int32"),
+            'MANUAL_visible':    np.array([1], dtype="int32")
         }
+
     }
     return tasks
 
