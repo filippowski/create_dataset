@@ -276,11 +276,9 @@ class CropDLIB:
 
     def crop_images_w_dlib_points(self, detector, predictor, queue):
         folder_path = queue.get()
-        print folder_path
-        print len(glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)))
         for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
-                # print("Processing file: {}, ends crop: {}".format(f, f.endswith("_crop.jpg")))
+                print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
                 img = io.imread(os.path.join(folder_path, f))
                 pts = self.get_dlib_points(detector, predictor, img)
                 crop = Crop(img, pts, img.shape[0], self.crop_params)
@@ -299,12 +297,13 @@ class CropDLIB:
         # second argument indicates that we should upsample the image 1 time. This
         # will make everything bigger and allow us to detect more faces.
         dets = detector(img, 1)
+        if len(dets) == 0:
+            print("Number of faces detected: {}".format(len(dets)))
         # print("Number of faces detected: {}".format(len(dets)))
 
         max_d, max_dist = None, None
         for k, d in enumerate(dets):
-            (max_d, max_dist) = (
-            d, get_dist(d.left(), d.top(), d.right(), d.bottom())) if max_d is None else (max_d, max_dist)
+            (max_d, max_dist) = (d, get_dist(d.left(), d.top(), d.right(), d.bottom())) if max_d is None else (max_d, max_dist)
             d_dist = get_dist(d.left(), d.top(), d.right(), d.bottom())
             (max_d, max_dist) = (d, d_dist) if d_dist > max_dist else (max_d, max_dist)
 
