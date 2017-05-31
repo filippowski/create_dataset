@@ -12,7 +12,7 @@ from util import get_value, get_inode
 # 1. Main parameters
 # TODO set main params
 ################################################################################################
-mode        = 'classification'
+mode        = '3D'
 lmdb_mode   = 'caffe'
 
 assert mode in ['classification', 'landmarks', '3D'], \

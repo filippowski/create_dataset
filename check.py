@@ -133,7 +133,7 @@ class Check:
         print 'Count of images in all csv-files: {}'.format(self.cnt)
 
 
-    def checking_3D(self, superdir, path_to_alphas):
+    def checking_3D(self, superdir):
 
         for root, subFolders, files in os.walk(superdir):
             for subFolder in subFolders:
@@ -143,7 +143,7 @@ class Check:
 
                             print subFolder_
 
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
 
                             print path_to_subFolder_alpha
 
