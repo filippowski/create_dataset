@@ -161,10 +161,10 @@ class Check:
 
                             #file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
                             path = os.path.join(root_, subFolder_)
-                            file_count = len(fnmatch.filter(os.listdir(path), self.imgs_ext))
+                            file_count = len(fnmatch.filter(os.listdir(path), '*'+self.imgs_ext))
                             print self.imgs_ext
                             print 'images: '
-                            fnmatch.filter(os.listdir(path), self.imgs_ext)
+                            fnmatch.filter(os.listdir(path), '*'+self.imgs_ext)
                             print 'In dir {} {} images'.format(path, file_count)
                             if file_count < self.imgs_cnt:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
