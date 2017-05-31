@@ -56,8 +56,8 @@ class Check:
                 self.imgs_cnt               = file_params['in']['dlib_model']['imgs_cnt']
 
         self.res = True
-        self.cnt = 0
-
+        self.img_cnt = 0
+        self.dir_cnt = 0
 
     def run(self, mode=None):
         print '\n\nChecking...\n\n'
@@ -89,7 +89,7 @@ class Check:
                                     if self.res == True:
                                         self.res = False
                                 else:
-                                    self.cnt += 1
+                                    self.img_cnt += 1
                                 if not is_empty_file(path_to_img):
                                     print " * empty file: {}".format(path_to_img)
                         else:
@@ -99,7 +99,7 @@ class Check:
 
         print 'Check DONE.'
         print 'All right: {}'.format(self.res)
-        print 'Count of images in all csv-files: {}'.format(self.cnt)
+        print 'Count of images in all csv-files: {}'.format(self.img_cnt)
 
 
     def checking_classification(self, superdir):
@@ -121,7 +121,7 @@ class Check:
                                     if self.res == True:
                                         self.res = False
                                 else:
-                                    self.cnt += 1
+                                    self.img_cnt += 1
                                 if is_empty_file(path_to_img):
                                     print " * empty file: {}".format(path_to_img)
                         else:
@@ -131,7 +131,7 @@ class Check:
 
         print 'Check DONE.'
         print 'All right: {}'.format(self.res)
-        print 'Count of images in all csv-files: {}'.format(self.cnt)
+        print 'Count of images in all csv-files: {}'.format(self.img_cnt)
 
 
     def checking_3D(self, superdir):
@@ -158,8 +158,10 @@ class Check:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
                                 if self.res == True:
                                     self.res = False
-                            self.cnt += 1
+
+                            self.img_cnt += file_count
+                            self.dir_cnt += 1
         print 'Check DONE.'
         print 'All right: {}'.format(self.res)
-        print 'Count of folders in superdir: {}'.format(self.cnt)
-        print 'Count of images in all folders: {}'.format(self.cnt*self.imgs_cnt)
+        print 'Count of folders in superdir: {}'.format(self.dir_cnt)
+        print 'Count of images in all folders: {}'.format(self.img_cnt)

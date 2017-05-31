@@ -246,7 +246,7 @@ class CropDLIB:
 
         # dlib detector and predictor
         detector = dlib.get_frontal_face_detector()
-        predictor = dlib.shape_predictor(predictor_path)
+        predictor = dlib.shape_predictor(self.predictor_path)
 
         nproc = int(0.75*cpu_count())
         pool=Pool(processes = nproc)
