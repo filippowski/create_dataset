@@ -96,8 +96,8 @@ imgSize  = 224
 channel  = 3
 
 ################################################################################################
-# 7. Crop parameters
-# TODO fill true augmentation params <key, value> pairs
+# 5. Crop parameters
+# TODO fill true crop params <key, value> pairs
 ################################################################################################
 
 def get_crop_params(mode):
@@ -149,7 +149,7 @@ def get_crop_params(mode):
 
 
 ################################################################################################
-# 5. Files parameters
+# 6. Files parameters
 # TODO fill true files params <key, value> pairs
 ################################################################################################
 
@@ -221,7 +221,8 @@ def get_file_params(mode):
                                     'dlib_model': {
                                                     'path_to_model':    full_path_to_dlib_model,
                                                     'crop_endswith':    crop_endswith,
-                                                    'imgs_ext':         imgs_ext
+                                                    'imgs_ext':         imgs_ext,
+                                                    'imgs_cnt':         12
                                                   }
                                 },
 
@@ -235,7 +236,7 @@ def get_file_params(mode):
     return file_params
 
 ################################################################################################
-# 6. Augmentation parameters
+# 7. Augmentation parameters
 # TODO fill true augmentation params <key, value> pairs
 ################################################################################################
 
@@ -294,8 +295,8 @@ def get_augmentation_params(mode):
 
 
 ################################################################################################
-# 7. Merge parameters
-# TODO fill true augmentation params <key, value> pairs
+# 8. Merge parameters
+# TODO fill true merge params <key, value> pairs
 ################################################################################################
 
 def get_merge_params(mode):
@@ -333,8 +334,8 @@ def get_merge_params(mode):
 
 
 ################################################################################################
-# 7. LMDB parameters
-# TODO fill true augmentation params <key, value> pairs
+# 9. LMDB parameters
+# TODO fill true LMDB params <key, value> pairs
 ################################################################################################
 
 def get_lmdb_params(mode):
@@ -370,10 +371,10 @@ def get_lmdb_params(mode):
     return lmdb_params
 
 ################################################################################################
-# 8. Angles for rotation
+# 10. Angles for rotation
 # TODO set tasks and tasks names
 ################################################################################################
-# 8.1 Angles defaults
+# 10.1 Angles defaults
 # TODO fill true default values for parameters
 ################################################
 
@@ -393,7 +394,7 @@ max_angle  = 20
 replace = True
 
 ################################################
-# 8.2 Functions for defining angles
+# 10.2 Functions for defining angles
 # TODO define functions to get right angles for rotations
 ################################################
 
@@ -456,10 +457,10 @@ def get_angles_3D(dirpath):
     return []
 
 ################################################################################################
-# 9. Tasks and tasks names
+# 11. Tasks and tasks names
 # TODO set tasks and tasks names
 ################################################################################################
-# 9.1 Tasks names list
+# 11.1 Tasks names list
 # TODO fill true tasks names in the order that they was presented in LABELS.CSV
 ################################################
 
@@ -507,7 +508,7 @@ def get_tasks_names():
     return (tasks_names_in_labels_file, tasks_names_to_work)
 
 ################################################
-# 9.2 Tasks dictionary
+# 11.2 Tasks dictionary
 # TODO fill true tasks <key, value> pairs
 ################################################
 
@@ -646,7 +647,7 @@ def get_tasks():
     return tasks
 
 ################################################
-# 9.3 Task parameters
+# 11.3 Task parameters
 # TODO fill true task params <key, value> pairs
 ################################################
 
@@ -656,7 +657,7 @@ task_mask = False
 def get_task_params(mode):
 
     task_params = {
-                    'tasks':           None,
+                    'tasks':            None,
                     'tasks_names':      None,
                     'tasks_mask':       None
                   }
@@ -671,10 +672,10 @@ def get_task_params(mode):
     return task_params
 
 ################################################################################################
-# 10. Names and types
+# 12. Names and types
 # TODO set names and types
 ################################################################################################
-# 10.1 Separators
+# 12.1 Separators
 ########################################################################
 
 # разделитель лейблов в landmarks.csv
@@ -685,9 +686,9 @@ labels_sep = ';'
 microclasses_sep = ' '
 
 ########################################################################
-# 10.2 Names and types dictionaries
+# 12.2 Names and types dictionaries
 ########################################################################
-# 10.2.1 Names and types for LABELS.CSV (CLS)
+# 12.2.1 Names and types for LABELS.CSV (CLS)
 ################################################
 
 # columns names in labels.csv for cls task
@@ -698,7 +699,7 @@ labels_types = dict()
 [labels_types.update({x: str}) for x in labels_names]
 
 ################################################
-# 10.2.2 Names and types for LANDMARKS.CSV (CLS)
+# 12.2.2 Names and types for LANDMARKS.CSV (CLS)
 ################################################
 
 # columns names in landmarks.csv for cls task
@@ -716,7 +717,7 @@ landmarks_types = {
 }
 
 ################################################
-# 10.2.3 Names and types for MICROCLASSES.CSV (CLS)
+# 12.2.3 Names and types for MICROCLASSES.CSV (CLS)
 ################################################
 
 microclasses_names = get_tasks_names()[0]

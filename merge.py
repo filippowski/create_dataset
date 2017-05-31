@@ -68,6 +68,7 @@ class Merge:
                 self.path_to_dlib_model     = file_params['in']['dlib_model']['path_to_model']
                 self.crop_endswith          = file_params['in']['dlib_model']['crop_endswith']
                 self.imgs_ext               = file_params['in']['dlib_model']['imgs_ext']
+                self.imgs_cnt               = file_params['in']['dlib_model']['imgs_cnt']
 
         self.labels_filename_out    =  file_params['out']['labels_filename']
         self.images_filename        =  file_params['out']['images_filename']
@@ -378,7 +379,7 @@ class Merge:
         idx = 0
         startTime = time.time()
 
-        labels = np.zeros((12 * nfolders, alphas_count), dtype='float32')
+        labels = np.zeros((self.imgs_cnt * nfolders, alphas_count), dtype='float32')
         file_with_paths_to_images = open(path_to_file_with_paths_to_images, "w")
 
         for root, subFolders, files in os.walk(main_path):
@@ -411,7 +412,7 @@ class Merge:
 
                                 # elapsed time report
                                 if idx % 1000 == 0:
-                                    string_ = str(idx + 1) + ' / ' + str(12 * nfolders)
+                                    string_ = str(idx + 1) + ' / ' + str(self.imgs_cnt * nfolders)
                                     sys.stdout.write("\r%s" % string_)
                                     sys.stdout.write(
                                         "\r{}. Elapsed time: {:.3f} sec".format(string_, time.time() - startTime))

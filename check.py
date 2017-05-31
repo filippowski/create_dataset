@@ -3,78 +3,85 @@
 
 import pandas as pd
 import os
-import config as cfg
 from util import is_empty_file
+from load import load_landmarks
 
 
 # CREATE MIRRORS
 class Check:
 
-    def __init__(self, path_to_superdir, mode):
+    def __init__(self, path_to_superdir, file_params, mode):
         self.mode = mode
-        self.path_to_superdir = os.path.split(path_to_superdir)[0] if mode == '3D' else path_to_superdir
+
+        self.path_to_superdir = path_to_superdir
         assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
+
+        if self.mode == 'landmarks':
+                self.landmarks_filename     = file_params['in']['landmarks']['csv_filename']
+                self.landmarks_names        = file_params['in']['landmarks']['names']
+                self.landmarks_types        = file_params['in']['landmarks']['types']
+                self.landmarks_sep          = file_params['in']['landmarks']['sep']
+
+        if self.mode == 'classification':
+                self.labels_filename        = file_params['in']['labels']['csv_filename']
+                self.labels_names           = file_params['in']['labels']['names']
+                self.labels_types           = file_params['in']['labels']['types']
+                self.labels_sep             = file_params['in']['labels']['sep']
+
+                self.microclasses_filename  = file_params['in']['microclasses']['csv_filename']
+                self.microclasses_names     = file_params['in']['microclasses']['names']
+                self.microclasses_types     = file_params['in']['microclasses']['types']
+                self.microclasses_sep       = file_params['in']['microclasses']['sep']
+
+                self.landmarks_filename     = file_params['in']['landmarks']['csv_filename']
+                self.landmarks_names        = file_params['in']['landmarks']['names']
+                self.landmarks_types        = file_params['in']['landmarks']['types']
+                self.landmarks_sep          = file_params['in']['landmarks']['sep']
+
+                self.path_to_labels         = os.path.join(self.path_to_superdir, self.labels_filename)
+                self.path_to_microclasses   = os.path.join(self.path_to_superdir, self.microclasses_filename)
+                self.path_to_landmarks      = os.path.join(self.path_to_superdir, self.landmarks_filename)
+
+        if self.mode == '3D':
+                self.path_to_alphas         = file_params['in']['alphas']['path_to_alphas']
+                self.bunch_fldname          = file_params['in']['alphas']['bunch_fldname']
+                self.alphas_fldname         = file_params['in']['alphas']['alphas_fldname']
+                self.alphas_ext             = file_params['in']['alphas']['alphas_ext']
+                self.alphas_cnt             = file_params['in']['alphas']['alphas_cnt']
+
+                self.path_to_dlib_model     = file_params['in']['dlib_model']['path_to_model']
+                self.crop_endswith          = file_params['in']['dlib_model']['crop_endswith']
+                self.imgs_ext               = file_params['in']['dlib_model']['imgs_ext']
+                self.imgs_cnt               = file_params['in']['dlib_model']['imgs_cnt']
+
         self.res = True
         self.cnt = 0
 
 
     def run(self, mode=None):
+        print '\n\nChecking...\n\n'
+
         if self.mode == 'classification':
             self.checking_classification(self.path_to_superdir)
         if self.mode == 'landmarks':
             self.checking_landmarks(self.path_to_superdir)
         if self.mode == '3D':
-            self.checking_3D(self.path_to_superdir, cfg.path_to_alphas)
-
-    def checking_classification(self, superdir):
-
-        for root, subFolders, files in os.walk(superdir):
-            for f in files:
-                filename, file_extension = os.path.splitext(f)
-                if filename == 'labels' and file_extension == '.csv':
-                    path_to_csv_file = os.path.join(root, 'labels.csv')
-                    print 'Checking: {}'.format(path_to_csv_file)
-                    try:
-                        if os.stat(path_to_csv_file).st_size > 0:
-                            labels = pd.read_csv(path_to_csv_file, sep=';', header=None)
-                            labels = labels.dropna()  # skip skipped images
-                            for idx, row in labels.iterrows():
-                                imgname = row[0].split('/')[-1]
-                                path_to_img = os.path.join(root, imgname)
-                                path_to_json = os.path.join(root, imgname.split('.')[0] + ".json")
-                                if not os.path.exists(path_to_img):
-                                    print 'File not found: {}'.format(path_to_img)
-                                    if self.res == True:
-                                        self.res = False
-                                else:
-                                    self.cnt += 1
-                                if is_empty_file(path_to_img):
-                                    print " * empty file: {}".format(path_to_img)
-                        else:
-                            print " * empty file: {}".format(path_to_csv_file)
-                    except OSError:
-                        print " * no file {}".format(path_to_csv_file)
-
-        print 'Check DONE.'
-        print 'All right: {}'.format(self.res)
-        print 'Count of images in all csv-files: {}'.format(self.cnt)
+            self.checking_3D(self.path_to_superdir)
 
 
     def checking_landmarks(self, superdir):
 
         for root, subFolders, files in os.walk(superdir):
             for f in files:
-                filename, file_extension = os.path.splitext(f)
-                if filename == 'landmarks' and file_extension == '.csv':
-                    path_to_csv_file = os.path.join(root, 'landmarks.csv')
-                    print 'Checking: {}'.format(path_to_csv_file)
+                if f == self.landmarks_filename:
+                    path_to_landmarks = os.path.join(root, f)
+                    print 'Checking: {}'.format(path_to_landmarks)
                     try:
-                        if os.stat(path_to_csv_file).st_size > 0:
-                            print " * full file: {}".format(path_to_csv_file)
-                            landmarks = pd.read_csv(path_to_csv_file, sep=' ', header=None)
-                            landmarks = landmarks.dropna()  # skip skipped images
+                        if os.stat(path_to_landmarks).st_size > 0:
+                            print " * full file: {}".format(path_to_landmarks)
+                            landmarks = load_landmarks(path_to_landmarks, self.landmarks_sep, self.landmarks_names, self.landmarks_types)
                             for idx, row in landmarks.iterrows():
-                                imgname = row[0].split('/')[-1]
+                                imgname = os.path.split(row[0])[-1]
                                 path_to_img = os.path.join(root, imgname)
                                 if not os.path.exists(path_to_img):
                                     print 'File not found: {}'.format(path_to_img)
@@ -85,23 +92,56 @@ class Check:
                                 if not is_empty_file(path_to_img):
                                     print " * empty file: {}".format(path_to_img)
                         else:
-                            print " * empty file: {}".format(path_to_csv_file)
+                            print " * empty file: {}".format(path_to_landmarks)
                     except OSError:
-                        print " * no file {}".format(path_to_csv_file)
+                        print " * no file {}".format(path_to_landmarks)
 
         print 'Check DONE.'
         print 'All right: {}'.format(self.res)
         print 'Count of images in all csv-files: {}'.format(self.cnt)
 
+
+    def checking_classification(self, superdir):
+
+        for root, subFolders, files in os.walk(superdir):
+            for f in files:
+                if f == self.labels_filename:
+                    path_to_labels = os.path.join(root, f)
+                    print 'Checking: {}'.format(path_to_labels)
+                    try:
+                        if os.stat(path_to_labels).st_size > 0:
+                            labels = pd.read_csv(path_to_labels, sep=self.labels_sep, header=None)
+                            labels = labels.dropna()  # skip skipped images
+                            for idx, row in labels.iterrows():
+                                imgname = os.path.split(row[0])[-1]
+                                path_to_img = os.path.join(root, imgname)
+                                if not os.path.exists(path_to_img):
+                                    print 'File not found: {}'.format(path_to_img)
+                                    if self.res == True:
+                                        self.res = False
+                                else:
+                                    self.cnt += 1
+                                if is_empty_file(path_to_img):
+                                    print " * empty file: {}".format(path_to_img)
+                        else:
+                            print " * empty file: {}".format(path_to_labels)
+                    except OSError:
+                        print " * no file {}".format(path_to_labels)
+
+        print 'Check DONE.'
+        print 'All right: {}'.format(self.res)
+        print 'Count of images in all csv-files: {}'.format(self.cnt)
+
+
     def checking_3D(self, superdir, path_to_alphas):
 
         for root, subFolders, files in os.walk(superdir):
             for subFolder in subFolders:
-                if subFolder[0:5] == cfg.bunch_fldname:
+                if subFolder[0:5] == self.bunch_fldname:
                     for root_, subFolders_, files_ in os.walk(subFolder):
                         for subFolder_ in subFolders_:
 
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + cfg.alphas_ext)
+                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
 
                             if not os.path.exists(path_to_subFolder_alpha):
                                 print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
@@ -109,8 +149,8 @@ class Check:
                                     self.res = False
 
                             file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
-                            if file_count < 12:
-                                print 'In folder {} less than 5 images.'.format(subFolder_)
+                            if file_count < self.imgs_cnt:
+                                print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
                                 if self.res == True:
                                     self.res = False
                             self.cnt += 1
