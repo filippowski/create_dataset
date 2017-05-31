@@ -43,7 +43,7 @@ class Label:
         self.labels_filename_out  = file_params['out']['labels_filename']
         self.path_to_labels   = os.path.join(self.main_path, self.labels_filename_out)
 
-        self.task_mask   = task_params['task_mask']
+        self.task_mask   = task_params['tasks_mask']
         self.tasks       = task_params['tasks']
         self.tasks_names = task_params['tasks_names']
         self.img_cnt = 0

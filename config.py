@@ -313,7 +313,7 @@ def get_merge_params(mode):
 
     if mode == 'classification':
         mrg_params = {
-                        'merge':           False#True,
+                        'merge':           False,#True,
                         'create_labels':   True,
                         'create_imgfile':  True,
                         'create_mean':     True,
@@ -657,15 +657,15 @@ def get_task_params(mode):
 
     task_params = {
                     'tasks':           None,
-                    'task_names':      None,
-                    'task_mask':       None
+                    'tasks_names':      None,
+                    'tasks_mask':       None
                   }
 
     if mode == 'classification':
         task_params = {
-                        'tasks':           get_tasks(),
-                        'task_names':      get_tasks_names(),
-                        'task_mask':       task_mask
+                        'tasks':            get_tasks(),
+                        'tasks_names':      get_tasks_names(),
+                        'tasks_mask':       task_mask
                      }
 
     return task_params

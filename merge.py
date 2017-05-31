@@ -313,7 +313,7 @@ class Merge:
 
     def add_one_folder_classification(self, dir_src, dir_target, landmarks_filename, landmarks_sep, labels_filename, labels_sep, csv_file, writer, task_params, crop_params):
 
-        task_names = task_params['task_names']
+        task_names = task_params['tasks_names']
 
         path_to_landmarks = os.path.join(dir_src, landmarks_filename)
         path_to_labels = os.path.join(dir_src, labels_filename)
