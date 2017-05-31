@@ -143,21 +143,24 @@ class Check:
 
                     print subFolder, subFolder[0:5] == self.bunch_fldname
 
-                    for root_, subFolders_, files_ in os.walk(subFolder):
+                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
+                        print subFolders_
                         for subFolder_ in subFolders_:
 
-                            print subFolder_
+                            #print subFolder_
 
                             path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
 
-                            print path_to_subFolder_alpha
+                            #print path_to_subFolder_alpha
 
                             if not os.path.exists(path_to_subFolder_alpha):
                                 print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
                                 if self.res == True:
                                     self.res = False
 
-                            file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
+                            #file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
+                            file_count = len(fnmatch.filter(os.listdir(os.path.join(root_, subFolder_)), self.imgs_ext))
+                            print 'In dir {} {} images'.format(os.path.join(root_, subFolder_), file_count)
                             if file_count < self.imgs_cnt:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
                                 if self.res == True:
