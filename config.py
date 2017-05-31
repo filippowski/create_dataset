@@ -192,7 +192,7 @@ def get_file_params(mode):
                                                     'sep':          microclasses_sep
                                                  },
                                     'landmarks': {
-                                                    'csv_filename': path_to_alphas,
+                                                    'csv_filename': 'landmarks.csv',
                                                     'names':        landmarks_names,
                                                     'types':        landmarks_types,
                                                     'sep':          labels_sep
