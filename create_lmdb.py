@@ -63,7 +63,7 @@ class Lmdb:
 
         images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
         labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
-        print 'Images map size: ', images_map_size
+        print '\nImages map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
 
         images_db = lmdb.open(images_file, map_size=images_map_size, map_async=True, writemap=True)
@@ -206,21 +206,21 @@ class Lmdb:
         self.imgs_cnt = len(images)
         im = np.array(Image.open(images[0]))
         self.size_one_img = sys.getsizeof(im)
-        print "Number of images: {}".format(self.imgs_cnt)
-        print "Size of one image: {}".format(self.size_one_img)
+        print "\nNumber of images: {}".format(self.imgs_cnt)
+        print "Size of one image: {}{}".format(self.size_one_img, 'Bytes')
         # labels
         labels = np.load(self.labels)
         self.lbls_cnt = labels.shape[1]
         lbl = np.array(labels[0]).astype(float).reshape(1, 1, labels[0].shape[0])
         self.size_one_lbl = sys.getsizeof(lbl)
-        print "Number of labels: {}".format(self.lbls_cnt)
-        print "Size of one label: {}".format(self.size_one_lbl)
+        print "\nNumber of labels: {}".format(self.lbls_cnt)
+        print "Size of one label: {}{}".format(self.size_one_lbl, 'Bytes')
 
 
         num = self.test_data_percent * self.imgs_cnt / 100
 
         if self.shuffle:
-            print "Shuffling the data"
+            print "\n * shuffling the data"
             data = zip(images, labels)
             random.shuffle(data)
             images, labels = zip(*data)
@@ -228,7 +228,7 @@ class Lmdb:
             labels = np.array(labels)
 
         if num != 0:
-            print "Creating test set"
+            print "\n * creating test set"
             fillLmdb(
                 images_file=self.imagesOut + "_test",
                 labels_file=self.labelsOut + "_test",
@@ -236,7 +236,7 @@ class Lmdb:
                 images=images[:num],
                 labels=labels[:num])
 
-        print "Creating training set"
+        print "\n * creating training set"
         fillLmdb(
             images_file=self.imagesOut,
             labels_file=self.labelsOut,

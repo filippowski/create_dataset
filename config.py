@@ -66,7 +66,7 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 
 # augmentation dataset
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = False#True
+augmentation    = True
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
 merge           = True
@@ -313,7 +313,7 @@ def get_merge_params(mode):
 
     if mode == 'classification':
         mrg_params = {
-                        'merge':           False,#True,
+                        'merge':           True,
                         'create_labels':   True,
                         'create_imgfile':  True,
                         'create_mean':     True,

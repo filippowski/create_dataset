@@ -68,7 +68,7 @@ class Label:
         cnt = 0
         for el in tasks_names:
             cnt += 1
-        print cnt, len(tasks_names), tasks_names
+        #print cnt, len(tasks_names), tasks_names
         return cnt
 
 
