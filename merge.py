@@ -100,10 +100,7 @@ class Merge:
                     self.merge_landmarks(self.path_to_superdir, self.main_path, self.path_to_dir_with_train_images, self.landmarks_filename, self.landmarks_sep, self.crop_params)
                 if self.mode == '3D':
                     print ' * merge 3D'
-                    self.merge_3D(self.path_to_superdir, self.main_path, self.bunch_fldname,
-                                  self.path_to_alphas, self.alphas_fldname, self.alphas_ext, self.alphas_cnt,
-                                  self.path_to_dlib_model, self.crop_endswith, self.imgs_ext,
-                                  self.crop_params)
+                    self.merge_3D(self.path_to_superdir, self.main_path, self.file_params, self.crop_params)
 
         # create and save labels
         if self.merge_params['create_labels']:
@@ -208,20 +205,11 @@ class Merge:
         print 'Total: {} images.\n'.format(self.cnt_mrg_img)
 
 
-    def merge_3D(self,  path_to_superdir, main_path, bunch_fldname,
-                        path_to_alphas, alphas_fldname, alphas_ext, alphas_cnt,
-                        path_to_dlib_model, crop_endswith, imgs_ext,
-                        crop_params):
-        '''
-        path_to_superdir      - directory where are folders with images and csv-files
-        main_path           - directory where will be saved general csv file and folder with resized images
-        csv_filename          - name of general csv file with all coordinates of landmarks
-        path_to_dir_with_train_images - path to folder that will be contain all train images (resized)
-        '''
+    def merge_3D(self,  path_to_superdir, main_path, file_params, crop_params):
 
         print '\nSTAGE: Cropping all images.\n'
         # crop all images
-        crop = CropDLIB(path_to_superdir, path_to_dlib_model, crop_endswith, imgs_ext, bunch_fldname, crop_params)
+        crop = CropDLIB(path_to_superdir, file_params, crop_params)
 
         # run crop
         crop.run_multiprocessing_crop()

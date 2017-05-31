@@ -80,8 +80,7 @@ class Augmentation:
         if self.mode == 'landmarks':
             self.run_augmentation_landmarks()
         if self.mode == '3D':
-            print "to be .. TO DO"
-        #    self.run_augmentation_3D()
+            pass
 
 
     def run_augmentation_landmarks(self):

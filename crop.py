@@ -203,15 +203,17 @@ class Crop:
 # CREATE CROP BY MEANS OF DLIB MODEL
 class CropDLIB:
 
-    def __init__(self, path_to_superdir, predictor_path, crop_endswith, imgs_ext, bunch_fldname, crop_params):
-        self.path_to_superdir = path_to_superdir
-        self.predictor_path   = predictor_path
-        assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
-        assert os.path.exists(self.predictor_path), 'Path to DLIB model {} does not exist. Pls check path.'.format(self.predictor_path)
+    def __init__(self, path_to_superdir, file_params, crop_params):
 
-        self.bunch_fldname = bunch_fldname
-        self.crop_endswith = crop_endswith
-        self.imgs_ext      = imgs_ext
+        self.path_to_superdir = path_to_superdir
+        assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
+
+        self.bunch_fldname          = file_params['in']['alphas']['bunch_fldname']
+        self.crop_endswith          = file_params['in']['dlib_model']['crop_endswith']
+        self.imgs_ext               = file_params['in']['dlib_model']['imgs_ext']
+        self.path_to_dlib_model     = file_params['in']['dlib_model']['path_to_model']
+        assert os.path.exists(self.path_to_dlib_model), 'Path to DLIB model {} does not exist. Pls check path.'.format(
+            self.path_to_dlib_model)
 
         self.crop_params   = crop_params
 
@@ -246,7 +248,7 @@ class CropDLIB:
 
         # dlib detector and predictor
         detector = dlib.get_frontal_face_detector()
-        predictor = dlib.shape_predictor(self.predictor_path)
+        predictor = dlib.shape_predictor(self.path_to_dlib_model)
 
         nproc = int(0.75*cpu_count())
         pool=Pool(processes = nproc)
