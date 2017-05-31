@@ -3,6 +3,8 @@
 
 import numpy as np
 import os
+import sys
+import time
 import csv
 from scipy.ndimage import imread
 from util import Profiler, create_file_with_paths_to_images, ensure_dir
@@ -371,10 +373,6 @@ class Merge:
 
     def create_imgs_and_lbls_files(self, main_path, path_to_alphas, path_to_labels,
                                    path_to_file_with_paths_to_images, alphas_count, nimgs, nfolders):
-        import pandas as pd
-        import os, sys
-        import time
-        import fnmatch
 
         idx = 0
         startTime = time.time()
@@ -384,24 +382,22 @@ class Merge:
 
         for root, subFolders, files in os.walk(main_path):
             for subFolder in subFolders:
-                if subFolder[0:5] == 'bunch':
-                    results_dir = os.path.join(os.path.join(root, subFolder), 'results')
-                    for root_, subFolders_, files_ in os.walk(results_dir):
+                if subFolder[0:5] == self.bunch_fldname:
+                    for root_, subFolders_, files_ in os.walk(subFolder):
                         for subFolder_ in subFolders_:
+
+
                             path_to_subFolder_alpha = os.path.join(path_to_alphas,
-                                                                   subFolder_.split('.obj')[0] + '.alpha')
+                                                                   subFolder_.split('.obj')[0] + self.alphas_ext)
                             subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha,
                                                                           alphas_count)  # alphas
-
-                            # crop images and save in same dir
-                            # crop_images_w_dlib_points(detector, predictor, os.path.join(root_, subFolder_))
 
                             for root1, subFolders1, files1 in os.walk(os.path.join(root_, subFolder_)):
 
                                 file_list = []
                                 for f in files1:
                                     filename, file_extension = os.path.splitext(f)
-                                    if filename.endswith('_crop') and file_extension == '.jpg':
+                                    if filename.endswith(self.crop_endswith) and file_extension == self.imgs_ext:
                                         file_list.append(os.path.join(root1, f))
 
                                 # for i in range(5):
