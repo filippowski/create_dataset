@@ -33,17 +33,15 @@ class Label:
                 self.labels_types           = file_params['in']['labels']['types']
                 self.labels_sep             = file_params['in']['labels']['sep']
 
-                self.labels_filename_out    = file_params['out']['labels_filename']
-
-                self.path_to_raw_labels     = os.path.join(self.main_path, self.labels_filename_out)
+                self.path_to_raw_labels     = os.path.join(self.main_path, self.labels_filename)
                 assert os.path.exists(self.path_to_raw_labels), \
                     'Path to labels {} does not exist. Pls check path.'.format(self.path_to_raw_labels)
 
         # TO DO
         #if self.mode == '3D':
 
-        self.labels_filename  = file_params['out']['labels_filename']
-        self.path_to_labels   = os.path.join(self.main_path, self.labels_filename)
+        self.labels_filename_out  = file_params['out']['labels_filename']
+        self.path_to_labels   = os.path.join(self.main_path, self.labels_filename_out)
 
         self.task_mask   = task_params['task_mask']
         self.tasks       = task_params['tasks']

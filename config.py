@@ -109,7 +109,7 @@ def get_crop_params(mode):
                         'do_shft':   True,      # do shift during images cropping
                         'shft':      10,
                         'cntr_pt':   37,
-                        'coef':      2.,
+                        'coef':      1.5,
                         'imgSize':   imgSize,
                         'channel':   channel,
                         'left_x':    (0,1,2,3),
@@ -123,7 +123,7 @@ def get_crop_params(mode):
                         'do_shft':   True,
                         'shft':      10,
                         'cntr_pt':   37,
-                        'coef':      2.,
+                        'coef':      1.5,
                         'imgSize':   imgSize,
                         'channel':   channel,
                         'left_x':    (0,1,2,3),
@@ -313,7 +313,7 @@ def get_merge_params(mode):
 
     if mode == 'classification':
         mrg_params = {
-                        'merge':           True,
+                        'merge':           False#True,
                         'create_labels':   True,
                         'create_imgfile':  True,
                         'create_mean':     True,
