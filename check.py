@@ -142,10 +142,10 @@ class Check:
             for subFolder in subFolders:
                 if subFolder[0:5] == self.bunch_fldname:
 
-                    print subFolder, subFolder[0:5] == self.bunch_fldname
+                    #print subFolder, subFolder[0:5] == self.bunch_fldname
 
                     for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
-                        print subFolders_
+                        #print subFolders_
                         for subFolder_ in subFolders_:
 
                             #print subFolder_
@@ -162,10 +162,10 @@ class Check:
                             #file_count = sum((len(f) for _, _, f in os.walk(subFolder_)))
                             path = os.path.join(root_, subFolder_)
                             file_count = len(fnmatch.filter(os.listdir(path), '*'+self.imgs_ext))
-                            print self.imgs_ext
-                            print 'images: '
-                            fnmatch.filter(os.listdir(path), '*'+self.imgs_ext)
-                            print 'In dir {} {} images'.format(path, file_count)
+                            #print self.imgs_ext
+                            #print 'images: '
+                            #fnmatch.filter(os.listdir(path), '*'+self.imgs_ext)
+                            #print 'In dir {} {} images'.format(path, file_count)
                             if file_count < self.imgs_cnt:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
                                 if self.res == True:
