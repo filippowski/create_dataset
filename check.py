@@ -135,8 +135,11 @@ class Check:
 
     def checking_3D(self, superdir):
 
+        print 'superdir: ' superdir
+
         for root, subFolders, files in os.walk(superdir):
             for subFolder in subFolders:
+                print subFolder, subFolder[0:5] == self.bunch_fldname
                 if subFolder[0:5] == self.bunch_fldname:
                     for root_, subFolders_, files_ in os.walk(subFolder):
                         for subFolder_ in subFolders_:
