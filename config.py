@@ -483,7 +483,6 @@ def get_tasks_names():
         #'nose_tip',
         #'nose_width',
         'nose_wings'
-
     ]
     tasks_names_to_work = [
         #'skin',
@@ -502,7 +501,8 @@ def get_tasks_names():
         #'brows',
         #'nose_type',
         #'nose_tip',
-        'nose_width'
+        #'nose_width',
+        'nose_wings'
     ]
     return (tasks_names_in_labels_file, tasks_names_to_work)
 
