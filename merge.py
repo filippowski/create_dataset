@@ -383,14 +383,11 @@ class Merge:
         for root, subFolders, files in os.walk(main_path):
             for subFolder in subFolders:
                 if subFolder[0:5] == self.bunch_fldname:
-                    for root_, subFolders_, files_ in os.walk(subFolder):
+                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
                         for subFolder_ in subFolders_:
 
-
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas,
-                                                                   subFolder_.split('.obj')[0] + self.alphas_ext)
-                            subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha,
-                                                                          alphas_count)  # alphas
+                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+                            subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha, alphas_count)  # alphas
 
                             for root1, subFolders1, files1 in os.walk(os.path.join(root_, subFolder_)):
 

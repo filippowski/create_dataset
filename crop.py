@@ -227,11 +227,13 @@ class CropDLIB:
         # Put all paths to folders
         for root, subFolders, files in os.walk(self.path_to_superdir):
             for subFolder in subFolders:
-                if subFolder[0:5] == cfg.bunch_fldname:
-                    for root_, subFolders_, files_ in os.walk(subFolder):
+                if subFolder[0:5] == self.bunch_fldname:
+                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
                         for subFolder_ in subFolders_:
+                            path = os.path.join(root_, subFolder_)
+                            file_count = len(fnmatch.filter(os.listdir(path), '*'+self.imgs_ext))
                             self.nfolders += 1
-                            self.nimgs    += len(fnmatch.filter(os.listdir(os.path.join(results_dir, subFolder_)), self.imgs_ext))
+                            self.nimgs    += file_count
                             queue.put(os.path.join(root_, subFolder_))
 
         print 'In superdir {} are {} folders.'.format(self.path_to_superdir, self.nfolders)
