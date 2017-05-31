@@ -18,20 +18,20 @@ class Label:
             'Main path {} does not exist. Pls check path.'.format(self.main_path)
 
         if self.mode == 'landmarks':
-                self.landmarks_filename     = file_params['landmarks']['csv_filename']
-                self.landmarks_names        = file_params['landmarks']['names']
-                self.landmarks_types        = file_params['landmarks']['types']
-                self.landmarks_sep          = file_params['landmarks']['sep']
+                self.landmarks_filename     = file_params['in']['landmarks']['csv_filename']
+                self.landmarks_names        = file_params['in']['landmarks']['names']
+                self.landmarks_types        = file_params['in']['landmarks']['types']
+                self.landmarks_sep          = file_params['in']['landmarks']['sep']
 
                 self.path_to_raw_landmarks = os.path.join(self.main_path, self.landmarks_filename)
                 assert os.path.exists(self.path_to_raw_landmarks), \
                     'Path to labels {} does not exist. Pls check path.'.format(self.path_to_raw_landmarks)
 
         if self.mode == 'classification':
-                self.labels_filename        = file_params['labels']['csv_filename']
-                self.labels_names           = file_params['labels']['names']
-                self.labels_types           = file_params['labels']['types']
-                self.labels_sep             = file_params['labels']['sep']
+                self.labels_filename        = file_params['in']['labels']['csv_filename']
+                self.labels_names           = file_params['in']['labels']['names']
+                self.labels_types           = file_params['in']['labels']['types']
+                self.labels_sep             = file_params['in']['labels']['sep']
 
                 self.path_to_raw_labels     = os.path.join(self.main_path, self.labels_filename)
                 assert os.path.exists(self.path_to_raw_labels), \
