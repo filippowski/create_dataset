@@ -35,8 +35,8 @@ meanPrefix              = 'mean'
 lmdb_images_name        = 'lmdb_images'
 lmdb_labels_name        = 'lmdb_labels'
 
-csv_filename            = 'labels.csv' if mode == 'classification' else 'landmarks.csv'
-superdir_name           = 'results' if mode == '3D' else 'superdir'
+csv_filename            = 'landmarks.csv' if mode == 'landmarks' else 'labels.csv'
+superdir_name           = 'superdir'
 
 # classification task
 microclasses_filename   = 'microclasses.csv'
@@ -45,14 +45,15 @@ microclasses_filename   = 'microclasses.csv'
 bunch_fldname           = 'bunch'
 alphas_fldname          = 'alphas'
 alphas_ext              = '.alpha'
+crop_endswith           = '_crop'
+imgs_ext                = '.jpg'
 
-path_to_superdir = os.path.join(main_path, superdir_name)
-path_to_labels = os.path.join(main_path, labels_filename)
-path_to_file_with_paths_to_images = os.path.join(main_path, images_filename)
-path_to_dir_with_images = os.path.join(main_path, directory_with_images)
+full_path_to_dlib_model = '/8TB/vitalii/dlib64-1.dat'
+
+path_to_superdir         = os.path.join(main_path, superdir_name)
 path_to_lmdb_with_images = os.path.join(main_path, lmdb_images_name)
 path_to_lmdb_with_labels = os.path.join(main_path, lmdb_labels_name)
-path_to_alphas = os.path.join(main_path, alphas_fldname)
+path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 
 ################################################################################################
 # 3. Flags
@@ -62,28 +63,19 @@ path_to_alphas = os.path.join(main_path, alphas_fldname)
 ################################################
 
 # augmentation dataset
+# detailed settings are available in Part 6. Augmentation parameters
 augmentation    = True
-# merge all csv in one
+# merge all data, create labels and mean image
+# detailed settings are available in Part 7. Merge parameters
 merge           = True
-# create and save labels
-create_labels   = True
-# create file with images filenames
-create_imgfile  = True
-# create mean image
-create_mean     = True
 # create lmdb
+# detailed settings are available in Part 7. LMDB parameters
 create_lmdb     = True
-# create infogain matrices
-create_infogain = False
 
 ################################################
 # 3.2 Other flags
 ################################################
 
-# do shift during images cropping
-do_shft                 = True
-# write to labels their mask in multitask classification
-task_mask               = False
 # do shuffle before create lmdb
 shuffle                 = True
 # run augmentation main scheme
@@ -94,12 +86,65 @@ run_main_IF_SCHEME_AUG  = False
 # TODO set digits params
 ################################################################################################
 
-# channels number of images
-channel  = 3
-# width and height size of image (image must be same width and height size)
-imgSize  = 224
 # percentage of test examples from whole dataset
 testSize = 10
+# width and height size of image (image must be same width and height size)
+imgSize  = 224
+# channels number of images
+channel  = 3
+
+################################################################################################
+# 7. Crop parameters
+# TODO fill true augmentation params <key, value> pairs
+################################################################################################
+
+def get_crop_params(mode):
+
+    crop_params = None
+
+    if mode == 'landmarks':
+        crop_params = {
+                        'do_shft':   True,      # do shift during images cropping
+                        'shft':      10,
+                        'cntr_pt':   37,
+                        'coef':      2.,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'left_x':    (0,1,2,3),
+                        'right_x':   (13,14,15,16),
+                        'top_y':     (17,18,19),
+                        'bot_y':     (7,8,9)
+                     }
+
+    if mode == 'classification':
+        crop_params = {
+                        'do_shft':   True,
+                        'shft':      10,
+                        'cntr_pt':   37,
+                        'coef':      2.,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'left_x':    (0,1,2,3),
+                        'right_x':   (13,14,15,16),
+                        'top_y':     (17,18,19),
+                        'bot_y':     (7,8,9)
+                     }
+
+    if mode == '3D':
+        crop_params = {
+                        'do_shft':   False,
+                        'shft':      10,
+                        'cntr_pt':   17,
+                        'coef':      1.05,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'left_x':    (0,1,2,3),
+                        'right_x':   (13,14,15,16),
+                        'top_y':     (23,24,25,34,35,36),
+                        'bot_y':     (7,8,9)
+                     }
+    return crop_params
+
 
 ################################################################################################
 # 5. Files parameters
@@ -112,47 +157,80 @@ def get_file_params(mode):
 
     if mode == 'landmarks':
         file_params = {
-                        'landmarks': {
-                                        'csv_filename': csv_filename,
-                                        'names':        None,
-                                        'types':        None,
-                                        'sep':          landmarks_sep
-                                    }
+                        'in':   {
+                                    'landmarks': {
+                                                    'csv_filename': csv_filename,
+                                                    'names': None,
+                                                    'types': None,
+                                                    'sep': landmarks_sep
+                                                 }
+                                },
+
+                        'out':  {
+                                    'labels_filename':          labels_filename,
+                                    'images_filename':          images_filename,
+                                    'directory_with_images':    directory_with_images,
+                                    'meanPrefix':               meanPrefix
+                                }
                       }
 
     if mode == 'classification':
         file_params = {
-                        'labels':    {
-                                        'csv_filename': csv_filename,
-                                        'names':        labels_names,
-                                        'types':        labels_types,
-                                        'sep':          labels_sep
-                                     },
-                        'microclasses': {
-                                        'csv_filename': microclasses_filename,
-                                        'names':        microclasses_names,
-                                        'types':        microclasses_types,
-                                        'sep':          microclasses_sep
-                                     },
-                        'landmarks': {
-                                        'csv_filename': 'landmarks.csv',
-                                        'names':        landmarks_names,
-                                        'types':        landmarks_types,
-                                        'sep':          labels_sep
-                                     }
+                        'in':   {
+                                    'labels':    {
+                                                    'csv_filename': csv_filename,
+                                                    'names':        labels_names,
+                                                    'types':        labels_types,
+                                                    'sep':          labels_sep
+                                                 },
+                                    'microclasses': {
+                                                    'csv_filename': microclasses_filename,
+                                                    'names':        microclasses_names,
+                                                    'types':        microclasses_types,
+                                                    'sep':          microclasses_sep
+                                                 },
+                                    'landmarks': {
+                                                    'csv_filename': path_to_alphas,
+                                                    'names':        landmarks_names,
+                                                    'types':        landmarks_types,
+                                                    'sep':          labels_sep
+                                                 }
+                                },
+
+                        'out':  {
+                                    'labels_filename':          labels_filename,
+                                    'images_filename':          images_filename,
+                                    'directory_with_images':    directory_with_images,
+                                    'meanPrefix':               meanPrefix
+                                }
                    }
 
     if mode == '3D':
         file_params = {
-                        '3D':       {
-                                        'csv_filename': None,
-                                        'names':        None,
-                                        'types':        None,
-                                        'sep':          None
-                                    }
+                        'in':   {
+                                    'alphas':    {
+                                                    'path_to_alphas':   path_to_alphas,
+                                                    'bunch_fldname':    bunch_fldname,
+                                                    'alphas_fldname':   alphas_fldname,
+                                                    'alphas_ext':       alphas_ext,
+                                                    'alphas_cnt':       50
+                                                 },
+
+                                    'dlib_model': {
+                                                    'path_to_model':    full_path_to_dlib_model
+                                                    'crop_endswith':    crop_endswith
+                                                    'imgs_ext':         imgs_ext
+                                                  }
+                                },
+
+                        'out':  {
+                                    'labels_filename':          labels_filename,
+                                    'images_filename':          images_filename,
+                                    'directory_with_images':    directory_with_images,
+                                    'meanPrefix':               meanPrefix
+                                }
                       }
     return file_params
-
 
 ################################################################################################
 # 6. Augmentation parameters
@@ -214,10 +292,86 @@ def get_augmentation_params(mode):
 
 
 ################################################################################################
-# 7. Angles for rotation
+# 7. Merge parameters
+# TODO fill true augmentation params <key, value> pairs
+################################################################################################
+
+def get_merge_params(mode):
+
+    mrg_params = None
+
+    if mode == 'landmarks':
+        mrg_params = {
+                        'merge':           True,
+                        'create_labels':   True,
+                        'create_imgfile':  True,
+                        'create_mean':     False,
+                        'create_infogain': False
+                     }
+
+    if mode == 'classification':
+        mrg_params = {
+                        'merge':           True,
+                        'create_labels':   True,
+                        'create_imgfile':  True,
+                        'create_mean':     True,
+                        'create_infogain': False
+                     }
+
+    if mode == '3D':
+        mrg_params = {
+                        'merge':           True,
+                        'create_labels':   False,
+                        'create_imgfile':  False,
+                        'create_mean':     False,
+                        'create_infogain': False
+                     }
+
+    return mrg_params
+
+
+################################################################################################
+# 7. LMDB parameters
+# TODO fill true augmentation params <key, value> pairs
+################################################################################################
+
+def get_lmdb_params(mode):
+
+    lmdb_params = None
+
+    if mode == 'landmarks':
+        lmdb_params = {
+                        'testSize':  testSize,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'lmdb_mode': lmdb_mode,
+                        'shuffle':   True
+                     }
+
+    if mode == 'classification':
+        lmdb_params = {
+                        'testSize':  testSize,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'lmdb_mode': lmdb_mode,
+                        'shuffle':   True
+                     }
+
+    if mode == '3D':
+        lmdb_params = {
+                        'testSize':  testSize,
+                        'imgSize':   imgSize,
+                        'channel':   channel,
+                        'lmdb_mode': lmdb_mode,
+                        'shuffle':   True
+                     }
+    return lmdb_params
+
+################################################################################################
+# 8. Angles for rotation
 # TODO set tasks and tasks names
 ################################################################################################
-# 7.1 Angles defaults
+# 8.1 Angles defaults
 # TODO fill true default values for parameters
 ################################################
 
@@ -237,7 +391,7 @@ max_angle  = 20
 replace = True
 
 ################################################
-# 7.2 Functions for defining angles
+# 8.2 Functions for defining angles
 # TODO define functions to get right angles for rotations
 ################################################
 
@@ -300,10 +454,10 @@ def get_angles_3D(dirpath):
     return []
 
 ################################################################################################
-# 8. Tasks and tasks names
+# 9. Tasks and tasks names
 # TODO set tasks and tasks names
 ################################################################################################
-# 8.1 Tasks names list
+# 9.1 Tasks names list
 # TODO fill true tasks names in the order that they was presented in LABELS.CSV
 ################################################
 
@@ -348,9 +502,8 @@ def get_tasks_names():
     ]
     return (tasks_names_in_labels_file, tasks_names_to_work)
 
-
 ################################################
-# 8.2 Tasks dictionary
+# 9.2 Tasks dictionary
 # TODO fill true tasks <key, value> pairs
 ################################################
 
@@ -482,12 +635,36 @@ def get_tasks():
     }
     return tasks
 
+################################################
+# 9.3 Task parameters
+# TODO fill true task params <key, value> pairs
+################################################
+
+# write to labels their mask in multitask classification
+task_mask = False
+
+def get_task_params(mode):
+
+    task_params = {
+                    'tasks':           None,
+                    'task_names':      None,
+                    'task_mask':       None
+                  }
+
+    if mode == 'classification':
+        task_params = {
+                        'tasks':           get_tasks(),
+                        'task_names':      get_tasks_names(),
+                        'task_mask':       task_mask
+                     }
+
+    return task_params
 
 ################################################################################################
-# 9. Names and types
+# 10. Names and types
 # TODO set names and types
 ################################################################################################
-# 9.1 Separators
+# 10.1 Separators
 ########################################################################
 
 # разделитель лейблов в landmarks.csv
@@ -498,9 +675,9 @@ labels_sep = ';'
 microclasses_sep = ' '
 
 ########################################################################
-# 9.2 Names and types dictionaries
+# 10.2 Names and types dictionaries
 ########################################################################
-# 9.2.1 Names and types for LABELS.CSV (CLS)
+# 10.2.1 Names and types for LABELS.CSV (CLS)
 ################################################
 
 # columns names in labels.csv for cls task
@@ -511,7 +688,7 @@ labels_types = dict()
 [labels_types.update({x: str}) for x in labels_names]
 
 ################################################
-# 9.2.2 Names and types for LANDMARKS.CSV (CLS)
+# 10.2.2 Names and types for LANDMARKS.CSV (CLS)
 ################################################
 
 # columns names in landmarks.csv for cls task
@@ -529,7 +706,7 @@ landmarks_types = {
 }
 
 ################################################
-# 9.2.3 Names and types for MICROCLASSES.CSV (CLS)
+# 10.2.3 Names and types for MICROCLASSES.CSV (CLS)
 ################################################
 
 microclasses_names = get_tasks_names()[0]

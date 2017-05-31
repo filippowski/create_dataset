@@ -4,31 +4,48 @@
 import numpy as np
 from skimage.transform import resize
 from skimage.io import imsave
+from skimage import io
+import os
 import copy
 import random
+import multiprocessing as mp
+from  multiprocessing import cpu_count, Pool
+import dlib
+import fnmatch
+import glob
 import warnings
 warnings.filterwarnings("ignore")
 
-from util import labels_array_to_list
+from util import labels_array_to_list, points_as_array, get_dist
 
 
 # CREATE CROP
 class Crop:
 
-    def __init__(self, img, img_points, imgsize, cropsize, do_shft):
+    def __init__(self, img, img_points, imgsize, crop_params):
         self.img = img
-        self.imgsize = imgsize
-        self.cropsize = cropsize
+        self.img_cropped = None
+
         self.img_points = img_points
         self.scaled_img_points = None
-        self.do_shft = do_shft # whether shift center?
-        self.cntr_pt = 37 if len(img_points) == 119 else 35
-        self.coef = 2.    # coefficient for scale crop delta
-        self.shft = 10    # shift in pixels
-        self.img_cropped = None
+
+        self.do_shft     = crop_params['do_shft']
+        self.shft        = crop_params['shft']
+        self.cntr_pt     = crop_params['cntr_pt']
+        self.cntr_pt = 35 if len(img_points) == 113 else self.cntr_pt
+        self.coef        = crop_params['coef']
+        self.cropsize    = crop_params['imgSize']
+        self.channel     = crop_params['channel']
+
+        self.left_x      = crop_params['left_x']
+        self.right_x     = crop_params['right_x']
+        self.top_y       = crop_params['top_y']
+        self.bot_y       = crop_params['bot_y']
+
+        self.imgsize     = imgsize
+        self.new_size    = None
         self.x_offset    = None
         self.y_offset    = None
-        self.new_size    = None
 
     def create_crop_transform_up(self, imgsize):
         translate_to_origin = np.identity(3)
@@ -58,16 +75,22 @@ class Crop:
 
     def get_center_and_delta(self, img_points):
 
-        min_left_x  = int(np.amin([img_points[0][0],  img_points[1][0],  img_points[2][0],   img_points[3][0]], axis=0))
-        max_right_x = int(np.amax([img_points[13][0], img_points[14][0], img_points[15][0],  img_points[16][0]], axis=0))
-        min_top_y   = int(np.amin([img_points[17][1], img_points[18][1], img_points[19][1]], axis=0))
-        max_bot_y   = int(np.amax([img_points[7][1],  img_points[8][1],  img_points[9][1]],  axis=0))
+        min_left_x  = int(np.amin([img_points[x][0] for x in self.left_x], axis=0))
+        max_right_x = int(np.amax([img_points[x][0] for x in self.right_x], axis=0))
+        min_top_y   = int(np.amin([img_points[x][1] for x in self.top_y], axis=0))
+        max_bot_y   = int(np.amax([img_points[x][1] for x in self.bot_y], axis=0))
+
+        # min_left_x  = int(np.amin([img_points[0][0],  img_points[1][0],  img_points[2][0],   img_points[3][0]], axis=0))
+        # max_right_x = int(np.amax([img_points[13][0], img_points[14][0], img_points[15][0],  img_points[16][0]], axis=0))
+        # min_top_y   = int(np.amin([img_points[17][1], img_points[18][1], img_points[19][1]], axis=0))
+        # max_bot_y   = int(np.amax([img_points[7][1],  img_points[8][1],  img_points[9][1]],  axis=0))
 
         delta = np.mean([img_points[self.cntr_pt][0] - min_left_x, max_right_x - img_points[self.cntr_pt][0]])
         x_cntr = min_left_x + delta
         y_cntr_1 = img_points[self.cntr_pt][1]
         y_cntr_2 = int(round(np.mean([min_top_y, max_bot_y])))
         y_cntr = int(round(np.mean([y_cntr_1, y_cntr_2])))
+        delta  = max_bot_y - y_cntr
 
         return self.coef * delta, x_cntr, y_cntr
 
@@ -171,7 +194,102 @@ class Crop:
         self.img_cropped = imgSizexSize
         self.x_offset    = x_offset
         self.y_offset    = y_offset
-        self.new_size      = x_diff
+        self.new_size    = x_diff
 
     def save(self, path_to_crop_img):
         imsave(path_to_crop_img, self.img_cropped)
+
+
+# CREATE CROP BY MEANS OF DLIB MODEL
+class CropDLIB:
+
+    def __init__(self, path_to_superdir, predictor_path, crop_endswith, imgs_ext, bunch_fldname, crop_params):
+        self.path_to_superdir = path_to_superdir
+        self.predictor_path   = predictor_path
+        assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
+        assert os.path.exists(self.predictor_path), 'Path to DLIB model {} does not exist. Pls check path.'.format(self.predictor_path)
+
+        self.bunch_fldname = bunch_fldname
+        self.crop_endswith = crop_endswith
+        self.imgs_ext      = imgs_ext
+
+        self.crop_params   = crop_params
+
+        self.nfolders      = 0
+        self.nimgs         = 0
+        self.queue         = self.get_queue()
+
+
+    def get_queue(self):
+        # Define folders queue
+        queue = mp.Queue()
+
+        # Put all paths to folders
+        for root, subFolders, files in os.walk(self.path_to_superdir):
+            for subFolder in subFolders:
+                if subFolder[0:5] == cfg.bunch_fldname:
+                    for root_, subFolders_, files_ in os.walk(subFolder):
+                        for subFolder_ in subFolders_:
+                            self.nfolders += 1
+                            self.nimgs    += len(fnmatch.filter(os.listdir(os.path.join(results_dir, subFolder_)), self.imgs_ext))
+                            queue.put(os.path.join(root_, subFolder_))
+
+        print 'In superdir {} are {} folders.'.format(self.path_to_superdir, self.nfolders)
+        print 'In superdir {} are {} images.'.format(self.path_to_superdir, self.nimgs)
+
+        return queue
+
+
+    def run_multiprocessing_crop(self):
+
+        # dlib detector and predictor
+        detector = dlib.get_frontal_face_detector()
+        predictor = dlib.shape_predictor(predictor_path)
+
+        nproc = int(0.75*cpu_count())
+        pool=Pool(processes = nproc)
+        for x in range(self.queue.qsize()):
+            folder = self.queue.get()
+            pool.apply_async(self.crop_images_w_dlib_points, args=(detector, predictor, folder))
+
+        # new section
+        pool.close()
+        pool.join()
+
+
+    def crop_images_w_dlib_points(self, detector, predictor, folder_path):
+        for f in glob.glob(os.path.join(folder_path, self.imgs_ext)):
+            if not f.endswith(self.crop_endswith + self.imgs_ext):
+                # print("Processing file: {}, ends crop: {}".format(f, f.endswith("_crop.jpg")))
+                img = io.imread(os.path.join(folder_path, f))
+                pts = self.get_dlib_points(detector, predictor, img)
+                crop = Crop(img, pts, img.shape[0], self.crop_params)
+                # if it is needed rescale pts
+                # crop.rescale_pts()
+                crop.crop_head()
+                folder, fullfilename = os.path.split(f)
+                filename, _ = os.path.splitext(fullfilename)
+                new_path = os.path.join(folder, filename + self.crop_endswith + self.imgs_ext)
+                crop.save(new_path)
+
+
+    def get_dlib_points(self, detector, predictor, img):
+
+        # Ask the detector to find the bounding boxes of each face. The 1 in the
+        # second argument indicates that we should upsample the image 1 time. This
+        # will make everything bigger and allow us to detect more faces.
+        dets = detector(img, 1)
+        # print("Number of faces detected: {}".format(len(dets)))
+
+        max_d, max_dist = None, None
+        for k, d in enumerate(dets):
+            (max_d, max_dist) = (
+            d, get_dist(d.left(), d.top(), d.right(), d.bottom())) if max_d is None else (max_d, max_dist)
+            d_dist = get_dist(d.left(), d.top(), d.right(), d.bottom())
+            (max_d, max_dist) = (d, d_dist) if d_dist > max_dist else (max_d, max_dist)
+
+        # Get the landmarks/parts for the face in box d.
+        points = predictor(img, max_d)
+        points = points_as_array(points)
+        # print points
+        return points

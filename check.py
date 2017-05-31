@@ -101,7 +101,7 @@ class Check:
                     for root_, subFolders_, files_ in os.walk(subFolder):
                         for subFolder_ in subFolders_:
 
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + '.alpha')
+                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + cfg.alphas_ext)
 
                             if not os.path.exists(path_to_subFolder_alpha):
                                 print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)

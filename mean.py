@@ -7,15 +7,15 @@ from skimage import io
 # CREATE MEAN IMAGE
 class MeanImage:
 
-    def __init__(self, main_path, directory_with_images, imgSize, channel, meanPrefix):
+    def __init__(self, main_path, directory_with_images, meanPrefix, crop_params):
 
         self.main_path = main_path
         self.directory_with_images = directory_with_images
         assert os.path.exists(self.main_path), \
             'Path to superdir {} does not exist. Pls check path.'.format(self.main_path)
 
-        self.imgSize = imgSize
-        self.channel = channel
+        self.imgSize    = crop_params['imgSize']
+        self.channel    = crop_params['channel']
         self.meanPrefix = meanPrefix
 
     def create_mean_image(self):

@@ -28,26 +28,26 @@ class Augmentation:
             'Mode {} must be one from list {}. Pls check mode param.'.format(self.mode,'[classification, landmarks, 3D]')
 
         if self.mode == 'landmarks':
-                self.landmarks_filename     = file_params['landmarks']['csv_filename']
-                self.landmarks_names        = file_params['landmarks']['names']
-                self.landmarks_types        = file_params['landmarks']['types']
-                self.landmarks_sep          = file_params['landmarks']['sep']
+                self.landmarks_filename     = file_params['in']['landmarks']['csv_filename']
+                self.landmarks_names        = file_params['in']['landmarks']['names']
+                self.landmarks_types        = file_params['in']['landmarks']['types']
+                self.landmarks_sep          = file_params['in']['landmarks']['sep']
 
         if self.mode == 'classification':
-                self.labels_filename        = file_params['labels']['csv_filename']
-                self.labels_names           = file_params['labels']['names']
-                self.labels_types           = file_params['labels']['types']
-                self.labels_sep             = file_params['labels']['sep']
+                self.labels_filename        = file_params['in']['labels']['csv_filename']
+                self.labels_names           = file_params['in']['labels']['names']
+                self.labels_types           = file_params['in']['labels']['types']
+                self.labels_sep             = file_params['in']['labels']['sep']
 
-                self.microclasses_filename  = file_params['microclasses']['csv_filename']
-                self.microclasses_names     = file_params['microclasses']['names']
-                self.microclasses_types     = file_params['microclasses']['types']
-                self.microclasses_sep       = file_params['microclasses']['sep']
+                self.microclasses_filename  = file_params['in']['microclasses']['csv_filename']
+                self.microclasses_names     = file_params['in']['microclasses']['names']
+                self.microclasses_types     = file_params['in']['microclasses']['types']
+                self.microclasses_sep       = file_params['in']['microclasses']['sep']
 
-                self.landmarks_filename     = file_params['landmarks']['csv_filename']
-                self.landmarks_names        = file_params['landmarks']['names']
-                self.landmarks_types        = file_params['landmarks']['types']
-                self.landmarks_sep          = file_params['landmarks']['sep']
+                self.landmarks_filename     = file_params['in']['landmarks']['csv_filename']
+                self.landmarks_names        = file_params['in']['landmarks']['names']
+                self.landmarks_types        = file_params['in']['landmarks']['types']
+                self.landmarks_sep          = file_params['in']['landmarks']['sep']
 
                 self.path_to_labels         = os.path.join(self.path_to_superdir, self.labels_filename)
                 self.path_to_microclasses   = os.path.join(self.path_to_superdir, self.microclasses_filename)
@@ -65,11 +65,11 @@ class Augmentation:
         #if self.mode == '3D':
 
         self.distortion = augmentation_params['distortion']['do']
-        self.schemes = augmentation_params['distortion']['schemes']
-        self.rotation = augmentation_params['rotation']['do']
-        self.angles = augmentation_params['rotation']['angles']
-        self.mirror = augmentation_params['mirror']['do']
-        self.new_order = augmentation_params['mirror']['new_order']
+        self.schemes    = augmentation_params['distortion']['schemes']
+        self.rotation   = augmentation_params['rotation']['do']
+        self.angles     = augmentation_params['rotation']['angles']
+        self.mirror     = augmentation_params['mirror']['do']
+        self.new_order  = augmentation_params['mirror']['new_order']
 
         # get right function to get angles for rotation
         self.angles = self.angles(self.mode)

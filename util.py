@@ -97,8 +97,21 @@ def get_image_size(x):
     im = Image.open(x)
     return im.size[0]
 
-
 def recompute_row(row):
     vals = np.array(row[:-1]).astype(float)
     size = float(row[-1])
     return np.append(vals/(size/2.) - 1, [size])
+
+def points_as_array(points):
+    num = len([p.x for p in points.parts()])
+    points_as_array = np.zeros(2 * num, dtype=np.float32)
+    idx = 0
+    for point in points.parts():
+        points_as_array[2 * idx] = point.x
+        points_as_array[2 * idx + 1] = point.y
+        idx += 1
+    return points_as_array
+
+
+def get_dist(left, top, right, bottom):
+    return math.sqrt((right - left) ** 2 + (bottom - top) ** 2)

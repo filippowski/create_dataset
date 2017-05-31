@@ -10,9 +10,9 @@ from load import load_cls_labels, load_landmarks
 # CREATE AND SAVE LABELS
 class Label:
 
-    def __init__(self, main_path, file_params, path_to_labels, mode, task_mask=None, tasks=None, tasks_names=None):
+    def __init__(self, main_path, file_params, crop_params, task_params, mode):
+
         self.mode = mode
-        self.path_to_labels = path_to_labels
         self.main_path = main_path
         assert os.path.exists(self.main_path), \
             'Main path {} does not exist. Pls check path.'.format(self.main_path)
@@ -33,16 +33,19 @@ class Label:
                 self.labels_types           = file_params['labels']['types']
                 self.labels_sep             = file_params['labels']['sep']
 
-                self.path_to_raw_labels         = os.path.join(self.main_path, self.labels_filename)
+                self.path_to_raw_labels     = os.path.join(self.main_path, self.labels_filename)
                 assert os.path.exists(self.path_to_raw_labels), \
                     'Path to labels {} does not exist. Pls check path.'.format(self.path_to_raw_labels)
 
         # TO DO
         #if self.mode == '3D':
 
-        self.task_mask = task_mask
-        self.tasks = tasks
-        self.tasks_names = tasks_names
+        self.labels_filename  = file_params['out']['labels_filename']
+        self.path_to_labels   = os.path.join(self.main_path, self.labels_filename)
+
+        self.task_mask   = task_params['task_mask']
+        self.tasks       = task_params['tasks']
+        self.tasks_names = task_params['tasks_names']
         self.img_cnt = 0
         self.lbl_cnt = 0
         self.start = time.time()
@@ -55,8 +58,7 @@ class Label:
         if self.mode == 'landmarks':
             self.create_labels_landmarks()
         if self.mode == '3D':
-            print "to be .. TO DO"
-            #    self.run_augmentation_3D()
+            pass
 
         print '\n/************************************************************************/'
         print 'Done: created and saved LABELS file.\n\n'
@@ -90,11 +92,10 @@ class Label:
             labels_length = labels_length + mask.size
 
         raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], names=self.labels_names, types=self.labels_types)
-        #print ' * raw labels: ', raw_labels.iloc[0]
+
         # get only needed labels
         columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]
         cut_labels = raw_labels[columns]
-        #print ' * cut labels: ', cut_labels.iloc[0]
 
         labels = np.zeros((cut_labels.shape[0], labels_length), dtype='int32')
 

@@ -10,24 +10,23 @@ import random
 
 class Lmdb:
 
-    def __init__(self,  path_to_file_with_paths_to_images,
-                        path_to_labels,
+    def __init__(self,  main_path,
+                        images_filename,
+                        labels_filename,
                         path_to_lmdb_with_images,
                         path_to_lmdb_with_labels,
-                        testSize=20,
-                        imgSize=224,
-                        channel=3,
-                        shuffle=True):
+                        lmdb_params):
 
-        self.images     = path_to_file_with_paths_to_images
-        self.labels     = path_to_labels
-        self.ndim       = channel
+        self.images     = os.path.join(main_path, images_filename)
+        self.labels     = os.path.join(main_path, labels_filename)
         self.imagesOut  = path_to_lmdb_with_images
         self.labelsOut  = path_to_lmdb_with_labels
-        self.test_data_persent = testSize
-        self.maxPx      = imgSize
-        self.minPx      = imgSize
-        self.shuffle    = shuffle
+        self.test_data_percent = lmdb_params['testSize']
+        self.maxPx      = lmdb_params['imgSize']
+        self.minPx      = lmdb_params['imgSize']
+        self.shuffle    = lmdb_params['shuffle']
+        self.ndim       = lmdb_params['channel']
+        self.lmdb_mode  = lmdb_params['lmdb_mode']
         self.imgs_cnt   = None
         self.lbls_cnt   = None
         self.size_one_img = None
@@ -196,11 +195,11 @@ class Lmdb:
         print "Image mean values for RBG: {0}".format(means / cnt)
 
 
-    def create_lmdb(self, mode='caffe'):
+    def create_lmdb(self):
 
         print '\n\n * creating LMDBs\n'
 
-        fillLmdb = self.fillLmdb if mode == 'caffe' else self.fillLmdb_one_lmdb_per_one_label
+        fillLmdb = self.fillLmdb if self.lmdb_mode == 'caffe' else self.fillLmdb_one_lmdb_per_one_label
 
         # images
         images = np.loadtxt(self.images, str, delimiter='\t')
@@ -218,7 +217,7 @@ class Lmdb:
         print "Size of one label: {}".format(self.size_one_lbl)
 
 
-        num = self.test_data_persent * self.imgs_cnt / 100
+        num = self.test_data_percent * self.imgs_cnt / 100
 
         if self.shuffle:
             print "Shuffling the data"
