@@ -219,8 +219,8 @@ def get_file_params(mode):
                                                  },
 
                                     'dlib_model': {
-                                                    'path_to_model':    full_path_to_dlib_model
-                                                    'crop_endswith':    crop_endswith
+                                                    'path_to_model':    full_path_to_dlib_model,
+                                                    'crop_endswith':    crop_endswith,
                                                     'imgs_ext':         imgs_ext
                                                   }
                                 },

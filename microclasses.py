@@ -24,15 +24,15 @@ class Microclasses:
         self.num_microclasses           = self.get_num_microclasses(self.tasks, self.tasks_names[1])
         self.num_nonempty_microclasses  = None
 
-        self.labels_filename        = file_params['labels']['csv_filename']
-        self.labels_names           = file_params['labels']['names']
-        self.labels_types           = file_params['labels']['types']
-        self.labels_sep             = file_params['labels']['sep']
+        self.labels_filename        = file_params['in']['labels']['csv_filename']
+        self.labels_names           = file_params['in']['labels']['names']
+        self.labels_types           = file_params['in']['labels']['types']
+        self.labels_sep             = file_params['in']['labels']['sep']
 
-        self.microclasses_filename  = file_params['microclasses']['csv_filename']
-        self.microclasses_names     = file_params['microclasses']['names']
-        self.microclasses_types     = file_params['microclasses']['types']
-        self.microclasses_sep       = file_params['microclasses']['sep']
+        self.microclasses_filename  = file_params['in']['microclasses']['csv_filename']
+        self.microclasses_names     = file_params['in']['microclasses']['names']
+        self.microclasses_types     = file_params['in']['microclasses']['types']
+        self.microclasses_sep       = file_params['in']['microclasses']['sep']
 
         self.path_to_labels         = os.path.join(self.path_to_superdir, self.labels_filename)
         self.path_to_microclasses   = os.path.join(self.path_to_superdir, self.microclasses_filename)
