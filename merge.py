@@ -220,8 +220,7 @@ class Merge:
 
         print '\nSTAGE: Write all alphas in one csv-file and paths to cropped images in images file.\n'
 
-        self.create_imgs_and_lbls_files(path_to_superdir, path_to_alphas, path_to_labels,
-                                   path_to_file_with_paths_to_images, alphas_cnt, crop.nimgs, crop.nfolders)
+        self.create_imgs_and_lbls_files(crop.nfolders)
 
         print '\n/************************************************************************/'
         print '\nDone: merged all csv-files in one csv-file.'
@@ -348,7 +347,6 @@ class Merge:
             imglabels = labels[labels[0] == imgname].values[0].tolist()
             #print imglabels
 
-
             # write to scv
             row = [os.path.join(dir_target, str(self.cnt_mrg_img).zfill(8) + '.jpg')]
             row.extend(imglabels[1:]) # without first value of image path
@@ -359,23 +357,22 @@ class Merge:
         print 'Done: cropped images are created and saved for directory: {}.'.format(dir_src)
 
 
-    def create_imgs_and_lbls_files(self, main_path, path_to_alphas, path_to_labels,
-                                   path_to_file_with_paths_to_images, alphas_count, nimgs, nfolders):
+    def create_imgs_and_lbls_files(self, nfolders):
 
         idx = 0
         startTime = time.time()
 
         labels = np.zeros((self.imgs_cnt * nfolders, alphas_count), dtype='float32')
-        file_with_paths_to_images = open(path_to_file_with_paths_to_images, "w")
+        file_with_paths_to_images = open(self.path_to_file_with_paths_to_images, "w")
 
-        for root, subFolders, files in os.walk(main_path):
+        for root, subFolders, files in os.walk(self.path_to_superdir):
             for subFolder in subFolders:
                 if subFolder[0:5] == self.bunch_fldname:
                     for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
                         for subFolder_ in subFolders_:
 
-                            path_to_subFolder_alpha = os.path.join(path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
-                            subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha, alphas_count)  # alphas
+                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+                            subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha, self.alphas_cnt)  # alphas
 
                             for root1, subFolders1, files1 in os.walk(os.path.join(root_, subFolder_)):
 
@@ -400,6 +397,6 @@ class Merge:
                                     sys.stdout.flush()
 
         # save labels
-        np.save(path_to_labels, labels)
+        np.save(self.path_to_labels, labels)
 
         print 'Count of images in all folders: {}'.format(labels.shape[0])
