@@ -15,16 +15,18 @@ def create_dataset():
     file_params = cfg.get_file_params(cfg.mode)
     crop_params = cfg.get_crop_params(cfg.mode)
     task_params = cfg.get_task_params(cfg.mode)
-    augm_params = cfg.get_augmentation_params(cfg.mode)
-    merg_params = cfg.get_merge_params(cfg.mode)
+    augm_params = cfg.get_augm_params(cfg.mode)
+    merg_params = cfg.get_merg_params(cfg.mode)
     lmdb_params = cfg.get_lmdb_params(cfg.mode)
 
     # Checking
-    check = Check(cfg.path_to_superdir, file_params, cfg.mode)
-    check.run()
+    begin = True
+    if cfg.check:
+        check = Check(cfg.path_to_superdir, file_params, cfg.mode)
+        check.run()
+        begin = check.res
 
-    if (check.res):
-    #if True:
+    if (begin):
 
         print '\n\nBeginning...\n\n'
         with Profiler() as p:

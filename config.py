@@ -3,7 +3,6 @@
 
 import numpy as np
 import os
-import random
 from newOrder import get_new_order_119
 from util import get_value, get_inode
 
@@ -64,13 +63,18 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 # 3.1 Flags for dataset creation
 ################################################
 
-# augmentation dataset
+# do dataset checking
+check           = True
+
+# dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = False#True
+augmentation    = True
+
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = False#True
-# create lmdb
+merge           = True
+
+# lmdb create
 # detailed settings are available in Part 7. LMDB parameters
 create_lmdb     = True
 
@@ -78,9 +82,9 @@ create_lmdb     = True
 # 3.2 Other flags
 ################################################
 
-# do shuffle before create lmdb
+# do shuffle before lmdb create
 shuffle                 = True
-# run augmentation main scheme
+# run augmentation by main scheme
 run_main_IF_SCHEME_AUG  = False
 
 ################################################################################################
@@ -240,7 +244,7 @@ def get_file_params(mode):
 # TODO fill true augmentation params <key, value> pairs
 ################################################################################################
 
-def get_augmentation_params(mode):
+def get_augm_params(mode):
 
     aug_params = None
 
@@ -299,7 +303,7 @@ def get_augmentation_params(mode):
 # TODO fill true merge params <key, value> pairs
 ################################################################################################
 
-def get_merge_params(mode):
+def get_merg_params(mode):
 
     mrg_params = None
 
@@ -679,9 +683,9 @@ def get_task_params(mode):
 ########################################################################
 
 # разделитель лейблов в landmarks.csv
-landmarks_sep = ' '
+landmarks_sep    = ' '
 # разделитель лейблов в labels.csv
-labels_sep = ';'
+labels_sep       = ';'
 # разделитель лейблов в microclasses.csv
 microclasses_sep = ' '
 
