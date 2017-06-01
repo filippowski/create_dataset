@@ -61,8 +61,8 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
 
-        images_map_size = 3 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
-        labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
+        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        labels_map_size = 3 * len(images) * self.size_one_lbl       #self.lbls_cnt
         print '\nImages map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
 
@@ -127,8 +127,8 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
 
-        images_map_size = 3 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
-        labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
+        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        labels_map_size = 3 * len(images) * self.size_one_lbl       #self.lbls_cnt
         print 'Images map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
 
