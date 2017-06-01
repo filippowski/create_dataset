@@ -308,7 +308,7 @@ class CropDLIB:
         while (len(dets) < 1 and times < 5):
             times += 1
             dets = detector(img, times)
-            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img)
+            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img))
 
         max_d, max_dist = None, None
         for k, d in enumerate(dets):
