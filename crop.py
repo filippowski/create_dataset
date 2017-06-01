@@ -279,6 +279,7 @@ class CropDLIB:
         for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
                 path_to_img = os.path.join(folder_path, f)
+                img = io.imread(path_to_img)
                 #print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
                 pts = self.get_dlib_points(detector, predictor, path_to_img)
                 crop = Crop(img, pts, img.shape[0], self.crop_params)
