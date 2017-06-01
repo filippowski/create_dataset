@@ -167,7 +167,7 @@ class Lmdb:
                 for i in range(self.lbls_cnt):
                     # write label to lmdb
                     lbl = np.array(label[i]).astype(float).reshape(1, 1, 1)
-                    label_dat = caffe.io.array_to_datum(lbl)
+                    label_dat = caffe.io.array_to_datum(np.array([]), lbl)
 
                     # put label in label-LMDB (as new pair <key, value>)
                     labels_txn[i].put('{:0>8d}'.format(in_idx) + '_0', label_dat.SerializeToString())

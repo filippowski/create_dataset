@@ -299,9 +299,16 @@ class CropDLIB:
         # second argument indicates that we should upsample the image 1 time. This
         # will make everything bigger and allow us to detect more faces.
 
-        dets = detector(img, 0)
+        times = 0
+        dets = detector(img, times)
         if len(dets) == 0:
-            print("Number of faces detected: {}, image: {}".format(len(dets), path_to_img))
+            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img))
+
+        #if detector does not see any faces then upsanple image at most five times
+        while (len(dets) < 1 and times < 5):
+            times += 1
+            dets = detector(img, times)
+            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img)
 
         max_d, max_dist = None, None
         for k, d in enumerate(dets):
