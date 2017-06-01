@@ -362,7 +362,7 @@ class Merge:
         idx = 0
         startTime = time.time()
 
-        labels = np.zeros((self.imgs_cnt * nfolders, alphas_count), dtype='float32')
+        labels = np.zeros((self.imgs_cnt * nfolders, self.alphas_cnt), dtype='float32')
         file_with_paths_to_images = open(self.path_to_file_with_paths_to_images, "w")
 
         for root, subFolders, files in os.walk(self.path_to_superdir):
