@@ -292,7 +292,7 @@ class CropDLIB:
 
     def get_dlib_points(self, detector, predictor, path_to_img):
 
-        img = io.imread(os.path.join(folder_path, f))
+        img = io.imread(path_to_img)
 
         # Ask the detector to find the bounding boxes of each face. The 1 in the
         # second argument indicates that we should upsample the image 1 time. This

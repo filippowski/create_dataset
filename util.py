@@ -116,3 +116,10 @@ def points_as_array(points):
 
 def get_dist(left, top, right, bottom):
     return math.sqrt((right - left) ** 2 + (bottom - top) ** 2)
+
+def get_alphas_from_alphasfile(path_to_alphas, alphas_num):
+    alphas = np.zeros((alphas_num), dtype='float64')
+    alphasfile = open(path_to_alphas)
+    for line in alphasfile:
+        alphas = np.array(line[1:-1].split(', '), dtype='float64')
+    return alphas

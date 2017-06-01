@@ -7,7 +7,7 @@ import sys
 import time
 import csv
 from scipy.ndimage import imread
-from util import Profiler, create_file_with_paths_to_images, ensure_dir
+from util import Profiler, create_file_with_paths_to_images, ensure_dir, get_alphas_from_alphasfile
 from load import load_cls_labels, load_landmarks
 from crop import Crop, CropDLIB
 
