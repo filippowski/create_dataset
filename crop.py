@@ -278,7 +278,7 @@ class CropDLIB:
         folder_path = queue.get()
         for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
-                print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
+                #print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
                 img = io.imread(os.path.join(folder_path, f))
                 pts = self.get_dlib_points(detector, predictor, img)
                 crop = Crop(img, pts, img.shape[0], self.crop_params)
@@ -290,16 +290,15 @@ class CropDLIB:
                 new_path = os.path.join(folder, filename + self.crop_endswith + self.imgs_ext)
                 crop.save(new_path)
 
-
     def get_dlib_points(self, detector, predictor, img):
 
         # Ask the detector to find the bounding boxes of each face. The 1 in the
         # second argument indicates that we should upsample the image 1 time. This
         # will make everything bigger and allow us to detect more faces.
-        dets = detector(img, 1)
+
+        dets = detector(img, 0)
         if len(dets) == 0:
             print("Number of faces detected: {}".format(len(dets)))
-        # print("Number of faces detected: {}".format(len(dets)))
 
         max_d, max_dist = None, None
         for k, d in enumerate(dets):
