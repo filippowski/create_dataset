@@ -61,7 +61,7 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
 
-        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        images_map_size = 3 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
         labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
         print '\nImages map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
@@ -127,7 +127,7 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
 
-        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        images_map_size = 3 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
         labels_map_size = 2 * len(images) * self.size_one_lbl       #self.lbls_cnt
         print 'Images map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
@@ -207,14 +207,14 @@ class Lmdb:
         im = np.array(Image.open(images[0]))
         self.size_one_img = sys.getsizeof(im)
         print "\nNumber of images: {}".format(self.imgs_cnt)
-        print "Size of one image: {}{}".format(self.size_one_img, 'Bytes')
+        print "Size of one image: {} Bytes".format(self.size_one_img)
         # labels
         labels = np.load(self.labels)
         self.lbls_cnt = labels.shape[1]
         lbl = np.array(labels[0]).astype(float).reshape(1, 1, labels[0].shape[0])
         self.size_one_lbl = sys.getsizeof(lbl)
         print "\nNumber of labels: {}".format(self.lbls_cnt)
-        print "Size of one label: {}{}".format(self.size_one_lbl, 'Bytes')
+        print "Size of one label: {} Bytes".format(self.size_one_lbl)
 
 
         num = self.test_data_percent * self.imgs_cnt / 100

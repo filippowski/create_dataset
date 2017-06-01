@@ -207,7 +207,7 @@ class Merge:
 
     def merge_3D(self,  path_to_superdir, main_path, file_params, crop_params):
 
-        print '\nSTAGE: Cropping all images.\n'
+        print '\nSTAGE: Crope images.\n'
         # crop all images
         crop = CropDLIB(path_to_superdir, file_params, crop_params)
 
@@ -218,13 +218,15 @@ class Merge:
         print 'Done: cropped and saved all images.\n\n'
 
 
-        print '\nSTAGE: Write all alphas in one csv-file and paths to cropped images in images file.\n'
+        print '\nSTAGE: Write all alphas in one labels file and all paths to cropped images in images file.\n'
 
         self.create_imgs_and_lbls_files(crop.nfolders)
 
+        self.cnt_mrg_img = crop.nimgs
+
         print '\n/************************************************************************/'
-        print '\nDone: merged all csv-files in one csv-file.'
-        print 'Total: {} images.\n'.format(self.cnt_mrg_img)
+        print '\nDone: writed all alphas in one labels file and all paths to cropped images in images file.'
+        print 'Total: {} images.\n'.format(crop.nimgs)
 
 
     def recompute_labels(self, labels, x_low, y_low, transform):
@@ -399,4 +401,4 @@ class Merge:
         # save labels
         np.save(self.path_to_labels, labels)
 
-        print 'Count of images in all folders: {}'.format(labels.shape[0])
+        print '\nCount of images in all folders: {}'.format(labels.shape[0])

@@ -66,10 +66,10 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 
 # augmentation dataset
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = True
+augmentation    = False#True
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = True
+merge           = False#True
 # create lmdb
 # detailed settings are available in Part 7. LMDB parameters
 create_lmdb     = True
