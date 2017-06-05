@@ -154,6 +154,7 @@ class Rotation:
 
         for i in range(len(angles)):
 
+
             print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
             print 'Amount of images: {}'.format(len(glob.glob(os.path.join(dir_src, '*' + '.jpg'))))
 
