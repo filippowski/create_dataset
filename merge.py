@@ -256,17 +256,14 @@ class Merge:
         idx = 0
 
         for root, subFolders, files in os.walk(self.path_to_alphas):
-            for subFolder in subFolders:
-                if subFolder[0:5] == self.bunch_fldname:
-                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
-                        for subFolder_ in subFolders_:
-                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas,
-                                                                   subFolder_.split('.obj')[0] + self.alphas_ext)
+            for f in files:
+                filename, filext = os.path.splitext(f)
+                if filext == self.alphas_ext:
+                    with open(os.path.join(root, f)) as alphasfile:
+                        alphasfile.write([str(idx)])
+                        alphasfile.close()
 
-                            with open(path_to_subFolder_alpha) alphasfile:
-                                alphasfile.write([str(idx)])
-
-                            print subFolder_, idx
+                    print f, idx
 
 
     def add_one_folder_landmarks(self, dir_src, dir_target, csv_filename, sep, csv_file, writer, crop_params):

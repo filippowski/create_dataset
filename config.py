@@ -64,11 +64,11 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 ################################################
 
 # do dataset checking
-check           = True
+check           = False#True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = True
+augmentation    = False#True
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
