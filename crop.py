@@ -295,29 +295,22 @@ class CropDLIB:
 
         img = io.imread(path_to_img)
 
-        # Ask the detector to find the bounding boxes of each face. The 1 in the
-        # second argument indicates that we should upsample the image 1 time. This
-        # will make everything bigger and allow us to detect more faces.
+        # Finally, if you really want to you can ask the detector to tell you the score
+        # for each detection.  The score is bigger for more confident detections.
+        # The third argument to run is an optional adjustment to the detection threshold,
+        # where a negative value will return more detections and a positive value fewer.
+        # Also, the idx tells you which of the face sub-detectors matched.  This can be
+        # used to broadly identify faces in different orientations.
 
-        times = 0
-        dets = detector(img, times)
-        if len(dets) == 0:
-            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img))
-
-        #if detector does not see any faces then upsanple image at most five times
-        while (len(dets) < 1 and times < 5):
-            times += 1
-            dets = detector(img, times)
-            print("Number of faces detected: {}, times: {}, image: {}".format(len(dets), times, path_to_img))
-
-        max_d, max_dist = None, None
-        for k, d in enumerate(dets):
-            (max_d, max_dist) = (d, get_dist(d.left(), d.top(), d.right(), d.bottom())) if max_d is None else (max_d, max_dist)
-            d_dist = get_dist(d.left(), d.top(), d.right(), d.bottom())
-            (max_d, max_dist) = (d, d_dist) if d_dist > max_dist else (max_d, max_dist)
+        dets, scores, idx = detector.run(img, 1, -1)
+        for i, d in enumerate(dets):
+            #print("Detection {}, score: {}, face_type:{}".format(d, scores[i], idx[i]))
+            if i == 0:
+                det = d
+                break
 
         # Get the landmarks/parts for the face in box d.
-        points = predictor(img, max_d)
+        points = predictor(img, det)
         points = points_as_array(points)
         # print points
         return points
