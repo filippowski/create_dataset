@@ -180,13 +180,13 @@ class Rotation:
 
         if callable(get_angles):
             angles = get_angles(dir_src)
-            print ' * get_angles is function, angles are: {}'.format(angles)
+            #print ' * get_angles is function, angles are: {}'.format(angles)
 
         if initial_csv_file is None:
-            print 'Rotate images w/o labels.'
+            #print 'Rotate images w/o labels.'
             self.create_rotated_images_wo_labels(dir_src, angles)
         else:
-            print 'Rotate images with labels.'
+            #print 'Rotate images with labels.'
             self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
 
 
