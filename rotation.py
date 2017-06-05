@@ -164,7 +164,7 @@ class Rotation:
                 img = imread(os.path.join(dir_src, f))
                 img_rotated = rotate(img, angles[i], mode='symmetric')
                 path_to_img = os.path.join(dir_dst[i], f)
-                print 'Save img: {}'.format(path_to_img)
+                print 'Save img: {}, path to dir: {}'.format(path_to_img, dir_dst[i])
                 imsave(path_to_img, img_rotated)
 
         print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
