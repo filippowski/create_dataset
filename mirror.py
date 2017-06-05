@@ -13,7 +13,7 @@ from util import ensure_dir, copy_nomatched_file
 # CREATE MIRRORS
 class Mirror:
 
-    def __init__(self, path_to_superdir, initial_csv_file, new_order):
+    def __init__(self, path_to_superdir, new_order, initial_csv_file=None):
         self.path_to_superdir = path_to_superdir
         assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
         self.new_order = new_order
@@ -81,9 +81,30 @@ class Mirror:
         print 'Done: mirrored images and csv-files with its labels are created for directory: {}.'.format(dir_src)
 
 
+    def create_mirror_images_wo_labels(self, dir_src):
+        # create dst directory
+        dir_dst = self.get_dir_dst_mir(dir_src)
+
+        print 'Mirror images from directory {}.'.format(dir_src)
+
+        for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
+
+            # save images
+            img = imread(f)
+            img_mirror = np.fliplr(img)
+            path_to_img = os.path.join(dir_dst, os.path.split(f)[1])
+            imsave(path_to_img, img_mirror)
+
+        print 'Done: mirrored images are created for directory: {}.'.format(dir_src)
+
+
     def recursive_create_mirror_images_with_labels(self, queue, new_order, initial_csv_file):
         dir_src = queue.get()
-        return self.create_mirror_images_with_labels(dir_src, new_order, initial_csv_file)
+
+        if initial_csv_file is None:
+            self.create_mirror_images_wo_labels(dir_src)
+        else:
+            self.create_mirror_images_with_labels(dir_src, new_order, initial_csv_file)
 
 
     def run_multiprocessing_mirrors(self):

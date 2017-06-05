@@ -107,7 +107,7 @@ class Augmentation:
 
         if self.mirror:
             print '\n * mirror\n'
-            mir = Mirror(self.path_to_superdir, self.landmarks_filename, self.new_order)
+            mir = Mirror(self.path_to_superdir, self.new_order, self.landmarks_filename)
 
             # run mirror
 
@@ -155,7 +155,7 @@ class Augmentation:
 
         if self.mirror:
             print '\n * mirror\n'
-            mir = Mirror(self.path_to_superdir, self.landmarks_filename, self.new_order)
+            mir = Mirror(self.path_to_superdir, self.new_order, self.landmarks_filename)
 
             # run mirror
 
@@ -190,7 +190,7 @@ class Augmentation:
 
         if self.mirror:
             print '\n * mirror\n'
-            mir = Mirror(self.path_to_superdir, self.landmarks_filename, self.new_order)
+            mir = Mirror(self.path_to_superdir, self.new_order)
 
             # run mirror
 

@@ -287,11 +287,11 @@ def get_augm_params(mode):
                                     'schemes':      None
                                   },
                     'rotation':   {
-                                    'do':           True,
+                                    'do':           False,
                                     'angles':       get_angles
                                   },
                     'mirror':     {
-                                    'do':           False,
+                                    'do':           True,
                                     'new_order':    None
                                   }
                  }
