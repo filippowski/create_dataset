@@ -157,8 +157,7 @@ class Rotation:
             for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
 
                 # save images
-                path_to_img = os.path.join(dir_src, f)
-                img = imread(path_to_img)
+                img = imread(os.path.join(dir_src, f))
                 img_rotated = rotate(img, angles[i], mode='symmetric')
                 path_to_img = os.path.join(dir_dst[i], f)
                 imsave(path_to_img, img_rotated)
@@ -178,8 +177,10 @@ class Rotation:
             print ' * get_angles is function, angles are: {}'.format(angles)
 
         if initial_csv_file is None:
+            print 'Rotate images w/o labels.'
             self.create_rotated_images_wo_labels(dir_src, angles)
         else:
+            print 'Rotate images with labels.'
             self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
 
 

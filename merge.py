@@ -268,7 +268,7 @@ class Merge:
                                 with open(path_to_subFolder_alpha, 'w') as alphasfile:
                                     alphasfile.write('[' + str(idx) + ']')
                                     alphasfile.close()
-                                    print f, idx
+                                    print subFolder_.split('.obj')[0], idx
                                 idx += 1
 
 
