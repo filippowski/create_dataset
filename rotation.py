@@ -156,6 +156,8 @@ class Rotation:
 
             for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
 
+                print ' * ', f, os.path.join(dir_src, f)
+
                 # save images
                 img = imread(os.path.join(dir_src, f))
                 img_rotated = rotate(img, angles[i], mode='symmetric')
