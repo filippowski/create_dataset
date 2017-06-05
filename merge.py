@@ -255,15 +255,21 @@ class Merge:
     def rewrite_alphas(self):
         idx = 0
 
-        for root, subFolders, files in os.walk(self.path_to_alphas):
-            for f in files:
-                filename, filext = os.path.splitext(f)
-                if filext == self.alphas_ext:
-                    with open(os.path.join(root, f), 'w') as alphasfile:
-                        alphasfile.write([str(idx)])
-                        alphasfile.close()
+        for root, subFolders, files in os.walk(self.path_to_superdir):
+            for subFolder in subFolders:
+                if subFolder[0:5] == self.bunch_fldname:
+                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
+                        for subFolder_ in subFolders_:
 
-                    print f, idx
+                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+
+                            if len(subFolder_.split('.obj')[1]) == 0:
+
+                                with open(path_to_subFolder_alpha, 'w') as alphasfile:
+                                    alphasfile.write('[' + str(idx) + ']')
+                                    alphasfile.close()
+                                    print f, idx
+                                idx += 1
 
 
     def add_one_folder_landmarks(self, dir_src, dir_target, csv_filename, sep, csv_file, writer, crop_params):
