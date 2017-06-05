@@ -150,6 +150,8 @@ class Rotation:
     def create_rotated_images_wo_labels(self, dir_src, angles):
         dir_dst = self.get_dir_dst_rot(dir_src, angles)
 
+        print dir_dst
+
         for i in range(len(angles)):
 
             print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
@@ -162,6 +164,7 @@ class Rotation:
                 img = imread(os.path.join(dir_src, f))
                 img_rotated = rotate(img, angles[i], mode='symmetric')
                 path_to_img = os.path.join(dir_dst[i], f)
+                print 'Save img: {}'.format(path_to_img)
                 imsave(path_to_img, img_rotated)
 
         print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
