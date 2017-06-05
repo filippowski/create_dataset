@@ -155,17 +155,18 @@ class Rotation:
         for i in range(len(angles)):
 
             print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
+            print 'Amount of images: {}'.format(len(glob.glob(os.path.join(dir_src, '*' + '.jpg'))))
 
-            for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
-
-                print ' * ', f, os.path.join(dir_src, f)
-
-                # save images
-                img = imread(os.path.join(dir_src, f))
-                img_rotated = rotate(img, angles[i], mode='symmetric')
-                path_to_img = os.path.join(dir_dst[i], f)
-                print 'Save img: {}, path to dir: {}, f: {}'.format(path_to_img, dir_dst[i], f)
-                imsave(path_to_img, img_rotated)
+            # for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
+            #
+            #     print ' * ', f, os.path.join(dir_src, f)
+            #
+            #     # save images
+            #     img = imread(f)
+            #     img_rotated = rotate(img, angles[i], mode='symmetric')
+            #     path_to_img = os.path.join(dir_dst[i], os.path.split(f)[1])
+            #     print 'Save img: {}, path to dir: {}, f: {}'.format(path_to_img, dir_dst[i], os.path.split(f)[1])
+            #     imsave(path_to_img, img_rotated)
 
         print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
 
