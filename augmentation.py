@@ -190,7 +190,7 @@ class Augmentation:
 
         if self.mirror:
             print '\n * mirror\n'
-            mir = Mirror(self.path_to_superdir, self.new_order)
+            mir = Mirror(self.path_to_superdir)
 
             # run mirror
 

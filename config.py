@@ -68,15 +68,15 @@ check           = False#True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = True
+augmentation    = False
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = False#True
+merge           = True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
-create_lmdb     = False#True
+create_lmdb     = True
 
 ################################################
 # 3.2 Other flags
@@ -226,7 +226,7 @@ def get_file_params(mode):
                                                     'path_to_model':    full_path_to_dlib_model,
                                                     'crop_endswith':    crop_endswith,
                                                     'imgs_ext':         imgs_ext,
-                                                    'imgs_cnt':         12
+                                                    'imgs_cnt':         300
                                                   }
                                 },
 

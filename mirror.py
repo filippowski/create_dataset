@@ -4,6 +4,7 @@
 import numpy as np
 import pandas as pd
 import os, csv
+import glob
 from scipy.ndimage import imread
 from skimage.io import imsave
 import multiprocessing as mp
@@ -13,7 +14,7 @@ from util import ensure_dir, copy_nomatched_file
 # CREATE MIRRORS
 class Mirror:
 
-    def __init__(self, path_to_superdir, new_order, initial_csv_file=None):
+    def __init__(self, path_to_superdir, new_order=None, initial_csv_file=None):
         self.path_to_superdir = path_to_superdir
         assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
         self.new_order = new_order
@@ -115,6 +116,7 @@ class Mirror:
         processes = [mp.Process(target=func,args=args) for x in range(self.queue.qsize())]
 
         nprocesses = len(processes)
+        #print nprocesses
         nworkers = int(0.75*mp.cpu_count())
 
         for i in range(int(nprocesses/nworkers)+1):
