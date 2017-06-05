@@ -68,11 +68,11 @@ check           = False#True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = False#True
+augmentation    = True
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = True
+merge           = False#True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
