@@ -259,7 +259,7 @@ class Merge:
             for f in files:
                 filename, filext = os.path.splitext(f)
                 if filext == self.alphas_ext:
-                    with open(os.path.join(root, f)) as alphasfile:
+                    with open(os.path.join(root, f), 'w') as alphasfile:
                         alphasfile.write([str(idx)])
                         alphasfile.close()
 
