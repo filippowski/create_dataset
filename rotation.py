@@ -4,6 +4,7 @@
 import numpy as np
 import pandas as pd
 import os, csv
+import glob
 from scipy.ndimage import imread
 from skimage.io import imsave
 from skimage.transform import rotate
@@ -15,12 +16,11 @@ from util import ensure_dir, copy_nomatched_file
 # CREATE ROTATIONS
 class Rotation:
 
-    def __init__(self, path_to_superdir, initial_csv_file, get_angles):
+    def __init__(self, path_to_superdir, get_angles, initial_csv_file=None):
         self.path_to_superdir = path_to_superdir
         assert os.path.exists(self.path_to_superdir), 'Path to superdir {} does not exist. Pls check path.'.format(self.path_to_superdir)
         self.get_angles = get_angles
         self.initial_csv_file = initial_csv_file
-
 
         # Define folders queue
         self.queue = mp.Queue()
@@ -84,7 +84,7 @@ class Rotation:
         return transform
 
 
-    def create_rotated_images_with_labels(self, dir_src, angles, initial_csv_file):
+    def create_rotated_images_with_labels(self, dir_src, angles, initial_csv_file=None):
         dir_dst = self.get_dir_dst_rot(dir_src, angles)
 
         # csv filenames and path-to-files defs
@@ -146,6 +146,26 @@ class Rotation:
             rotated_csv_file.close()
         print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
 
+
+    def create_rotated_images_wo_labels(self, dir_src, angles):
+        dir_dst = self.get_dir_dst_rot(dir_src, angles)
+
+        for i in range(len(angles)):
+
+            print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
+
+            for f in glob.glob(os.path.join(dir_src, '*' + '.jpg')):
+
+                # save images
+                path_to_img = os.path.join(dir_src, f)
+                img = imread(path_to_img)
+                img_rotated = rotate(img, angles[i], mode='symmetric')
+                path_to_img = os.path.join(dir_dst[i], f)
+                imsave(path_to_img, img_rotated)
+
+        print 'Done: rotated images and csv-files with its labels are created for directory: {}.'.format(dir_src)
+
+
     def recursive_create_rotated_images_with_labels(self, queue, get_angles, initial_csv_file):
         dir_src = queue.get()
         angles = []
@@ -157,7 +177,10 @@ class Rotation:
             angles = get_angles(dir_src)
             print ' * get_angles is function, angles are: {}'.format(angles)
 
-        return self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
+        if initial_csv_file is None:
+            self.create_rotated_images_wo_labels(dir_src, angles)
+        else:
+            self.create_rotated_images_with_labels(dir_src, angles, initial_csv_file)
 
 
     def run_multiprocessing_rotations(self):

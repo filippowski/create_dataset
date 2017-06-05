@@ -76,7 +76,7 @@ merge           = True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
-create_lmdb     = True
+create_lmdb     = False#True
 
 ################################################
 # 3.2 Other flags
@@ -219,7 +219,7 @@ def get_file_params(mode):
                                                     'bunch_fldname':    bunch_fldname,
                                                     'alphas_fldname':   alphas_fldname,
                                                     'alphas_ext':       alphas_ext,
-                                                    'alphas_cnt':       50
+                                                    'alphas_cnt':       1#50
                                                  },
 
                                     'dlib_model': {
@@ -287,7 +287,7 @@ def get_augm_params(mode):
                                     'schemes':      None
                                   },
                     'rotation':   {
-                                    'do':           False,
+                                    'do':           True,
                                     'angles':       get_angles
                                   },
                     'mirror':     {
@@ -383,7 +383,9 @@ def get_lmdb_params(mode):
 ################################################
 
 # angles for rotation
-angles = [3, 6, 9, 12, 15, 18, 21]
+angles = [6]
+
+#angles = [3, 6, 9, 12, 15, 18, 21]
 #angles = range(1, 60, 3)
 
 # count of images per microclass for which will be decided run augmentation or not:
@@ -458,7 +460,7 @@ def get_angles_classification(dirpath):
         return angles
 
 def get_angles_3D(dirpath):
-    return []
+    return angles
 
 ################################################################################################
 # 11. Tasks and tasks names

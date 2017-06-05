@@ -80,7 +80,7 @@ class Augmentation:
         if self.mode == 'landmarks':
             self.run_augmentation_landmarks()
         if self.mode == '3D':
-            pass
+            self.run_augmentation_3D()
 
 
     def run_augmentation_landmarks(self):
@@ -93,7 +93,7 @@ class Augmentation:
 
         if self.rotation:
             print '\n * rotation\n'
-            rot = Rotation(self.path_to_superdir, self.landmarks_filename, self.angles)
+            rot = Rotation(self.path_to_superdir, self.angles, self.landmarks_filename)
 
             # run rotation
 
@@ -141,7 +141,42 @@ class Augmentation:
 
         if self.rotation:
             print '\n * rotation\n'
-            rot = Rotation(self.path_to_superdir, self.landmarks_filename, self.angles)
+            rot = Rotation(self.path_to_superdir, self.angles, self.landmarks_filename)
+
+            # run rotation
+
+            print '\nSTAGE 1: Creating and saving rotated images and csv-files with its labels:\n'
+
+            rot.run_multiprocessing_rotations()
+            #run_multiprocessing_rotations_pool(rot)
+
+            print '\n/************************************************************************/'
+            print 'Done: created and saved rotated images and csv-files with its labels.\n\n'
+
+        if self.mirror:
+            print '\n * mirror\n'
+            mir = Mirror(self.path_to_superdir, self.landmarks_filename, self.new_order)
+
+            # run mirror
+
+            print '\nSTAGE 2: Creating and saving mirrored images and csv-files with its labels:\n'
+
+            mir.run_multiprocessing_mirrors()
+
+            print '\n/************************************************************************/'
+            print 'Done: created and saved mirrored images and csv-files with its labels.\n\n'
+
+
+    def run_augmentation_3D(self):
+
+        if self.distortion:
+            print '\n * distortion\n'
+            # run distortion
+            # TO DO..
+
+        if self.rotation:
+            print '\n * rotation\n'
+            rot = Rotation(self.path_to_superdir, self.angles)
 
             # run rotation
 

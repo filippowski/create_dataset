@@ -171,13 +171,6 @@ class Merge:
 
 
     def merge_classification(self, path_to_superdir, main_path, path_to_dir_with_train_images, landmarks_filename, landmarks_sep, labels_filename, labels_sep, task_params, crop_params):
-        '''
-        path_to_superdir      - directory where are folders with images and csv-files
-        main_path           - directory where will be saved general csv file and folder with resized images
-        landmarks_filename    - name of csv file with all coordinates of landmarks
-        labels_filename       - name of csv file with labels
-        path_to_dir_with_train_images - path to folder that will be contain all train images (resized)
-        '''
 
         path_to_merged_csv_file = os.path.join(main_path, labels_filename)
         merged_csv_file = open(path_to_merged_csv_file, 'at+')
@@ -206,6 +199,10 @@ class Merge:
 
 
     def merge_3D(self,  path_to_superdir, main_path, file_params, crop_params):
+
+        print '\nSTAGE: Rewrite alphas.\n'
+        # rewrite alphas
+        self.rewrite_alphas()
 
         print '\nSTAGE: Crope images.\n'
         # crop all images
@@ -254,6 +251,22 @@ class Merge:
         new_labels[1::2] = fp.T[1]
 
         return new_labels
+
+    def rewrite_alphas(self):
+        idx = 0
+
+        for root, subFolders, files in os.walk(self.path_to_alphas):
+            for subFolder in subFolders:
+                if subFolder[0:5] == self.bunch_fldname:
+                    for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
+                        for subFolder_ in subFolders_:
+                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas,
+                                                                   subFolder_.split('.obj')[0] + self.alphas_ext)
+
+                            with open(path_to_subFolder_alpha) alphasfile:
+                                alphasfile.write([str(idx)])
+
+                            print subFolder_, idx
 
 
     def add_one_folder_landmarks(self, dir_src, dir_target, csv_filename, sep, csv_file, writer, crop_params):
