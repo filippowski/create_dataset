@@ -117,7 +117,7 @@ class Merge:
         # create file with images filenames
         if self.merge_params['create_imgfile']:
             with Profiler() as p:
-                create_file_with_paths_to_images(self.path_to_dir_with_train_images, self.path_to_file_with_paths_to_images,
+                create_file_with_paths_to_images(self.directory_with_images, self.path_to_file_with_paths_to_images,
                                                  self.path_to_labels)
 
         # create mean image
@@ -398,7 +398,8 @@ class Merge:
                                 for f in files1:
                                     filename, file_extension = os.path.splitext(f)
                                     if filename.endswith(self.crop_endswith) and file_extension == self.imgs_ext:
-                                        file_list.append(os.path.join(root1, f))
+                                        subroot = root1.split(self.main_path)[1]
+                                        file_list.append(os.path.join(subroot, f))
 
                                 # for i in range(5):
                                 for i in range(len(file_list)):

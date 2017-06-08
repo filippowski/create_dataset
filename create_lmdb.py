@@ -17,6 +17,7 @@ class Lmdb:
                         path_to_lmdb_with_labels,
                         lmdb_params):
 
+        self.main_path  = main_path
         self.images     = os.path.join(main_path, images_filename)
         self.labels     = os.path.join(main_path, labels_filename)
         self.imagesOut  = path_to_lmdb_with_images
@@ -79,7 +80,7 @@ class Lmdb:
         for in_idx, (image, label) in enumerate(examples):
             try:
                 # write image to lmdb
-                im = Image.open(image)
+                im = Image.open(os.path.join(self.main_path, image))
                 im = np.array(self.resize(im))
                 # renew mean
                 mean = im.mean(axis=0).mean(axis=0)
@@ -147,7 +148,7 @@ class Lmdb:
         for in_idx, (image, label) in enumerate(examples):
             try:
                 # write image to lmdb
-                im = Image.open(image)
+                im = Image.open(os.path.join(self.main_path, image))
                 im = np.array(self.resize(im))
                 # renew mean
                 mean = im.mean(axis=0).mean(axis=0)
@@ -204,7 +205,7 @@ class Lmdb:
         # images
         images = np.loadtxt(self.images, str, delimiter='\t')
         self.imgs_cnt = len(images)
-        im = np.array(Image.open(images[0]))
+        im = np.array(Image.open(os.path.join(self.main_path, images[0])))
         self.size_one_img = sys.getsizeof(im)
         print "\nNumber of images: {}".format(self.imgs_cnt)
         print "Size of one image: {} Bytes".format(self.size_one_img)

@@ -11,8 +11,8 @@ from util import get_value, get_inode
 # 1. Main parameters
 # TODO set main params
 ################################################################################################
-mode        = '3D'
-lmdb_mode   = 'caffe'
+mode        = 'classification'
+lmdb_mode   = 'caffe2'
 
 assert mode in ['classification', 'landmarks', '3D'], \
     'Mode {} must be one from list {}. Pls check mode param.'.format(mode, '[classification, landmarks, 3D]')
@@ -25,8 +25,8 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-#main_path   = '/8TB/DATASETS/multitask_2/cls_datasets/nose/nose_tip'
-main_path   = '/8TB/DATASETS/test'
+#main_path   = '/8TB/DATASETS/test'
+main_path   = '/8TB/DATASETS/multitask/multitask_data/multitask_300K'
 
 
 images_filename         = 'images.txt'
@@ -331,10 +331,10 @@ def get_merg_params(mode):
 
     if mode == 'classification':
         mrg_params = {
-                        'merge':           True,
-                        'create_labels':   True,
+                        'merge':           False,#True,
+                        'create_labels':   False,#True,
                         'create_imgfile':  True,
-                        'create_mean':     True,
+                        'create_mean':     False,#True,
                         'create_infogain': False
                      }
 
