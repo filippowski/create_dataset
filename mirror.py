@@ -9,7 +9,7 @@ from scipy.ndimage import imread
 from skimage.io import imsave
 import multiprocessing as mp
 from  multiprocessing import cpu_count, Pool
-from util import ensure_dir, copy_nomatched_file
+from util import ensure_dir, copy_auxiliary_files
 
 # CREATE MIRRORS
 class Mirror:
@@ -40,7 +40,7 @@ class Mirror:
         print 'Mirror images from directory {}.'.format(dir_src)
 
         # copy all csv-files that does not matched with csv_filename
-        copy_nomatched_file(dir_src, dir_dst, csv_filename)
+        copy_auxiliary_files(dir_src, dir_dst, needless_files_names=(initial_csv_file), extensions=('.csv'))
 
         # csv filenames and path-to-files defs
         path_to_initial_csv_file = os.path.join(dir_src, csv_filename)
@@ -83,8 +83,12 @@ class Mirror:
 
 
     def create_mirror_images_wo_labels(self, dir_src):
+
         # create dst directory
         dir_dst = self.get_dir_dst_mir(dir_src)
+
+        # copy all files that are needed
+        copy_auxiliary_files(dir_src, dir_dst, extensions=('.json'))
 
         print 'Mirror images from directory {}.'.format(dir_src)
 

@@ -11,7 +11,7 @@ from skimage.transform import rotate
 import multiprocessing as mp
 from  multiprocessing import cpu_count, Pool
 import math
-from util import ensure_dir, copy_nomatched_file
+from util import ensure_dir, copy_auxiliary_files
 
 # CREATE ROTATIONS
 class Rotation:
@@ -96,7 +96,7 @@ class Rotation:
             print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
 
             # copy all csv-files that does not matched with initial_csv_file
-            copy_nomatched_file(dir_src, dir_dst[i], initial_csv_file)
+            copy_auxiliary_files(dir_src, dir_dst[i], needless_files_names=(initial_csv_file), extensions=('.csv'))
 
             path_to_rotated_csv_file = os.path.join(dir_dst[i], initial_csv_file)
             # print path_to_rotated_csv_file
@@ -151,6 +151,9 @@ class Rotation:
         dir_dst = self.get_dir_dst_rot(dir_src, angles)
 
         for i in range(len(angles)):
+
+            # copy all files that are needed
+            copy_auxiliary_files(dir_src, dir_dst[i], extensions=('.json'))
 
             print 'Rotating by angle {} images from directory {}.'.format(angles[i], dir_src)
 

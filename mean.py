@@ -7,64 +7,82 @@ from skimage import io
 # CREATE MEAN IMAGE
 class MeanImage:
 
-    def __init__(self, main_path, directory_with_images, meanPrefix, crop_params):
+    def __init__(self, main_path, path_to_file_with_paths_to_images, meanPrefix, crop_params):
 
         self.main_path = main_path
-        self.directory_with_images = directory_with_images
+        self.path_to_file_with_paths_to_images = path_to_file_with_paths_to_images
         assert os.path.exists(self.main_path), \
             'Path to superdir {} does not exist. Pls check path.'.format(self.main_path)
+        assert os.path.exists(self.path_to_file_with_paths_to_images), \
+            'Path to file with paths to images {} does not exist. Pls check path.'.format(self.path_to_file_with_paths_to_images)
 
         self.imgSize    = crop_params['imgSize']
         self.channel    = crop_params['channel']
+        self.img_ext    = crop_params['img_ext']
         self.meanPrefix = meanPrefix
+        self.N          = 0
+        self.start      = time.time()
+        if self.channel == 3:
+            self.mean = np.zeros((self.imgSize, self.imgSize, 3))
+        elif self.channel == 1:
+            self.mean = np.zeros((self.imgSize, self.imgSize))
+
 
     def create_mean_image(self):
 
         print '\n\n * creating meanimage\n'
 
         flname = os.path.join(self.main_path, self.meanPrefix)
-        imageDir = os.path.join(self.main_path, self.directory_with_images)
 
-        exts = ["jpg", "png"]
+        with open(self.path_to_file_with_paths_to_images, 'r') as f:
+            paths = f.readlines()
 
-        if self.channel == 3:
-            mean = np.zeros((self.imgSize, self.imgSize, 3))
-        elif self.channel == 1:
-            mean = np.zeros((self.imgSize, self.imgSize))
-        N = 0
+        for path in paths:
+            img = io.imread(path[:-1])
+            self.update_mean(img)
 
-        beginTime = time.time()
-        for subdir, dirs, files in os.walk(imageDir):
-            for fName in files:
-                (imageClass, imageName) = (os.path.basename(subdir), fName)
-                if any(imageName.lower().endswith("." + ext) for ext in exts):
-                    img = io.imread(os.path.join(subdir, fName))
-                    if img.shape == (self.imgSize, self.imgSize, 3):
-                        mean[:, :, 0] += img[:, :, 0]
-                        mean[:, :, 1] += img[:, :, 1]
-                        mean[:, :, 2] += img[:, :, 2]
-                        N += 1
-                        if N % 1000 == 0:
-                            elapsed = time.time() - beginTime
-                            print("Processed {} images in {:.2f} seconds. "
-                                  "{:.2f} images/second.".format(N, elapsed,
-                                                                 N / elapsed))
-                    if img.shape == (self.imgSize, self.imgSize):
-                        mean += img[:, :]
-                        N += 1
-                        if N % 1000 == 0:
-                            elapsed = time.time() - beginTime
-                            print("Processed {} images in {:.2f} seconds. "
-                                  "{:.2f} images/second.".format(N, elapsed,
-                                                                 N / elapsed))
+        mean = self.mean / self.N
 
-        mean /= N
+        # save mean as npy file
+        self.save_mean_npy(flname, mean)
+        # save mean as png file
+        self.save_mean_png(flname, mean)
+        # save mean as binaryproto file
+        self.save_mean_binaryproto(flname, mean)
+
+        print '\n/************************************************************************/'
+        print 'Done: mean image created.'
+
+
+    def update_mean(self, img):
+        # channel = 3
+        if img.shape == (self.imgSize, self.imgSize, 3):
+            self.mean[:, :, 0] += img[:, :, 0]
+            self.mean[:, :, 1] += img[:, :, 1]
+            self.mean[:, :, 2] += img[:, :, 2]
+        # channel = 1
+        if img.shape == (self.imgSize, self.imgSize):
+            self.mean += img[:, :]
+
+        self.N += 1
+        if self.N % 1000 == 0:
+            elapsed = time.time() - self.start
+            print("Processed {} images in {:.2f} seconds. "
+                  "{:.2f} images/second.".format(self.N, elapsed,
+                                                 self.N / elapsed))
+
+
+    def save_mean_npy(self, flname, mean):
         np.save("{}.npy".format(flname), mean)
 
+
+    def save_mean_png(self, flname, mean):
         # Images of type float must be between -1 and 1.
         mean_img = (mean - mean.min()) / float(mean.max() - mean.min())
         io.imsave("{}.png".format(flname), mean_img)  # img / 256.
 
+
+    def save_mean_binaryproto(self, flname, mean):
         meanImg = mean_img
         if self.channel == 3:
             meanImg = np.transpose(mean.astype(np.uint8), (2, 0, 1))
@@ -73,14 +91,10 @@ class MeanImage:
             meanImg = mean.astype(np.uint8)
             meanImg = meanImg.reshape((1, 1, meanImg.shape[0], meanImg.shape[1]))
 
-        # print meanImg.shape
-
         blob = array_to_blobproto(meanImg)
         with open("{}.binaryproto".format(flname), 'wb') as f:
             f.write(blob.SerializeToString())
 
-        print '\n/************************************************************************/'
-        print 'Done: mean image created.'
 
     # TO DO refactoring
     def create_mean_image_by_task(self, main_path, path_to_superdir, csv_filename, directory_with_images, imgSize, channel):

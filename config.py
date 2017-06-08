@@ -36,6 +36,8 @@ meanPrefix              = 'mean'
 lmdb_images_name        = 'lmdb_images'
 lmdb_labels_name        = 'lmdb_labels'
 
+img_ext                 = '.jpg'
+
 csv_filename            = 'landmarks.csv' if mode == 'landmarks' else 'labels.csv'
 superdir_name           = 'superdir'
 
@@ -46,8 +48,9 @@ microclasses_filename   = 'microclasses.csv'
 bunch_fldname           = 'bunch'
 alphas_fldname          = 'alphas'
 alphas_ext              = '.alpha'
+expression              = 'expression'
+expression_strength     = 'expression_strength'
 crop_endswith           = '_crop'
-imgs_ext                = '.jpg'
 
 full_path_to_dlib_model = '/8TB/vitalii/dlib64-1.dat'
 
@@ -116,6 +119,7 @@ def get_crop_params(mode):
                         'coef':      1.5,
                         'imgSize':   imgSize,
                         'channel':   channel,
+                        'img_ext':   img_ext,
                         'left_x':    (0,1,2,3),
                         'right_x':   (13,14,15,16),
                         'top_y':     (17,18,19),
@@ -130,6 +134,7 @@ def get_crop_params(mode):
                         'coef':      1.5,
                         'imgSize':   imgSize,
                         'channel':   channel,
+                        'img_ext':   img_ext,
                         'left_x':    (0,1,2,3),
                         'right_x':   (13,14,15,16),
                         'top_y':     (17,18,19),
@@ -144,6 +149,7 @@ def get_crop_params(mode):
                         'coef':      1.05,
                         'imgSize':   imgSize,
                         'channel':   channel,
+                        'img_ext':   img_ext,
                         'left_x':    (0,1,2,3),
                         'right_x':   (13,14,15,16),
                         'top_y':     (23,24,25,34,35,36),
@@ -222,10 +228,17 @@ def get_file_params(mode):
                                                     'alphas_cnt':       1#50
                                                  },
 
+                                    'bettas':    {
+                                                    'expression':           expression,
+                                                    'expression_strength':  expression_strength,
+                                                    'expressions_names':    get_expressions_names(),
+                                                    'bettas_cnt':           len(get_expressions_names())
+                                                 },
+
                                     'dlib_model': {
                                                     'path_to_model':    full_path_to_dlib_model,
                                                     'crop_endswith':    crop_endswith,
-                                                    'imgs_ext':         imgs_ext,
+                                                    'imgs_ext':         img_ext,
                                                     'imgs_cnt':         300
                                                   }
                                 },
@@ -373,6 +386,41 @@ def get_lmdb_params(mode):
                         'shuffle':   True
                      }
     return lmdb_params
+
+################################################################################################
+# 10. Expressions_names (Bettas)
+# TODO fill true emotions_names
+################################################################################################
+
+def get_expressions_names():
+
+    expressions_names = [
+            'Anger',
+            'Baring Teeth',
+            'Dimple Left',
+            'Dimple Right',
+            'Disgust',
+            'Fear',
+            'Frown',
+            'Hmmm',
+            'Jaw Down',
+            'Jaw Forward',
+            'Kiss',
+            'Mouth Left',
+            'Mouth Right',
+            'Puff Cheeks',
+            'Sad',
+            'SmileClosed',
+            'Smile Left',
+            'SmileOpen',
+            'Smile Right',
+            'Sneer Left',
+            'Sneer',
+            'Sneer Right',
+            'Surprise',
+            'Chin Raised'
+    ]
+    return expressions_names
 
 ################################################################################################
 # 10. Angles for rotation

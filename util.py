@@ -46,10 +46,10 @@ def labels_str_to_flatten_list(labels):
     return np.array(flattened)
 
 
-def copy_nomatched_file(path_scr_dir, path_dst_dir, nomatch_filename):
+def copy_auxiliary_files(path_scr_dir, path_dst_dir, needless_files_names=(), extensions=()):
     for root, subFolders, files in os.walk(path_scr_dir):
         for f in files:
-            if f != nomatch_filename:
+            if f not in needless_files_names and os.path.splitext(f)[1] in extensions:
                 path_src = os.path.join(path_scr_dir, f)
                 path_dst = os.path.join(path_dst_dir, f)
                 shutil.copy2(path_src, path_dst)

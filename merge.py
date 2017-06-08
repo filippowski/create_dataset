@@ -124,7 +124,7 @@ class Merge:
         if self.merge_params['create_mean']:
             with Profiler() as p:
                 from mean import MeanImage
-                mimg = MeanImage(self.main_path, self.path_to_dir_with_train_images, self.meanPrefix, self.crop_params)
+                mimg = MeanImage(self.main_path, self.path_to_file_with_paths_to_images, self.meanPrefix, self.crop_params)
                 mimg.create_mean_image()
 
                 # create_mean_image_by_task(cfg.main_path, cfg.path_to_superdir, cfg.csv_filename, cfg.directory_with_images, cfg.imgSize, cfg.channel)
@@ -202,7 +202,7 @@ class Merge:
 
         print '\nSTAGE: Rewrite alphas.\n'
         # rewrite alphas
-        self.rewrite_alphas()
+        #self.rewrite_alphas()
 
         print '\nSTAGE: Crope images.\n'
         # crop all images
