@@ -141,7 +141,7 @@ class Merge:
     def merge_landmarks(self, path_to_superdir, main_path, path_to_dir_with_train_images, csv_filename, sep, crop_params):
         '''
         path_to_superdir      - directory where are folders with images and csv-files
-        main_path           - directory where will be saved general csv file and folder with resized images
+        main_path             - directory where will be saved general csv file and folder with resized images
         csv_filename          - name of general csv file with all coordinates of landmarks
         path_to_dir_with_train_images - path to folder that will be contain all train images (resized)
         '''

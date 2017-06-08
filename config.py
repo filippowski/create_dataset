@@ -11,8 +11,8 @@ from util import get_value, get_inode
 # 1. Main parameters
 # TODO set main params
 ################################################################################################
-mode        = 'classification'
-lmdb_mode   = 'caffe2'
+mode        = '3D'
+lmdb_mode   = 'caffe'
 
 assert mode in ['classification', 'landmarks', '3D'], \
     'Mode {} must be one from list {}. Pls check mode param.'.format(mode, '[classification, landmarks, 3D]')
@@ -25,8 +25,8 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-#main_path   = '/8TB/DATASETS/test'
-main_path   = '/8TB/DATASETS/multitask/multitask_data/multitask_300K'
+main_path   = '/8TB/dataset_0/results'
+#main_path   = '/8TB/DATASETS/multitask/multitask_data/multitask_300K'
 
 
 images_filename         = 'images.txt'
@@ -67,7 +67,7 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 ################################################
 
 # do dataset checking
-check           = False#True
+check           = True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
@@ -75,11 +75,11 @@ augmentation    = False
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = True
+merge           = False#True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
-create_lmdb     = True
+create_lmdb     = False#True
 
 ################################################
 # 3.2 Other flags
@@ -225,7 +225,7 @@ def get_file_params(mode):
                                                     'bunch_fldname':    bunch_fldname,
                                                     'alphas_fldname':   alphas_fldname,
                                                     'alphas_ext':       alphas_ext,
-                                                    'alphas_cnt':       1#50
+                                                    'alphas_cnt':       50
                                                  },
 
                                     'bettas':    {
@@ -239,7 +239,7 @@ def get_file_params(mode):
                                                     'path_to_model':    full_path_to_dlib_model,
                                                     'crop_endswith':    crop_endswith,
                                                     'imgs_ext':         img_ext,
-                                                    'imgs_cnt':         300
+                                                    'imgs_cnt':         46
                                                   }
                                 },
 
@@ -304,7 +304,7 @@ def get_augm_params(mode):
                                     'angles':       get_angles
                                   },
                     'mirror':     {
-                                    'do':           True,
+                                    'do':           False,
                                     'new_order':    None
                                   }
                  }
