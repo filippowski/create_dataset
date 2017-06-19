@@ -5,7 +5,7 @@ import numpy as np
 from skimage.transform import resize
 from skimage.io import imsave
 from skimage import io
-import os
+import os, re
 import copy
 import random
 import multiprocessing as mp
@@ -16,7 +16,7 @@ import glob
 import warnings
 warnings.filterwarnings("ignore")
 
-from util import labels_array_to_list, points_as_array, get_dist
+from util import labels_array_to_list, points_as_array, get_dist, get_points_from_json, put_points_in_json
 
 
 # CREATE CROP
@@ -27,6 +27,7 @@ class Crop:
         self.img_cropped = None
 
         self.img_points = img_points
+        self.crop_img_points = None
         self.scaled_img_points = None
 
         self.do_shft     = crop_params['do_shft']
@@ -72,6 +73,36 @@ class Crop:
         transform = transform.dot(scale)
 
         return transform
+
+
+    def recompute_labels(self, labels, x_low, y_low, transform):
+
+        # print len(labels)
+        x = labels[0::2]
+        y = labels[1::2]
+
+        # recompute labels
+        x -= x_low
+        y -= y_low
+
+        array = np.zeros([3, x.shape[0]])
+        array[0] = x
+        array[1] = y
+        array[2] = 1.0
+        fp = array.T
+
+        fp = np.transpose(fp)
+        fp = transform.dot(fp)
+        fp = np.transpose(fp)
+
+        new_labels = np.zeros(labels.shape, dtype='float32')
+        new_labels[0::2] = fp.T[0]
+        new_labels[1::2] = fp.T[1]
+
+        self.crop_img_points = new_labels
+
+        #return new_labels
+
 
     def get_center_and_delta(self, img_points):
 
@@ -274,6 +305,7 @@ class CropDLIB:
                 p.join()
 
 
+
     def crop_images_w_dlib_points(self, detector, predictor, queue):
         folder_path = queue.get()
         for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
@@ -291,9 +323,11 @@ class CropDLIB:
                 new_path = os.path.join(folder, filename + self.crop_endswith + self.imgs_ext)
                 crop.save(new_path)
 
+
     def get_dlib_points(self, detector, predictor, path_to_img):
 
         img = io.imread(path_to_img)
+        print path_to_img
 
         # Finally, if you really want to you can ask the detector to tell you the score
         # for each detection.  The score is bigger for more confident detections.
@@ -303,6 +337,9 @@ class CropDLIB:
         # used to broadly identify faces in different orientations.
 
         dets, scores, idx = detector.run(img, 1, -1)
+        if len(dets) == 0:
+            print "no dets is found for image: {}".format(path_to_img)
+
         for i, d in enumerate(dets):
             #print("Detection {}, score: {}, face_type:{}".format(d, scores[i], idx[i]))
             if i == 0:

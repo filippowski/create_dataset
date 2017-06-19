@@ -62,8 +62,8 @@ class Lmdb:
         means = np.zeros(ndim)
         cnt = 0
 
-        images_map_size = 2 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
-        labels_map_size = 3 * len(images) * self.size_one_lbl       #self.lbls_cnt
+        images_map_size = 3 * len(images) * self.size_one_img       #self.maxPx * self.minPx * self.ndim
+        labels_map_size = 20 * len(images) * self.size_one_lbl       #self.lbls_cnt
         print '\nImages map size: ', images_map_size
         print 'Labels map size: ', labels_map_size
 
@@ -148,7 +148,9 @@ class Lmdb:
         for in_idx, (image, label) in enumerate(examples):
             try:
                 # write image to lmdb
-                im = Image.open(os.path.join(self.main_path, image))
+                path2im = os.path.join(self.main_path, image)
+                print "************"
+                im = Image.open(path2im)
                 im = np.array(self.resize(im))
                 # renew mean
                 mean = im.mean(axis=0).mean(axis=0)
@@ -204,8 +206,10 @@ class Lmdb:
 
         # images
         images = np.loadtxt(self.images, str, delimiter='\t')
+        images = np.array([self.main_path+im for im in images])
+
         self.imgs_cnt = len(images)
-        im = np.array(Image.open(os.path.join(self.main_path, images[0])))
+        im = np.array(Image.open(images[0]))
         self.size_one_img = sys.getsizeof(im)
         print "\nNumber of images: {}".format(self.imgs_cnt)
         print "Size of one image: {} Bytes".format(self.size_one_img)
@@ -245,6 +249,6 @@ class Lmdb:
             images=images[num:],
             labels=labels[num:])
 
-
+        print self.labels
         print '\n/************************************************************************/'
         print 'Done: dataset successfully created.\n\n'

@@ -6,8 +6,10 @@ import os
 import sys
 import time
 import csv
+
+import re
 from scipy.ndimage import imread
-from util import Profiler, create_file_with_paths_to_images, ensure_dir, get_alphas_from_alphasfile
+from util import Profiler, create_file_with_paths_to_images, ensure_dir, get_alphas_from_alphasfile, get_labels_from_json
 from load import load_cls_labels, load_landmarks
 from crop import Crop, CropDLIB
 
@@ -66,6 +68,8 @@ class Merge:
                 self.alphas_fldname         = file_params['in']['alphas']['alphas_fldname']
                 self.alphas_ext             = file_params['in']['alphas']['alphas_ext']
                 self.alphas_cnt             = file_params['in']['alphas']['alphas_cnt']
+                self.bettas_cnt             = file_params['in']['bettas']['bettas_cnt']
+                self.pts_cnt                = file_params['in']['pts']['pts_cnt']
 
                 self.path_to_dlib_model     = file_params['in']['dlib_model']['path_to_model']
                 self.crop_endswith          = file_params['in']['dlib_model']['crop_endswith']
@@ -200,7 +204,7 @@ class Merge:
 
     def merge_3D(self,  path_to_superdir, main_path, file_params, crop_params):
 
-        print '\nSTAGE: Rewrite alphas.\n'
+        #print '\nSTAGE: Rewrite alphas.\n'
         # rewrite alphas
         #self.rewrite_alphas()
 
@@ -380,7 +384,7 @@ class Merge:
         idx = 0
         startTime = time.time()
 
-        labels = np.zeros((self.imgs_cnt * nfolders, self.alphas_cnt), dtype='float32')
+        labels = np.zeros((self.imgs_cnt * nfolders, self.alphas_cnt+self.bettas_cnt+2*self.pts_cnt), dtype='float32')
         file_with_paths_to_images = open(self.path_to_file_with_paths_to_images, "w")
 
         for root, subFolders, files in os.walk(self.path_to_superdir):
@@ -389,22 +393,27 @@ class Merge:
                     for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
                         for subFolder_ in subFolders_:
 
-                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
-                            subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha, self.alphas_cnt)  # alphas
+                            #path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+                            #subFolder_labels = get_alphas_from_alphasfile(path_to_subFolder_alpha, self.alphas_cnt)  # alphas
 
                             for root1, subFolders1, files1 in os.walk(os.path.join(root_, subFolder_)):
 
-                                file_list = []
+                                images_list = []
+                                labels_list = []
                                 for f in files1:
                                     filename, file_extension = os.path.splitext(f)
                                     if filename.endswith(self.crop_endswith) and file_extension == self.imgs_ext:
                                         subroot = root1.split(self.main_path)[1]
-                                        file_list.append(os.path.join(subroot, f))
+                                        im_full_path = os.path.join(subroot, f)
+                                        images_list.append(im_full_path)
+
+                                        json_full_path = os.path.join(root1, (re.sub(self.crop_endswith + self.imgs_ext, ".json", f)))
+                                        labels_list.append(get_labels_from_json(json_full_path))
 
                                 # for i in range(5):
-                                for i in range(len(file_list)):
-                                    file_with_paths_to_images.write("%s\n" % file_list[i])
-                                    labels[idx] = subFolder_labels
+                                for i in range(len(images_list)):
+                                    file_with_paths_to_images.write("%s\n" % images_list[i])
+                                    labels[idx] = labels_list[i]
                                     idx += 1
 
                                 # elapsed time report

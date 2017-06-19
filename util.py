@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 ## -*- coding: utf-8 -*-
-
+import json
 import os
 import time
 import numpy as np
@@ -123,3 +123,63 @@ def get_alphas_from_alphasfile(path_to_alphas, alphas_num):
     for line in alphasfile:
         alphas = np.array(line[1:-1].split(', '), dtype='float64')
     return alphas
+
+def json_load(path):
+    with open(path, 'r') as f:
+        data = json.load(f)
+    return data
+
+def get_mark(alpha):
+    mark = 0
+    if alpha < -54:
+        mark = 0
+    elif alpha >= -54 and alpha < 54: 
+        mark = 1
+    elif alpha >= 54:
+        mark = 2
+    return mark
+
+
+def get_points_from_json(json_path):
+    d = json_load(json_path)
+    pts =   d["points"]
+    #pts = [item for sublist in pts for item in sublist]
+    label = np.asarray(pts, dtype='float64')
+    return label
+
+def put_points_in_json(json_path, pts):
+    d = json_load(json_path)
+    d["points"] = pts
+
+
+# TODO refactor it
+def get_labels_from_json(json_path):
+    d = json_load(json_path)
+    alpha = d["alpha"]
+    #alpha = alpha[0]
+    #mark = get_mark(alpha)
+    #betta = d["betta"]
+    pts =   d["points"]
+    #pts = [item for sublist in pts for item in sublist]
+    #label = np.asarray(([alpha]+[mark]+pts), dtype='float64')
+    label = np.asarray((alpha+pts), dtype='float64')
+    return label
+
+
+def rewrite_points_in_json(json_path, ):
+    d = json_load(json_path)
+    alpha = d["alpha"]
+    #alpha = alpha[0]
+    #mark = get_mark(alpha)
+    #betta = d["betta"]
+    pts =   d["points"]
+    pts = [item for sublist in pts for item in sublist]
+    #label = np.asarray(([alpha]+[mark]+pts), dtype='float64')
+    label = np.asarray((alpha+pts), dtype='float64')
+    return label
+
+
+def points_2Dlist_to_array(points):
+    pts = [item for sublist in points for item in sublist]
+    pts_as_array = np.array(pts).astype(float)
+    return pts_as_array

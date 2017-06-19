@@ -4,6 +4,8 @@
 import pandas as pd
 import os
 import fnmatch
+import dlib
+from skimage import io
 from util import is_empty_file
 from load import load_landmarks
 
@@ -138,28 +140,41 @@ class Check:
 
         print 'superdir: ', superdir
 
+        detector = dlib.get_frontal_face_detector()
+
         for root, subFolders, files in os.walk(superdir):
             for subFolder in subFolders:
                 if subFolder[0:5] == self.bunch_fldname:
                     for root_, subFolders_, files_ in os.walk(os.path.join(root, subFolder)):
                         for subFolder_ in subFolders_:
 
-                            path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
+                            #path_to_subFolder_alpha = os.path.join(self.path_to_alphas, subFolder_.split('.obj')[0] + self.alphas_ext)
 
-                            if not os.path.exists(path_to_subFolder_alpha):
-                                print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
-                                if self.res == True:
-                                    self.res = False
+                            #if not os.path.exists(path_to_subFolder_alpha):
+                            #    print 'ALPHA file not found: {}'.format(path_to_subFolder_alpha)
+                            #    if self.res == True:
+                            #        self.res = False
 
                             path = os.path.join(root_, subFolder_)
-                            file_count = len(fnmatch.filter(os.listdir(path), '*'+self.imgs_ext))
+                            imgs_count = len(fnmatch.filter(os.listdir(path), '*'+self.imgs_ext))
+                            json_count = len(fnmatch.filter(os.listdir(path), '*'+'.json'))
 
-                            if file_count < self.imgs_cnt:
+                            if imgs_count < self.imgs_cnt:
                                 print 'In folder {} less than {} images.'.format(subFolder_, self.imgs_cnt)
                                 if self.res == True:
                                     self.res = False
+                            if json_count < self.imgs_cnt:
+                                print 'In folder {} less than {} json.'.format(subFolder_, self.imgs_cnt)
+                                if self.res == True:
+                                    self.res = False
 
-                            self.img_cnt += file_count
+                            dets, scores, idx = detector.run(img, 1, -1)
+                            if len(dets) == 0:
+                                print "no dets is found for image: {}".format(path_to_img)
+                                if self.res == True:
+                                    self.res = False
+
+                            self.img_cnt += json_count
                             self.dir_cnt += 1
         print 'Check DONE.'
         print 'All right: {}'.format(self.res)

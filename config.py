@@ -25,9 +25,7 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-main_path   = '/8TB/dataset_0/results'
-#main_path   = '/8TB/DATASETS/multitask/multitask_data/multitask_300K'
-
+main_path   = '/home/filippovski/deep-learning/MULTITASK/CREATE/test'
 
 images_filename         = 'images.txt'
 labels_filename         = 'labels.npy'
@@ -75,7 +73,7 @@ augmentation    = False
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = False#True
+merge           = True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
@@ -232,7 +230,11 @@ def get_file_params(mode):
                                                     'expression':           expression,
                                                     'expression_strength':  expression_strength,
                                                     'expressions_names':    get_expressions_names(),
-                                                    'bettas_cnt':           len(get_expressions_names())
+                                                    'bettas_cnt':           0#len(get_expressions_names())
+                                                 },
+
+                                    'pts':       {
+                                                    'pts_cnt':              64
                                                  },
 
                                     'dlib_model': {
