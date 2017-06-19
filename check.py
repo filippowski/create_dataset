@@ -168,11 +168,17 @@ class Check:
                                 if self.res == True:
                                     self.res = False
 
-                            dets, scores, idx = detector.run(img, 1, -1)
-                            if len(dets) == 0:
-                                print "no dets is found for image: {}".format(path_to_img)
-                                if self.res == True:
-                                    self.res = False
+                            for img_path in fnmatch.filter(os.listdir(path), '*' + self.imgs_ext):
+                                path_to_img = os.path.join(path, img_path)
+                                img = io.imread(path_to_img)
+                                dets, scores, idx = detector.run(img, 1, -1)
+                                if len(dets) == 0:
+                                    print "no dets is found for image: {}".format(path_to_img)
+                                    if self.res == True:
+                                        self.res = False
+                                else:
+                                    print "{} dets are found for image: {}".format(len(dets), path_to_img)
+
 
                             self.img_cnt += json_count
                             self.dir_cnt += 1

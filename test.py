@@ -1,50 +1,37 @@
-def get_tasks_names():
-    tasks_names_in_labels_file = [
-        'skin',
-        'gender',
-        'hair_cover',
-        'hair_color',
-        'hair_len',
-        'hair_type',
-        'hair_fringe',
-        'beard',
-        'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        #'nose_tip',
-        'nose_width'
-    ]
-    tasks_names_to_work = [
-        #'skin',
-        #'gender',
-        #'hair_cover',
-        #'hair_color',
-        #'hair_len',
-        #'hair_type',
-        #'hair_fringe',
-        #'beard',
-        #'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        #'nose_tip',
-        'nose_width'
-    ]
-    return (tasks_names_in_labels_file, tasks_names_to_work)
+from util import get_points_from_json, put_points_in_json
+import os
+from skimage import io
+
+import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+#
+# %matplotlib inline
+plt.rcParams["figure.figsize"] = (20,20)
+
+from PIL import Image, ImageDraw
+import itertools
+from itertools import islice, count
 
 
-microclasses_names = get_tasks_names()[0]
-microclasses_names.extend(['count','filenames_list'])
+path_to_bunch = '/home/filippovski/deep-learning/MULTITASK/CREATE/bunch000/667.obj'
 
-microclasses_types = {'count' : int}
-[microclasses_types.update({x: str}) for x in microclasses_names if x != 'count']
+import re
 
-print microclasses_names
-print microclasses_types
+path2img = os.path.join(path_to_bunch, '0.jpg')
+path2json = re.sub(".jpg", ".json", path2img)
+
+print path2json
+
+img = Image.open(path2img)
+
+draw = ImageDraw.Draw(img)
+
+pts = get_points_from_json(path2json)
+pts = (pts+1)*(0.5*img.height)
+print pts
+
+draw.point(list(pts))
+plt.imshow(img)
+
+plt.show()
