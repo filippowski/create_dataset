@@ -303,8 +303,8 @@ class CropDLIB:
         folder_path = queue.get()
         for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
             if not f.endswith(self.crop_endswith + self.imgs_ext):
-                path_to_img = os.path.join(folder_path, f)
-                img = io.imread(path_to_img)
+                path2img = os.path.join(folder_path, f)
+                img = io.imread(path2img)
                 #print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
 
                 path2json = re.sub(self.imgs_ext, ".json", path2img)

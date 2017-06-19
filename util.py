@@ -147,9 +147,14 @@ def get_points_from_json(json_path):
     label = np.asarray(pts, dtype='float64')
     return label
 
+
 def put_points_in_json(json_path, pts):
-    d = json_load(json_path)
-    d["points"] = pts
+    dictionary = json_load(json_path)
+    print dictionary["points"]
+    dictionary["points"] = pts
+    print dictionary["points"]
+    with open(json_path, "w") as json_file:
+        json.dump(dictionary, json_file)
 
 
 # TODO refactor it
