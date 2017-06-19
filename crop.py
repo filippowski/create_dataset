@@ -101,8 +101,6 @@ class Crop:
 
         self.crop_img_points = new_labels
 
-        #return new_labels
-
 
     def get_center_and_delta(self, img_points):
 
@@ -110,11 +108,6 @@ class Crop:
         max_right_x = int(np.amax([img_points[x][0] for x in self.right_x], axis=0))
         min_top_y   = int(np.amin([img_points[x][1] for x in self.top_y], axis=0))
         max_bot_y   = int(np.amax([img_points[x][1] for x in self.bot_y], axis=0))
-
-        # min_left_x  = int(np.amin([img_points[0][0],  img_points[1][0],  img_points[2][0],   img_points[3][0]], axis=0))
-        # max_right_x = int(np.amax([img_points[13][0], img_points[14][0], img_points[15][0],  img_points[16][0]], axis=0))
-        # min_top_y   = int(np.amin([img_points[17][1], img_points[18][1], img_points[19][1]], axis=0))
-        # max_bot_y   = int(np.amax([img_points[7][1],  img_points[8][1],  img_points[9][1]],  axis=0))
 
         delta = np.mean([img_points[self.cntr_pt][0] - min_left_x, max_right_x - img_points[self.cntr_pt][0]])
         x_cntr = min_left_x + delta
@@ -284,7 +277,8 @@ class CropDLIB:
         print 'queue size: ', self.queue.qsize()
 
         # Setup a list of processes that we want to run
-        func = self.crop_images_w_dlib_points
+        #func = self.crop_images_w_dlib_points
+        func = self.crop_images_w_json_points
         args = (detector, predictor, self.queue)
         processes = [mp.Process(target=func, args=args) for x in range(self.queue.qsize())]
 
@@ -303,6 +297,33 @@ class CropDLIB:
             # Exit the completed processes
             for p in proc:
                 p.join()
+
+
+    def crop_images_w_json_points(self, detector, predictor, queue):
+        folder_path = queue.get()
+        for f in glob.glob(os.path.join(folder_path, '*'+self.imgs_ext)):
+            if not f.endswith(self.crop_endswith + self.imgs_ext):
+                path_to_img = os.path.join(folder_path, f)
+                img = io.imread(path_to_img)
+                #print("Processing file: {}, ends crop: {}".format(f, f.endswith(self.crop_endswith + self.imgs_ext)))
+
+                path2json = re.sub(self.imgs_ext, ".json", path2img)
+                pts = get_points_from_json(path2json)
+
+                # crop image
+                crop = Crop(img, pts, img.shape[0], self.crop_params)
+                # if it is needed rescale pts
+                crop.rescale_pts()
+                crop.crop_head()
+
+                # save cropped image
+                folder, fullfilename = os.path.split(f)
+                filename, _ = os.path.splitext(fullfilename)
+                new_path = os.path.join(folder, filename + self.crop_endswith + self.imgs_ext)
+                crop.save(new_path)
+
+                # put new points of cropped image into json
+                put_points_in_json(path2json, crop.crop_img_points)
 
 
 
