@@ -75,15 +75,17 @@ class Crop:
         return transform
 
 
-    def recompute_labels(self, labels, x_low, y_low, transform):
+    def recompute_labels(self, labels):
+
+        transform = self.create_crop_transform_down(self.new_size)
 
         # print len(labels)
         x = labels[0::2]
         y = labels[1::2]
 
         # recompute labels
-        x -= x_low
-        y -= y_low
+        x -= self.x_low
+        y -= self.y_low
 
         array = np.zeros([3, x.shape[0]])
         array[0] = x
@@ -323,7 +325,8 @@ class CropDLIB:
                 crop.save(new_path)
 
                 # put new points of cropped image into json
-                put_points_in_json(path2json, crop.crop_img_points)
+                crop.recompute_labels(crop.scaled_img_points)
+                put_points_in_json(path2json, crop.crop_img_points.tolist())
 
 
 
