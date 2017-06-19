@@ -84,8 +84,8 @@ class Crop:
         y = labels[1::2]
 
         # recompute labels
-        x -= self.x_low
-        y -= self.y_low
+        x -= self.x_offset
+        y -= self.y_offset
 
         array = np.zeros([3, x.shape[0]])
         array[0] = x
