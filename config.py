@@ -25,7 +25,7 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-main_path   = '/home/filippovski/deep-learning/MULTITASK/CREATE/test'
+main_path   = '/8TB/OhDL/3d_shape/10_test'
 
 images_filename         = 'images.txt'
 labels_filename         = 'labels.npy'
