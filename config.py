@@ -25,7 +25,7 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-main_path   = '/8TB/OhDL/3d_shape/10_test'
+main_path   = '/8TB/OhDL/3d_shape/12_3d_hair_glasses_render_right_bettas14_mesh/v2'
 
 images_filename         = 'images.txt'
 labels_filename         = 'labels.npy'
@@ -65,7 +65,7 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 ################################################
 
 # do dataset checking
-check           = True
+check           = False#True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
@@ -73,11 +73,11 @@ augmentation    = False
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
-merge           = True
+merge           = False#True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
-create_lmdb     = False#True
+create_lmdb     = True
 
 ################################################
 # 3.2 Other flags
@@ -230,7 +230,7 @@ def get_file_params(mode):
                                                     'expression':           expression,
                                                     'expression_strength':  expression_strength,
                                                     'expressions_names':    get_expressions_names(),
-                                                    'bettas_cnt':           0#len(get_expressions_names())
+                                                    'bettas_cnt':           17#len(get_expressions_names())
                                                  },
 
                                     'pts':       {
@@ -241,7 +241,7 @@ def get_file_params(mode):
                                                     'path_to_model':    full_path_to_dlib_model,
                                                     'crop_endswith':    crop_endswith,
                                                     'imgs_ext':         img_ext,
-                                                    'imgs_cnt':         46
+                                                    'imgs_cnt':         42
                                                   }
                                 },
 

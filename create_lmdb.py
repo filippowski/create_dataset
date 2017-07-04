@@ -230,7 +230,8 @@ class Lmdb:
             random.shuffle(data)
             images, labels = zip(*data)
             images = np.array(images)
-            labels = np.array(labels)
+            #labels = np.array(labels)
+
 
         if num != 0:
             print "\n * creating test set"

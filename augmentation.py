@@ -207,7 +207,7 @@ class Augmentation:
         print ' * splitting the dataset into microclasses folders..'
 
         # read initial csv with labels
-        dataset = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.labels_names, self.labels_types)
+        dataset = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.tasks, self.labels_names, self.labels_types)
 
         # samples from microclasses names and microclasses types for only those are in tasks_names
         microclasses_names = [x for x in self.microclasses_names if x in self.tasks_names[1] or self.microclasses_names.index(x) in [len(self.microclasses_names)-1, len(self.microclasses_names)-2]]

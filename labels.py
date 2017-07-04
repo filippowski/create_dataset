@@ -91,7 +91,7 @@ class Label:
             mask = get_mask()
             labels_length = labels_length + mask.size
 
-        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], names=self.labels_names, types=self.labels_types)
+        raw_labels = load_cls_labels(self.path_to_raw_labels, self.labels_sep, self.tasks_names[0], self.tasks, names=self.labels_names, types=self.labels_types)
 
         # get only needed labels
         columns = [x for x in self.labels_names if x in self.tasks_names[1] or self.labels_names.index(x) == 0]

@@ -213,7 +213,7 @@ class Merge:
         crop = CropDLIB(path_to_superdir, file_params, crop_params)
 
         # run crop
-        crop.run_multiprocessing_crop()
+        #crop.run_multiprocessing_crop()
 
         print '\n/************************************************************************/'
         print 'Done: cropped and saved all images.\n\n'
@@ -326,6 +326,7 @@ class Merge:
     def add_one_folder_classification(self, dir_src, dir_target, landmarks_filename, landmarks_sep, labels_filename, labels_sep, csv_file, writer, task_params, crop_params):
 
         task_names = task_params['tasks_names']
+        tasks = task_params['tasks']
 
         path_to_landmarks = os.path.join(dir_src, landmarks_filename)
         path_to_labels = os.path.join(dir_src, labels_filename)
@@ -334,7 +335,7 @@ class Merge:
         landmarks = load_landmarks(path_to_landmarks, sep=' ') # sep 'landmarks_sep' was changed by function 'load_cls_landmarks' from load.py
 
         # read initial csv with labels
-        labels = load_cls_labels(path_to_labels, labels_sep, task_names)
+        labels = load_cls_labels(path_to_labels, labels_sep, task_names, tasks)
 
         # skip NA
         labels, landmarks = labels.dropna(), landmarks.dropna()
@@ -407,11 +408,13 @@ class Merge:
                                         im_full_path = os.path.join(subroot, f)
                                         images_list.append(im_full_path)
 
-                                        json_full_path = os.path.join(root1, (re.sub(self.crop_endswith + self.imgs_ext, ".json", f)))
+                                        #json_full_path = os.path.join(root1, (re.sub(self.crop_endswith + self.imgs_ext, ".json", f)))
+                                        json_full_path = os.path.join(root1, (re.sub(self.imgs_ext, ".json", f)))
                                         labels_list.append(get_labels_from_json(json_full_path))
 
                                 # for i in range(5):
                                 for i in range(len(images_list)):
+                                    #print images_list[i]
                                     file_with_paths_to_images.write("%s\n" % images_list[i])
                                     labels[idx] = labels_list[i]
                                     idx += 1

@@ -148,12 +148,10 @@ def get_points_from_json(json_path):
     return label
 
 
-def put_points_in_json(json_path, pts):
-    dictionary = json_load(json_path)
-    print dictionary["points"]
+def put_points_in_json(json_path_in, json_path_out, pts):
+    dictionary = json_load(json_path_in)
     dictionary["points"] = pts
-    print dictionary["points"]
-    with open(json_path, "w") as json_file:
+    with open(json_path_out, "w") as json_file:
         json.dump(dictionary, json_file)
 
 
@@ -163,11 +161,15 @@ def get_labels_from_json(json_path):
     alpha = d["alpha"]
     #alpha = alpha[0]
     #mark = get_mark(alpha)
-    #betta = d["betta"]
+    betta = d["betta"]
     pts =   d["points"]
+    angles = d["head_rotation"]
+    camera = [d["camera_y"]]
+    shape = d["shape"]
     #pts = [item for sublist in pts for item in sublist]
     #label = np.asarray(([alpha]+[mark]+pts), dtype='float64')
-    label = np.asarray((alpha+pts), dtype='float64')
+    #label = np.asarray((alpha+betta+pts+angles+camera+shape), dtype='float64')
+    label = np.asarray((alpha+betta+pts+angles+camera), dtype='float64')
     return label
 
 
