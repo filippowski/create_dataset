@@ -3,7 +3,7 @@
 
 import numpy as np
 import pandas as pd
-import os
+import os, re
 from util import get_image_size, recompute_row
 
 def loading(csv_file):
@@ -36,10 +36,11 @@ def load_cls_labels(filepath, sep, tasks_names, tasks, names=None, types=None):
         names = [x for x in names if x in tasks_names or names.index(x) == 0]
         types = {key: types[key] for key in types.keys() if key in tasks_names or key == names[0]}
     labels = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names,dtype=types)
+    labels = labels.applymap(lambda row: re.sub('MANUAL_', '', row))
+    #labels['glasses'] = labels['glasses'].replace('200200', '200100')
     # get only rows in labels that have keys in the tasks dictionary
     for key in tasks_names:
         labels = labels[labels[key].isin(tasks[key].keys())]
-    #labels['glasses'] = labels['glasses'].replace('200200', '200100')
     assert labels.isnull().sum().sum() == 0, 'In labels.csv there are NA values! Pls check data.'
     print ' * labels shape is: {}'.format(labels.shape)
     return labels

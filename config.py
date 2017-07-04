@@ -65,11 +65,11 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 ################################################
 
 # do dataset checking
-check           = True
+check           = False#True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
-augmentation    = False
+augmentation    = True#False
 
 # merge all data, create labels and mean image
 # detailed settings are available in Part 7. Merge parameters
@@ -452,7 +452,7 @@ def get_angles_classification(dirpath):
                         cnt_after = 2*threshold
 
             elif     get_value(names, tasks_names[1], 'hair_color')  == 'black' \
-              and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
+             * and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
                 or get_value(names, tasks_names[1], 'hair_len'  )    == '6'):
 
                         cnt_after = 1.5*threshold
@@ -657,31 +657,22 @@ def get_tasks():
         },
 
         'nose': {
-            'MANUAL_down':      np.array([0], dtype="int32"),
-            'MANUAL_up':        np.array([1], dtype="int32"),
-            'MANUAL_normal':    np.array([2], dtype="int32"),
             'down':             np.array([0], dtype="int32"),
             'up':               np.array([1], dtype="int32"),
             'normal':           np.array([2], dtype="int32")
         },
 
         'nose_tip': {
-            'MANUAL_blunt':     np.array([0], dtype="int32"),
-            'MANUAL_sharp':     np.array([1], dtype="int32"),
             'blunt':            np.array([0], dtype="int32"),
             'sharp':            np.array([1], dtype="int32")
         },
 
         'nose_width': {
-            'MANUAL_average':   np.array([0], dtype="int32"),
-            'MANUAL_wide':      np.array([1], dtype="int32"),
             'average':          np.array([0], dtype="int32"),
             'wide':             np.array([1], dtype="int32")
         },
 
         'nose_wings': {
-            'MANUAL_invisible': np.array([0], dtype="int32"),
-            'MANUAL_visible':   np.array([1], dtype="int32"),
             'invisible':        np.array([0], dtype="int32"),
             'visible':          np.array([1], dtype="int32")
         }
