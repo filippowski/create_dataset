@@ -3,7 +3,7 @@
 
 import pandas as pd
 import os
-from load import load_cls_labels, load_cls_microclasses
+from load import load_cls_labels
 
 # CREATE microclasses.csv
 class Microclasses:
