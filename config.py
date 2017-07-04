@@ -11,7 +11,7 @@ from util import get_value, get_inode
 # 1. Main parameters
 # TODO set main params
 ################################################################################################
-mode        = '3D'
+mode        = 'classification'
 lmdb_mode   = 'caffe'
 
 assert mode in ['classification', 'landmarks', '3D'], \
@@ -25,7 +25,7 @@ assert lmdb_mode in ['caffe', 'caffe2'], \
 ################################################################################################
 
 # Full path to directory where is 'superdir' folder that contain some count of folders with images and 'landmarks.csv' files
-main_path   = '/8TB/OhDL/3d_shape/12_3d_hair_glasses_render_right_bettas14_mesh/v2'
+main_path   = '/8TB/OhDL/multitask/30.06.2017'
 
 images_filename         = 'images.txt'
 labels_filename         = 'labels.npy'
@@ -65,7 +65,7 @@ path_to_alphas           = os.path.join(path_to_superdir, alphas_fldname)
 ################################################
 
 # do dataset checking
-check           = False#True
+check           = True
 
 # dataset augmentation
 # detailed settings are available in Part 6. Augmentation parameters
@@ -77,7 +77,7 @@ merge           = False#True
 
 # lmdb create
 # detailed settings are available in Part 7. LMDB parameters
-create_lmdb     = True
+create_lmdb     = False#True
 
 ################################################
 # 3.2 Other flags
@@ -86,7 +86,7 @@ create_lmdb     = True
 # do shuffle before lmdb create
 shuffle                 = True
 # run augmentation by main scheme
-run_main_IF_SCHEME_AUG  = False
+run_main_IF_SCHEME_AUG  = True#False
 
 ################################################################################################
 # 4. Digits parameters
@@ -333,10 +333,10 @@ def get_merg_params(mode):
 
     if mode == 'classification':
         mrg_params = {
-                        'merge':           False,#True,
-                        'create_labels':   False,#True,
+                        'merge':           True,
+                        'create_labels':   True,
                         'create_imgfile':  True,
-                        'create_mean':     False,#True,
+                        'create_mean':     True,
                         'create_infogain': False
                      }
 
@@ -388,41 +388,6 @@ def get_lmdb_params(mode):
                         'shuffle':   True
                      }
     return lmdb_params
-
-################################################################################################
-# 10. Expressions_names (Bettas)
-# TODO fill true emotions_names
-################################################################################################
-
-def get_expressions_names():
-
-    expressions_names = [
-            'Anger',
-            'Baring Teeth',
-            'Dimple Left',
-            'Dimple Right',
-            'Disgust',
-            'Fear',
-            'Frown',
-            'Hmmm',
-            'Jaw Down',
-            'Jaw Forward',
-            'Kiss',
-            'Mouth Left',
-            'Mouth Right',
-            'Puff Cheeks',
-            'Sad',
-            'SmileClosed',
-            'Smile Left',
-            'SmileOpen',
-            'Smile Right',
-            'Sneer Left',
-            'Sneer',
-            'Sneer Right',
-            'Surprise',
-            'Chin Raised'
-    ]
-    return expressions_names
 
 ################################################################################################
 # 10. Angles for rotation
@@ -531,35 +496,29 @@ def get_tasks_names():
         'hair_fringe',
         'beard',
         'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        #'nose_tip',
-        #'nose_width',
+        'eyes_color',
+        'age',
+        'face',
+        'mouth',
+        'mouth_exp',
+        'brows',
+        'nose',
+        'nose_tip',
+        'nose_width',
         'nose_wings'
     ]
     tasks_names_to_work = [
-        #'skin',
-        #'gender',
-        #'hair_cover',
-        #'hair_color',
-        #'hair_len',
-        #'hair_type',
-        #'hair_fringe',
-        #'beard',
-        #'glasses',
-        #'face',
-        #'mouth',
-        #'nose',
-        #'face_exp',
-        #'brows',
-        #'nose_type',
-        #'nose_tip',
-        #'nose_width',
-        'nose_wings'
+        'skin',
+        'gender',
+        'hair_cover',
+        'hair_color',
+        'hair_len',
+        'hair_type',
+        'hair_fringe',
+        'beard',
+        'glasses',
+        'eyes_color',
+        'age'
     ]
     return (tasks_names_in_labels_file, tasks_names_to_work)
 
@@ -571,132 +530,160 @@ def get_tasks_names():
 def get_tasks():
     tasks = {
         'skin': {
-            'white':        np.array([0], dtype='int32'),
-            'dark':         np.array([1], dtype='int32'),
-            'asian':        np.array([2], dtype='int32'),
-            'tawny':        np.array([3], dtype='int32')
+            'white':            np.array([0], dtype='int32'),
+            'dark':             np.array([1], dtype='int32'),
+            'asian':            np.array([2], dtype='int32'),
+            'tawny':            np.array([3], dtype='int32')
         },
 
         'gender': {
-            'male':         np.array([0], dtype='int32'),
-            'female':       np.array([1], dtype='int32')
+            'male':             np.array([0], dtype='int32'),
+            'female':           np.array([1], dtype='int32')
         },
 
         'hair_cover': {
-            'no':           np.array([0], dtype='int32'),
-            'hijab':        np.array([1], dtype='int32'),
-            'hat':          np.array([2], dtype='int32')
+            'no':               np.array([0], dtype='int32'),
+            'hijab':            np.array([1], dtype='int32'),
+            'hat':              np.array([2], dtype='int32')
         },
 
         'hair_color': {
-            'black':        np.array([0], dtype='int32'),
-            'brown':        np.array([1], dtype='int32'),
-            'light-brown':  np.array([2], dtype='int32'),
-            'blond':        np.array([3], dtype='int32'),
-            'carroty':      np.array([4], dtype='int32'),
-            'grey':         np.array([5], dtype='int32'),
-            'undefined':    np.array([6], dtype='int32')
+            'black':            np.array([0], dtype='int32'),
+            'brown':            np.array([1], dtype='int32'),
+            'light-brown':      np.array([2], dtype='int32'),
+            'blond':            np.array([3], dtype='int32'),
+            'carroty':          np.array([4], dtype='int32'),
+            'grey':             np.array([5], dtype='int32'),
+            'undefined':        np.array([6], dtype='int32')
         },
 
         'hair_len': {
-            '1':            np.array([0], dtype='int32'),
-            '2':            np.array([1], dtype='int32'),
-            '3':            np.array([2], dtype='int32'),
-            '4':            np.array([3], dtype='int32'),
-            '5':            np.array([4], dtype='int32'),
-            '6':            np.array([5], dtype='int32'),
-            'undefined':    np.array([6], dtype='int32')
+            '1':                np.array([0], dtype='int32'),
+            '2':                np.array([1], dtype='int32'),
+            '3':                np.array([2], dtype='int32'),
+            '4':                np.array([3], dtype='int32'),
+            '5':                np.array([4], dtype='int32'),
+            '6':                np.array([5], dtype='int32'),
+            'undefined':        np.array([6], dtype='int32')
         },
 
         'hair_type': {
-            'curly':        np.array([0], dtype='int32'),
-            'straight':     np.array([1], dtype='int32'),
-            'wavy':         np.array([2], dtype='int32'),
-            'undefined':    np.array([3], dtype='int32')
+            'curly':            np.array([0], dtype='int32'),
+            'straight':         np.array([1], dtype='int32'),
+            'wavy':             np.array([2], dtype='int32'),
+            'undefined':        np.array([3], dtype='int32')
         },
 
         'hair_fringe': {
-            'close':        np.array([0], dtype='int32'),
-            'open':         np.array([1], dtype='int32'),
-            'partial':      np.array([2], dtype='int32'),
-            'undefined':    np.array([3], dtype='int32')
+            'close':            np.array([0], dtype='int32'),
+            'open':             np.array([1], dtype='int32'),
+            'partial':          np.array([2], dtype='int32'),
+            'undefined':        np.array([3], dtype='int32')
         },
 
         'beard': {
-            'without':      np.array([0], dtype='int32'),
-            'bristle':      np.array([1], dtype='int32'),
-            'mustache':     np.array([2], dtype='int32'),
-            'circle_beard': np.array([3], dtype='int32'),
-            'full_beard':   np.array([4], dtype='int32'),
-            'just_beard':   np.array([5], dtype='int32'),
-            'balbo':        np.array([6], dtype='int32')
+            'without':          np.array([0], dtype='int32'),
+            'bristle':          np.array([1], dtype='int32'),
+            'mustache':         np.array([2], dtype='int32'),
+            'circle_beard':     np.array([3], dtype='int32'),
+            'full_beard':       np.array([4], dtype='int32'),
+            'just_beard':       np.array([5], dtype='int32'),
+            'balbo':            np.array([6], dtype='int32')
         },
 
         'glasses': {
-            '100000':       np.array([0], dtype='int32'),
-            '100200':       np.array([1], dtype='int32'),
-            '200100':       np.array([2], dtype='int32'),
-            '300100':       np.array([3], dtype='int32'),
-            '400100':       np.array([4], dtype='int32'),
-            '500100':       np.array([5], dtype='int32'),
-            '200200':       np.array([6], dtype='int32')
+            '100000':           np.array([0], dtype='int32'),
+            '100200':           np.array([1], dtype='int32'),
+            '200100':           np.array([2], dtype='int32'),
+            '300100':           np.array([3], dtype='int32'),
+            '400100':           np.array([4], dtype='int32'),
+            '500100':           np.array([5], dtype='int32'),
+            '200200':           np.array([6], dtype='int32'),
+            'aviators':         np.array([7], dtype='int32')
+        },
+
+        'eyes_color': {
+            'black':            np.array([0], dtype='int32'),
+            'brown':            np.array([1], dtype='int32'),
+            'grey':             np.array([2], dtype='int32'),
+            'blue':             np.array([3], dtype='int32'),
+            'green':            np.array([4], dtype='int32'),
+            'undefined':        np.array([5], dtype='int32')
+        },
+
+        'age': {
+            'CLEAR_ADULT':      np.array([0], dtype='int32'),
+            'CLEAR_YOUNG':      np.array([1], dtype='int32'),
+            'CLEAR_TEENAGERS':  np.array([2], dtype='int32'),
+            'CLEAR_TEENAGERS\t': np.array([2], dtype='int32'),
+            'CLEAR_OLD':        np.array([3], dtype='int32'),
+            'CLEAR_CHILD':      np.array([4], dtype='int32')
         },
 
         'face': {
-            'angular':      np.array([0], dtype='int32'),
-            'brick':        np.array([1], dtype='int32'),
-            'circle':       np.array([2], dtype='int32'),
-            'oval':         np.array([3], dtype='int32')
+            'angular':          np.array([0], dtype='int32'),
+            'brick':            np.array([1], dtype='int32'),
+            'circle':           np.array([2], dtype='int32'),
+            'oval':             np.array([3], dtype='int32')
         },
 
         'mouth': {
-            'medium':       np.array([0], dtype="int32"),
-            'thick':        np.array([1], dtype="int32"),
-            'thin':         np.array([2], dtype="int32")
+            'medium':           np.array([0], dtype="int32"),
+            'thick':            np.array([1], dtype="int32"),
+            'thin':             np.array([2], dtype="int32")
         },
 
-        'face_exp': {
-            'kiss':         np.array([0], dtype="int32"),
-            'open':         np.array([1], dtype="int32"),
-            'open-smile':   np.array([2], dtype="int32"),
-            'smile':        np.array([3], dtype="int32")
+        'mouth_exp': {
+            'kiss':             np.array([0], dtype="int32"),
+            'open':             np.array([1], dtype="int32"),
+            'open-smile':       np.array([2], dtype="int32"),
+            'smile':            np.array([3], dtype="int32")
         },
 
         'brows': {
-            'dooga-thin':   np.array([0], dtype="int32"),
-            'dooga-thick':  np.array([1], dtype="int32"),
-            'galka-thin':   np.array([2], dtype="int32"),
-            'galka-thick':  np.array([3], dtype="int32"),
-            'straight-thin': np.array([4], dtype="int32"),
-            'straight-thick': np.array([5], dtype="int32")
+            'dooga-thin':       np.array([0], dtype="int32"),
+            'dooga-thick':      np.array([1], dtype="int32"),
+            'galka-thin':       np.array([2], dtype="int32"),
+            'galka-thick':      np.array([3], dtype="int32"),
+            'straight-thin':    np.array([4], dtype="int32"),
+            'straight-thick':   np.array([5], dtype="int32")
+        },
+
+        'nose_old': {
+            'down':             np.array([0], dtype="int32"),
+            'up':               np.array([1], dtype="int32"),
+            'normal':           np.array([2], dtype="int32"),
+            'black':            np.array([3], dtype="int32")
         },
 
         'nose': {
-            'down':         np.array([0], dtype="int32"),
-            'up':           np.array([1], dtype="int32"),
-            'normal':       np.array([2], dtype="int32"),
-            'black':        np.array([3], dtype="int32")
-        },
-
-        'nose_type': {
-            'MANUAL_down':   np.array([0], dtype="int32"),
-            'MANUAL_up':     np.array([1], dtype="int32"),
-            'MANUAL_normal': np.array([2], dtype="int32")
+            'MANUAL_down':      np.array([0], dtype="int32"),
+            'MANUAL_up':        np.array([1], dtype="int32"),
+            'MANUAL_normal':    np.array([2], dtype="int32"),
+            'down':             np.array([0], dtype="int32"),
+            'up':               np.array([1], dtype="int32"),
+            'normal':           np.array([2], dtype="int32")
         },
 
         'nose_tip': {
-            'MANUAL_blunt':  np.array([0], dtype="int32"),
-            'MANUAL_sharp':  np.array([1], dtype="int32")
+            'MANUAL_blunt':     np.array([0], dtype="int32"),
+            'MANUAL_sharp':     np.array([1], dtype="int32"),
+            'blunt':            np.array([0], dtype="int32"),
+            'sharp':            np.array([1], dtype="int32")
         },
 
         'nose_width': {
-            'MANUAL_average':  np.array([0], dtype="int32"),
-            'MANUAL_wide':     np.array([1], dtype="int32")
+            'MANUAL_average':   np.array([0], dtype="int32"),
+            'MANUAL_wide':      np.array([1], dtype="int32"),
+            'average':          np.array([0], dtype="int32"),
+            'wide':             np.array([1], dtype="int32")
         },
 
         'nose_wings': {
-            'MANUAL_invisible':  np.array([0], dtype="int32"),
-            'MANUAL_visible':    np.array([1], dtype="int32")
+            'MANUAL_invisible': np.array([0], dtype="int32"),
+            'MANUAL_visible':   np.array([1], dtype="int32"),
+            'invisible':        np.array([0], dtype="int32"),
+            'visible':          np.array([1], dtype="int32")
         }
 
     }
