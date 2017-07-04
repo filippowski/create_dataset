@@ -1,14 +1,8 @@
 #!/usr/bin/env python2
 ## -*- coding: utf-8 -*-
 
-import numpy as np
 import pandas as pd
-import os, csv
-from scipy.ndimage import imread
-from skimage.io import imsave
-import multiprocessing as mp
-from  multiprocessing import cpu_count, Pool
-from util import ensure_dir, copy_nomatched_file
+import os
 from load import load_cls_labels, load_cls_microclasses
 
 # CREATE microclasses.csv
