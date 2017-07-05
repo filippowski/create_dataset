@@ -189,8 +189,8 @@ def get_file_params(mode):
                         'in':   {
                                     'labels':    {
                                                     'csv_filename': csv_filename,
-                                                    'names':        labels_names,
-                                                    'types':        labels_types,
+                                                    'names':        get_labels_names_and_types(get_tasks_names()[1])[0]
+                                                    'types':        get_labels_names_and_types(get_tasks_names()[1])[1]
                                                     'sep':          labels_sep
                                                  },
                                     'microclasses': {
