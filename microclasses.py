@@ -80,7 +80,9 @@ class Microclasses:
 
     def create_microclasses_csv(self):
         # read initial csv with labels
-        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names[0], self.tasks, self.labels_names, self.labels_types)
+        #dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names, self.tasks, self.labels_names, self.labels_types)
+        dataset_full = load_cls_labels(self.path_to_labels, self.labels_sep, self.tasks_names, self.tasks)
+
         dataset = dataset_full.iloc[:, 1:]
         print ' * dataset_full shape is: ',     dataset_full.shape
         #print ' * dataset_full zero row is: ',  dataset_full.iloc[0]
@@ -117,8 +119,6 @@ class Microclasses:
                     index = df[df[key] == row[key]].index.tolist()[0]
                     df = df[df[key] == row[key]]
 
-            #print 'before: ', all_microclasses.iloc[index]
-
             # renew or write value in the table
             if self.isnan(all_microclasses.iloc[index]['count']):
                 all_microclasses.iloc[index]['count'] = 1
@@ -130,7 +130,6 @@ class Microclasses:
             else:
                 all_microclasses.iloc[index]['filenames_list'] = all_microclasses.iloc[index]['filenames_list'] + ' ' + filename
 
-            #print 'after: ', all_microclasses.iloc[index]
         print ' * microclasses.shape: ', all_microclasses.shape
 
         nonempty_microclasses = all_microclasses[all_microclasses['count'].notnull()]

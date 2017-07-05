@@ -452,7 +452,7 @@ def get_angles_classification(dirpath):
                         cnt_after = 2*threshold
 
             elif     get_value(names, tasks_names[1], 'hair_color')  == 'black' \
-             * and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
+                and (get_value(names, tasks_names[1], 'hair_len'  )    == '5'
                 or get_value(names, tasks_names[1], 'hair_len'  )    == '6'):
 
                         cnt_after = 1.5*threshold
@@ -726,11 +726,14 @@ microclasses_sep = ' '
 ################################################
 
 # columns names in labels.csv for cls task
-labels_names = ['FILENAME_JPG']
-labels_names.extend(get_tasks_names()[0])
+def get_labels_names_and_types(tasks_names):
+    labels_names = ['FILENAME_JPG']
+    labels_names.extend(tasks_names)
 
-labels_types = dict()
-[labels_types.update({x: str}) for x in labels_names]
+    labels_types = dict()
+    [labels_types.update({x: str}) for x in labels_names]
+
+    return labels_names, labels_types
 
 ################################################
 # 12.2.2 Names and types for LANDMARKS.CSV (CLS)

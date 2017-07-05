@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import os, re
 from util import get_image_size, recompute_row
+from config import get_labels_names_and_types
 
 def loading(csv_file):
     list_processed_img = []
@@ -31,17 +32,37 @@ def load_landmarks(filepath, sep, names=None, types=None):
 
 
 def load_cls_labels(filepath, sep, tasks_names, tasks, names=None, types=None):
-    if names is not None:
-        # samples from microclasses names and microclasses types for only those are in tasks_names
-        names = [x for x in names if x in tasks_names or names.index(x) == 0]
-        types = {key: types[key] for key in types.keys() if key in tasks_names or key == names[0]}
-    labels = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names,dtype=types)
+    raw_tasks_names, work_tasks_names = tasks_names
+    raw_labels_names, raw_labels_types = get_labels_names_and_types(raw_tasks_names)
+    work_labels_names, _ = get_labels_names_and_types(work_tasks_names)
+
+    # read all raw data from file
+    raw_labels = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=raw_labels_names, dtype=raw_labels_types)
+
+    # get only columns with needed tasks
+    labels = raw_labels[work_labels_names]
+
+    # change all values with prefix 'MANUAL' on without it
     labels = labels.applymap(lambda row: re.sub('MANUAL_', '', row))
+
+    # get only rows in labels that have keys in the tasks dictionary
+    for key in work_tasks_names:
+        labels = labels[labels[key].isin(tasks[key].keys())]
+
+    #if names is not None:
+    #    # samples from names and types for only those are in tasks_names
+    #    names = [x for x in names if x in tasks_names or names.index(x) == 0]
+    #    types = {key: types[key] for key in types.keys() if key in tasks_names or key == names[0]}
+
+    #labels = pd.read_csv(filepath, sep=sep, header=None, index_col=False, names=names, dtype=types)
+    #labels = labels[tasks_names]
+    #labels = labels.applymap(lambda row: re.sub('MANUAL_', '', row))
     #labels['glasses'] = labels['glasses'].replace('200200', '200100')
     # get only rows in labels that have keys in the tasks dictionary
-    for key in tasks_names:
-        labels = labels[labels[key].isin(tasks[key].keys())]
-    assert labels.isnull().sum().sum() == 0, 'In labels.csv there are NA values! Pls check data.'
+    #for key in tasks_names:
+    #    labels = labels[labels[key].isin(tasks[key].keys())]
+
+    assert labels.isnull().sum().sum() == 0, 'In labels.csv there are NA values: {}! Pls check data.'.format(labels.isnull().sum().sum())
     print ' * labels shape is: {}'.format(labels.shape)
     return labels
 
