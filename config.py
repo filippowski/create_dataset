@@ -189,8 +189,8 @@ def get_file_params(mode):
                         'in':   {
                                     'labels':    {
                                                     'csv_filename': csv_filename,
-                                                    'names':        get_labels_names_and_types(get_tasks_names()[1])[0]
-                                                    'types':        get_labels_names_and_types(get_tasks_names()[1])[1]
+                                                    'names':        get_labels_names_and_types(get_tasks_names()[1])[0],
+                                                    'types':        get_labels_names_and_types(get_tasks_names()[1])[1],
                                                     'sep':          labels_sep
                                                  },
                                     'microclasses': {
@@ -398,10 +398,11 @@ def get_lmdb_params(mode):
 ################################################
 
 # angles for rotation
-angles = [6]
+#angles = [6]
 
 #angles = [3, 6, 9, 12, 15, 18, 21]
-#angles = range(1, 60, 3)
+#angles = range(1, 30, 3)
+angles = range(2, 21, 2)
 
 # count of images per microclass for which will be decided run augmentation or not:
 # run augmentation,     if count > threshold
